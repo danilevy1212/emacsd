@@ -117,6 +117,8 @@
 ;; vim-gitgutter port
 (use-package git-gutter
   :after evil
+  :custom 
+  (git-gutter:update-interval 1)
   :config
   (global-git-gutter-mode t)
  ;; g-based hunk previews
