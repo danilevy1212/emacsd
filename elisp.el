@@ -1,5 +1,8 @@
 ;;; -*- lexical-binding: t -*-
 
 (use-package elisp-mode
-  :ensure nil)
+  :after helpful
+  :ensure nil
+  :bind
+  ("C-c C-d" . #'helpful-at-point))
   

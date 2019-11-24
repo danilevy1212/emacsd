@@ -143,6 +143,19 @@
 ;; better terminal emulation ~ special install akermu/emacs-libvterm
 (use-package vterm)
 
+;; focus moves to help window
+(setq help-window-select t)
+
+;; more helpful help screens
+(use-package helpful
+  :bind
+  ("C-h k" . #'helpful-key)
+  ("C-h F" . #'helpful-function)
+  ("C-h C" . #'helpful-command)
+  :custom
+  (counsel-describe-function-function #'helpful-callable)
+  (counsel-describe-variable-function #'helpful-variable))
+
 ;; Auto complete
 ;; (use-package company
 ;;   :ensure t
