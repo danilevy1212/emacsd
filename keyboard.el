@@ -12,7 +12,9 @@
         evil-want-C-u-scroll                  t)
   :config
   ;; Remove highlighted sections with ctrl + l
-  (define-key evil-normal-state-map (kbd "C-l") #'evil-ex-nohighlight)
+  (evil-define-key 'normal 'global (kbd "C-l") #'evil-ex-nohighlight)
+  ;; Universal argument mapped to M-u globally
+  (evil-define-key 'normal 'global (kbd "M-u") #'universal-argument)
   (evil-mode 1))
 
 ;; vim-like keybindings everywhere in emacs
@@ -102,7 +104,7 @@
   :config
   (add-hook 'org-mode-hook 'evil-org-mode)
   (add-hook 'evil-org-mode-hook
-            (lambda ()
+            '(lambda ()
               (evil-org-set-key-theme)))
   (require 'evil-org-agenda)
   (evil-org-agenda-set-keys))
@@ -111,3 +113,20 @@
 (use-package evil-vimish-fold
   :config
   (evil-vimish-fold-mode))
+
+;; vim-gitgutter port
+(use-package git-gutter
+  :after evil
+  :config
+  (global-git-gutter-mode t)
+ ;; g-based hunk previews
+  (evil-define-key 'normal 'global (kbd "g h p") 'git-gutter:popup-hunk)
+  ;; Jump to next/previous hunk
+  (evil-define-key 'normal 'global (kbd "[ h") 'git-gutter:previous-hunk)
+  (evil-define-key 'normal 'global (kbd "] h") 'git-gutter:next-hunk)
+  ;; Stage current hunk
+  (evil-define-key 'normal 'global (kbd "g h s") 'git-gutter:stage-hunk)
+  ;; Revert current hunk
+  (evil-define-key 'normal 'global (kbd "g h u") 'git-gutter:revert-hunk)
+  ;; Mark current hunk
+  (evil-define-key 'normal 'global (kbd "g h v") 'git-gutter:mark-hunk))

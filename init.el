@@ -29,6 +29,9 @@
 ;; Org
 (load "~/.emacs.d/.config/org" nil nil)
 
+;; vimscript + vimrc syntax highlight
+(load "~/.emacs.d/.config/vim" nil nil)
+
 ;; Elisp
 (load "~/.emacs.d/.config/elisp" nil nil)
 
