@@ -54,7 +54,8 @@
     "C-k"   'kill-buffer
     "C-S-k" 'only-current-buffer  
     "k"     'kill-current-buffer
-    "K"     'kill-buffer-and-window)
+    "K"     'kill-buffer-and-window
+    "t"   'vterm-other-window)
   (global-evil-leader-mode))
 
 ;; Additional matching on pairs, using %
