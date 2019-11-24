@@ -140,6 +140,9 @@
 ;; Make yes or no -> y or n
 (fset 'yes-or-no-p 'y-or-n-p)
 
+;; better terminal emulation ~ special install akermu/emacs-libvterm
+(use-package vterm)
+
 ;; Auto complete
 ;; (use-package company
 ;;   :ensure t
