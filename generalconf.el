@@ -1,9 +1,12 @@
+;;; package --- summary:
+;;; Commentary:
 ;;; -*- lexical-binding: t -*-
 
-;;; General global configuration of emacs + basic startup setup
+;;; General global configuration of Emacs + basic startup setup
 
+;;; Code:
 (eval-when-compile
-  ;; Link to MELPA, org and gnu repository to download extra packages 
+  ;; Link to MELPA, org and gnu repository to download extra packages
   (require 'package)
   (package-initialize)
   (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
@@ -47,8 +50,8 @@
 
 ;; Some more sensible defaults
 (use-package better-defaults
-  :config
-  (setq apropos-sort-by-scores t))
+  :custom
+  (apropos-sort-by-scores t))
 
 ;; autoclose paranthesis
 (use-package smartparens
@@ -63,8 +66,10 @@
   :defer)
 
 ;; show relative numbers on files
-(add-hook #'prog-mode-hook '(lambda ()
-                            (setq display-line-numbers 'relative)))
+(use-package prog-mode
+  :ensure nil
+  :config
+  (setq display-line-numbers 'relative))
 
 ;; Don't show minor modes
 (use-package minions
@@ -163,9 +168,12 @@
 ;;   :config
 ;;   (add-hook 'after-init-hook #'global-company-mode))
 
-;; Spellcheck
-;; (use-package flycheck
-;;   :ensure t
-;;   :diminish flycheck-mode
-;;   :config
-;;   (add-hook 'after-init-hook #'global-flycheck-mode))
+;; Flycheck
+(use-package flycheck
+  :ensure t
+  :diminish flycheck-mode
+  :config
+  (add-hook 'after-init-hook #'global-flycheck-mode))
+
+(provide 'generalconf)
+;;; generalconf.el ends here

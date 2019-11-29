@@ -14,7 +14,7 @@
 
 ;;; General configuration
 ;;  Look and feel
-(load "~/.emacs.d/.config/general" nil nil)
+(load "~/.emacs.d/.config/generalconf" nil nil)
 
 ;; navigation preferences
 (load "~/.emacs.d/.config/navigation" nil nil)
@@ -28,7 +28,7 @@
 
 ;;; Programming languages / super modes
 ;; Org
-(load "~/.emacs.d/.config/org" nil nil)
+(load "~/.emacs.d/.config/orgconf" nil nil)
 
 ;; vimscript + vimrc syntax highlight
 (load "~/.emacs.d/.config/vim" nil nil)

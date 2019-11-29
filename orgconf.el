@@ -1,15 +1,17 @@
+;;; package --- summary:
+;;; Commentary:
 ;;; -*- lexical-binding: t -*-
 
 ;;; ORG-MODE config
 
+;;; Code:
 ;; Org basic defaults + contrib
 (use-package org-plus-contrib
   :hook
   (org-mode . auto-revert-mode)
   :config
   (put 'narrow-to-page 'disabled nil)
-  ;; (require 'org-habit)
-  ;; (require 'org-checklist)
+  (put 'set-goal-column 'disabled nil)
   :custom
   (org-todo-keywords      '((sequencep "TODO(t)" "PROGRESS(p)" "WAITING(w)" "|" "DONE(d)" "CANCELLED(c)")))
   (org-todo-keyword-faces '(("PROGRESS" . "#E35DBF")
@@ -75,3 +77,6 @@
                                                               (org-todo 'done))
                                                           (unless (string-equal todo-state "TODO")
                                                             (org-todo 'todo))))))))))
+
+(provide 'orgconf)
+;;; orgconf.el ends here

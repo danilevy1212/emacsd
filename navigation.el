@@ -1,7 +1,10 @@
+;;; package --- summary:
+;;; Commentary:
 ;;; -*- lexical-binding: t -*-
 
 ;;; General navigation accross files and buffers
 
+;;; Code:
 ;; General search engine
 (use-package ivy
   :init
@@ -34,3 +37,6 @@
    ("C-j"     . 'ivy-immediate-done)
    ("RET"     . 'ivy-alt-done)))
 
+
+(provide 'navigation)
+;;; navigation.el ends here

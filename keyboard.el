@@ -1,13 +1,16 @@
+;;; package --- summary:
+;;; Commentary:
 ;;; -*- lexical-binding: t -*-
 
 ;; Start evil mode
+;;; Code:
 (use-package evil
   :init
   (setq evil-want-keybinding                  nil
         evil-search-module                    'evil-search
         evil-vsplit-window-right              t
         evil-split-window-below               t
-        setq-evil-ex-search-vim-style-regexp  t
+        evil-ex-search-vim-style-regexp       t
         evil-shift-round                      nil
         evil-want-C-u-scroll                  t)
   :config
@@ -52,7 +55,7 @@
     "r"     'counsel-recentf
     "f"     'counsel-fzf ;; Requires "fzf"
     "C-k"   'kill-buffer
-    "C-S-k" 'only-current-buffer  
+    "C-S-k" 'only-current-buffer
     "k"     'kill-current-buffer
     "K"     'kill-buffer-and-window
     "t"   'vterm-other-window)
@@ -118,7 +121,7 @@
 ;; vim-gitgutter port
 (use-package git-gutter
   :after evil
-  :custom 
+  :custom
   (git-gutter:update-interval 1)
   :config
   (global-git-gutter-mode t)
@@ -133,3 +136,7 @@
   (evil-define-key 'normal 'global (kbd "g h u") 'git-gutter:revert-hunk)
   ;; Mark current hunk
   (evil-define-key 'normal 'global (kbd "g h v") 'git-gutter:mark-hunk))
+
+
+(provide 'keyboard)
+;;; keyboard.el ends here
