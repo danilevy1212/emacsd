@@ -46,6 +46,5 @@
                    gc-cons-percentage 0.1
                    file-name-handler-alist last-file-name-handler-alist)))
 
-
 (provide 'config)
 ;;; config.el ends here

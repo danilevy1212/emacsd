@@ -6,9 +6,13 @@
 ;;; Code:
 (use-package evil
   :init
+
+
+
   (setq evil-want-keybinding                  nil
         evil-search-module                    'evil-search
         evil-vsplit-window-right              t
+        evil-indent-convert-tabs              t
         evil-split-window-below               t
         evil-ex-search-vim-style-regexp       t
         evil-shift-round                      nil

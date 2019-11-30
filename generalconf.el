@@ -1,4 +1,5 @@
 ;;; package --- summary:
+
 ;;; Commentary:
 ;;; -*- lexical-binding: t -*-
 
@@ -29,10 +30,10 @@
   (setq use-package-expand-minimally t))
 
 ;; Compile packages for faster loading times
-(use-package auto-compile
-  :config
-  (auto-compile-on-load-mode)
-  (auto-compile-on-save-mode))
+;; (use-package auto-compile
+;;  :config
+;;  (auto-compile-on-load-mode)
+;;  (auto-compile-on-save-mode))
 
 ;; Setup a special file for the customize interface
 (setq custom-file "~/.emacs.d/.config/custom.el")
@@ -69,7 +70,9 @@
 (use-package prog-mode
   :ensure nil
   :config
-  (setq display-line-numbers 'relative))
+  (add-hook 'prog-mode-hook
+            '(lambda ()
+               (setq display-line-numbers 'relative))))
 
 ;; Don't show minor modes
 (use-package minions
@@ -162,18 +165,39 @@
   (counsel-describe-variable-function #'helpful-variable))
 
 ;; Auto complete
-;; (use-package company
-;;   :ensure t
-;;   :diminish company-mode
-;;   :config
-;;   (add-hook 'after-init-hook #'global-company-mode))
-
-;; Flycheck
-(use-package flycheck
-  :ensure t
-  :diminish flycheck-mode
+(use-package company
+  :commands company-complete-common company-manual-begin company-grab-line
+  :bind
+  (:map company-active-map
+        ("C-n" . company-select-next)
+        ("C-p" . company-select-previous))
+  (:map company-search-map
+        ("C-p" . company-select-previous)
+        ("C-n" . company-select-next))
+  :custom
+  (company-minimum-prefix-length 1)
+  (company-idle-delay 0.1)
+  (company-global-modes
+   '(not erc-mode message-mode help-mode gud-mode eshell-mode))
+  (company-backends '(company-capf))
+  (company-frontends
+   '(company-pseudo-tooltip-frontend
+     company-echo-metadata-frontend))
+  :hook
+  (after-init . global-company-mode)
   :config
-  (add-hook 'after-init-hook #'global-flycheck-mode))
+  (company-tng-configure-default))
+
+(use-package company-posframe
+  :after company
+  :hook
+  (company-mode . company-posframe-mode))
+
+;; Linting
+(use-package flycheck
+  :config
+  ;; FIXME: :wqa command creates error if buffer hasn't been saved before
+  (global-flycheck-mode 1))
 
 (provide 'generalconf)
 ;;; generalconf.el ends here

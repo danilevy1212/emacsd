@@ -8,7 +8,6 @@
   :ensure nil
   :bind
   ("C-c C-d" . #'helpful-at-point))
-  
 
 (provide 'elisp)
 ;;; elisp.el ends here
