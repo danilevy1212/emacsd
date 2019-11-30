@@ -166,6 +166,7 @@
 
 ;; Auto complete
 (use-package company
+  :defer t
   :commands company-complete-common company-manual-begin company-grab-line
   :bind
   (:map company-active-map
@@ -175,28 +176,34 @@
         ("C-p" . company-select-previous)
         ("C-n" . company-select-next))
   :custom
+  (company-begin-commands '(self-insert-command))
   (company-minimum-prefix-length 1)
   (company-idle-delay 0.1)
+  (company-show-numbers t)
+  (company-tooltip-align-annotations 't)
   (company-global-modes
    '(not erc-mode message-mode help-mode gud-mode eshell-mode))
   (company-backends '(company-capf))
   (company-frontends
    '(company-pseudo-tooltip-frontend
      company-echo-metadata-frontend))
-  :hook
-  (after-init . global-company-mode)
-  :config
-  (company-tng-configure-default))
+  (global-company-mode t))
 
 (use-package company-posframe
   :after company
   :hook
   (company-mode . company-posframe-mode))
 
+;; (use-package company-box
+;;   :after company
+;;   :delight
+;;   :hook (company-mode . company-box-mode))
+
 ;; Linting
 (use-package flycheck
+  :defer t
   :config
-  (global-flycheck-mode 1))
+  (global-flycheck-mode))
 
 (provide 'generalconf)
 ;;; generalconf.el ends here
