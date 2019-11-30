@@ -30,10 +30,10 @@
   (setq use-package-expand-minimally t))
 
 ;; Compile packages for faster loading times
-;; (use-package auto-compile
-;;  :config
-;;  (auto-compile-on-load-mode)
-;;  (auto-compile-on-save-mode))
+(use-package auto-compile
+ :config
+ (auto-compile-on-load-mode)
+ (auto-compile-on-save-mode))
 
 ;; Setup a special file for the customize interface
 (setq custom-file "~/.emacs.d/.config/custom.el")
@@ -196,7 +196,6 @@
 ;; Linting
 (use-package flycheck
   :config
-  ;; FIXME: :wqa command creates error if buffer hasn't been saved before
   (global-flycheck-mode 1))
 
 (provide 'generalconf)

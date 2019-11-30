@@ -5,13 +5,14 @@
 ;;; ORG-MODE config
 
 ;;; Code:
-;; Org basic defaults + contrib
-(use-package org-plus-contrib
+;; Org basic defaults
+(use-package org
   :hook
   (org-mode . auto-revert-mode)
   :config
   (put 'narrow-to-page 'disabled nil)
   (put 'set-goal-column 'disabled nil)
+  (require 'org-checklist "~/.emacs.d/.config/org-checklist")
   :custom
   (org-todo-keywords      '((sequencep "TODO(t)" "PROGRESS(p)" "WAITING(w)" "|" "DONE(d)" "CANCELLED(c)")))
   (org-todo-keyword-faces '(("PROGRESS" . "#E35DBF")
@@ -30,6 +31,7 @@
   (org-agenda-skip-scheduled-if-done                nil)
   (org-default-priority                             ?C)
   (org-modules                                      '(org-w3m
+                                                      org-habit
                                                       org-bbdb
                                                       org-bibtex
                                                       org-docview
@@ -80,3 +82,4 @@
 
 (provide 'orgconf)
 ;;; orgconf.el ends here
+
