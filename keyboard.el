@@ -6,9 +6,6 @@
 ;;; Code:
 (use-package evil
   :init
-
-
-
   (setq evil-want-keybinding                  nil
         evil-search-module                    'evil-search
         evil-vsplit-window-right              t
@@ -129,7 +126,7 @@
   (git-gutter:update-interval 1)
   :config
   (global-git-gutter-mode t)
- ;; g-based hunk previews
+  ;; g-based hunk previews
   (evil-define-key 'normal 'global (kbd "g h p") 'git-gutter:popup-hunk)
   ;; Jump to next/previous hunk
   (evil-define-key 'normal 'global (kbd "[ h") 'git-gutter:previous-hunk)
