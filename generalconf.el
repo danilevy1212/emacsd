@@ -12,7 +12,7 @@
         calendar-longitude -3.70
         calendar-location-name "Madrid, Madrid")
 
-  ;; Sent font 
+  ;; Sent font
   (set-face-attribute 'default nil :font "Ubuntu Mono" :height 120)
   (set-fontset-font t 'latin "Ubuntu Mono")
 
@@ -206,9 +206,33 @@
 
 ;; Linting
 (use-package flycheck
-  :defer t
+  :init
+  (add-hook 'after-init-hook #'global-flycheck-mode)
+  :custom
+  (flycheck-emacs-lisp-load-path 'inherit)
+  (flycheck-display-errors-delay .3)
   :config
-  (global-flycheck-mode))
+  ;; FIXME: Very ugly hack,open a issue about it?
+  (defun flycheck-global-teardown (&optional ignore-local)
+    "Teardown Flycheck in all buffers.
+
+Completely clear the whole Flycheck state in all buffers, stop
+all running checks, remove all temporary files, and empty all
+variables of Flycheck.
+
+Also remove global hooks.  (If optional argument IGNORE-LOCAL is
+non-nil, then only do this and skip per-buffer teardown.)"
+    (unless ignore-local
+      (dolist (buffer (buffer-list))
+        (when (buffer-live-p buffer)
+          (with-current-buffer buffer
+            (when flycheck-mode
+              (flycheck-teardown 'ignore-global))))))
+    (remove-hook 'buffer-list-update-hook #'flycheck-handle-buffer-switch)))
+
+(use-package flycheck-posframe
+  :after flycheck
+  :config (add-hook 'flycheck-mode-hook #'flycheck-posframe-mode))
 
 (provide 'generalconf)
 ;;; generalconf.el ends here

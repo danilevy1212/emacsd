@@ -36,6 +36,9 @@
 ;; Elisp
 (load "~/.emacs.d/.config/elisp" nil nil)
 
+;; Haskell
+(load "~/.emacs.d/.config/haskell" nil nil)
+
 
 ;;; Garbage collection optimization after startup
 ;; A large gc-cons-threshold will cause freezing and stuttering during long-term
