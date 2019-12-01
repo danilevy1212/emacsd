@@ -1,6 +1,6 @@
 ;;; package --- summary:
 ;;; Commentary:
-;;; -*- lexical-binding: t -*-
+;;; -*- lexical-binding:t -*-
 
 ;;; General navigation accross files and buffers
 

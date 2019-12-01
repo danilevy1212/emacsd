@@ -1,12 +1,21 @@
-;;; package --- summary:
-
+;;; package --- summary: -*- lexical-binding:t -*-
 ;;; Commentary:
-;;; -*- lexical-binding: t -*-
 
 ;;; General global configuration of Emacs + basic startup setup
 
 ;;; Code:
 (eval-when-compile
+  ;; Personal info
+  (setq user-full-name "Daniel Levy Moreno"
+        user-mail-address "daniellevymoreno@gmail.com"
+        calendar-latitude 40.41
+        calendar-longitude -3.70
+        calendar-location-name "Madrid, Madrid")
+
+  ;; Sent font 
+  (set-face-attribute 'default nil :font "Ubuntu Mono" :height 120)
+  (set-fontset-font t 'latin "Ubuntu Mono")
+
   ;; Link to MELPA, org and gnu repository to download extra packages
   (require 'package)
   (package-initialize)
@@ -166,7 +175,7 @@
 
 ;; Auto complete
 (use-package company
-  :defer t
+  :defer 0.5
   :commands company-complete-common company-manual-begin company-grab-line
   :bind
   (:map company-active-map
@@ -187,17 +196,13 @@
   (company-frontends
    '(company-pseudo-tooltip-frontend
      company-echo-metadata-frontend))
+  :config
   (global-company-mode t))
 
 (use-package company-posframe
   :after company
   :hook
   (company-mode . company-posframe-mode))
-
-;; (use-package company-box
-;;   :after company
-;;   :delight
-;;   :hook (company-mode . company-box-mode))
 
 ;; Linting
 (use-package flycheck

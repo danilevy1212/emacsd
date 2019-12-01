@@ -1,6 +1,6 @@
 ;;; package --- summary:
 ;;; Commentary:
-;;; -*- lexical-binding: t -*-
+;;; -*- lexical-binding:t -*-
 
 ;; Start evil mode
 ;;; Code:

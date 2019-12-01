@@ -1,6 +1,6 @@
 ;;; package --- summary:
 ;;; Commentary:
-;;; -*- lexical-binding: t -*-
+;;; -*- lexical-binding:t -*-
 
 ;;; Code:
 (use-package vimrc-mode
