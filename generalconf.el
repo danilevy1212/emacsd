@@ -202,7 +202,7 @@
   (company-tooltip-align-annotations 't)
   (company-global-modes
    '(not erc-mode message-mode help-mode gud-mode eshell-mode))
-  (company-backends '(company-capf))
+  (company-backends '(company-capf company-dabbrev company-dabbrev-code))
   (company-frontends
    '(company-pseudo-tooltip-frontend
      company-echo-metadata-frontend)))
