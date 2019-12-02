@@ -9,12 +9,15 @@
 ; (setf debug-on-error t)
   
 (eval-when-compile
+  ;; No splash screen on init
+  (setq inhibit-splash-screen t)
+
+  ;; Customize scratch buffer message
+  (setq initial-scratch-message ";; Happy hacking ^_^\n\n")
+  
   ;; Personal info
   (setq user-full-name "Daniel Levy Moreno"
-        user-mail-address "daniellevymoreno@gmail.com"
-        calendar-latitude 40.41
-        calendar-longitude -3.70
-        calendar-location-name "Madrid, Madrid")
+        user-mail-address "daniellevymoreno@gmail.com")
 
   ;; Sent font
   (set-face-attribute 'default nil :font "Ubuntu Mono" :height 120)
@@ -182,7 +185,7 @@
 ;; Auto complete
 (use-package company
   :hook
-  (after-init . company-mode)
+  (after-init . global-company-mode)
   :commands company-complete-common company-manual-begin company-grab-line
   :bind
   (("S-<return>" . company-complete-selection)
