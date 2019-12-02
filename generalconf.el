@@ -118,9 +118,7 @@
 
 ;; Modeline (https://github.com/seagle0128/doom-modeline)
 (use-package doom-modeline
-  :hook (after-init . doom-modeline-mode)
-  :init
-  (fset 'battery-update #'ignore)) ;; FIXME: temporal fix
+  :hook (after-init . doom-modeline-mode))
 
 ;; Vim tabs FIXME: Substitute with eyebrowse
 ;; (use-package evil-tabs
@@ -272,7 +270,7 @@
   (flycheck-display-errors-delay .3)
   :config
   ;; FIXME: Very ugly hack,open a issue about it?
-  (defun flycheck-global-teardown (&optional ignore-local)
+(defun flycheck-global-teardown (&optional ignore-local)
     "Teardown Flycheck in all buffers.
 
 Completely clear the whole Flycheck state in all buffers, stop
@@ -287,7 +285,8 @@ non-nil, then only do this and skip per-buffer teardown.)"
           (with-current-buffer buffer
             (when flycheck-mode
               (flycheck-teardown 'ignore-global))))))
-    (remove-hook 'buffer-list-update-hook #'flycheck-handle-buffer-switch)))
+    (remove-hook 'buffer-list-update-hook #'flycheck-handle-buffer-switch))
+  )
 
 ;; Use another frame to show error
 (use-package flycheck-posframe
