@@ -4,6 +4,10 @@
 ;;; General global configuration of Emacs + basic startup setup
 
 ;;; Code:
+
+;; For debugging, uncomment:
+; (setf debug-on-error t)
+  
 (eval-when-compile
   ;; Personal info
   (setq user-full-name "Daniel Levy Moreno"
@@ -111,7 +115,9 @@
 
 ;; Modeline (https://github.com/seagle0128/doom-modeline)
 (use-package doom-modeline
-  :hook (after-init . doom-modeline-mode))
+  :hook (after-init . doom-modeline-mode)
+  :init
+  (fset 'battery-update #'ignore)) ;; FIXME: temporal fix
 
 ;; Vim tabs FIXME: Substitute with eyebrowse
 ;; (use-package evil-tabs
