@@ -27,6 +27,7 @@
 (load "~/.emacs.d/.config/+functions" nil nil)
 
 ;;; Programming languages / super modes
+
 ;; Org
 (load "~/.emacs.d/.config/orgconf" nil nil)
 
@@ -39,13 +40,16 @@
 ;; Haskell
 (load "~/.emacs.d/.config/haskell" nil nil)
 
+;; Python
+(load "~/.emacs.d/.config/python" nil nil)
+
 
 ;;; Garbage collection optimization after startup
 ;; A large gc-cons-threshold will cause freezing and stuttering during long-term
 ;; interactive use.
 (add-hook 'emacs-startup-hook
           '(lambda ()
-             (setq gc-cons-threshold 16777216
+             (setq gc-cons-threshold  20000000
                    gc-cons-percentage 0.1
                    file-name-handler-alist last-file-name-handler-alist)))
 

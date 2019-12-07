@@ -7,14 +7,14 @@
 
 ;; For debugging, uncomment:
 ; (setf debug-on-error t)
-  
+
 (eval-when-compile
   ;; No splash screen on init
   (setq inhibit-splash-screen t)
 
   ;; Customize scratch buffer message
   (setq initial-scratch-message ";; Happy hacking ^_^\n\n")
-  
+
   ;; Personal info
   (setq user-full-name "Daniel Levy Moreno"
         user-mail-address "daniellevymoreno@gmail.com")
@@ -56,19 +56,87 @@
 (when (file-exists-p custom-file)
   (load custom-file))
 
+;;; Sensible defaults (https://github.com/hrs/sensible-defaults.el/blob/master/sensible-defaults.el)
+;; When opening a file, start searching at the user's home directory.
+(setq default-directory "~/")
+
+;; Call DELETE-TRAILING-WHITESPACE every time a buffer is saved.
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
+
+;; When opening a file, always follow symlinks.
+(setq vc-follow-symlinks t)
+
+;; When saving a file that starts with `#!', make it executable.
+(add-hook 'after-save-hook
+	  'executable-make-buffer-file-executable-if-script-p)
+
+;; Don't assume that sentences should have two spaces after periods. This ain't a typewriter.
+(setq sentence-end-double-space nil)
+
+;; When saving a file in a directory that doesn't exist, offer to (recursively) create the file's parent directories.
+(add-hook 'before-save-hook
+            (lambda ()
+              (when buffer-file-name
+                (let ((dir (file-name-directory buffer-file-name)))
+                  (when (and (not (file-exists-p dir))
+                             (y-or-n-p (format "Directory %s does not exist. Create it?" dir)))
+                    (make-directory dir t))))))
+
+;; Turn on transient-mark-mode.
+(transient-mark-mode t)
+
+;; If some text is selected, and you type some text, delete the selected text and start inserting your typed text.
+(delete-selection-mode t)
+
+;; If you save a file that doesn't end with a newline,automatically append one.
+(setq require-final-newline t)
+
+;; Ask if you're sure that you want to close Emacs.
+(setq confirm-kill-emacs 'y-or-n-p)
+
+;; Add file sizes in human-readable units (KB, MB, etc) to dired buffers.
+(setq-default dired-listing-switches "-alh")
+
+;; Turn on syntax highlighting whenever possible."
+(global-font-lock-mode t)
+
+;; When something changes a file, automatically refresh the buffer containing that file so they can't get out of sync.
+(global-auto-revert-mode t)
+
+;; Visually indicate matching pairs of parentheses."
+(show-paren-mode t)
+(setq show-paren-delay 0.0)
+
+;; When you perform a problematic operation, flash the screen instead of ringing the terminal bell.
+(setq visible-bell t)
+
+;; Set the default line length to 80."
+(setq-default fill-column 80)
+
+;; When middle-clicking the mouse to yank from the clipboard, insert the text where point is, not where the mouse cursor is.
+(setq mouse-yank-at-point t)
+
+;; Make yes or no -> y or n
+(fset 'yes-or-no-p 'y-or-n-p)
+
+;; focus moves to help window
+(setq help-window-select t)
+
+;; Disable the menu bar.
+(menu-bar-mode -1)
+;; Disable the scrollbar.
+(toggle-scroll-bar -1)
+;; Disable the toolbar.
+(tool-bar-mode -1)
+
 ;; Describe in minibuffer what each key does while typing
 (use-package which-key
-  :init
-  (setq which-key-idle-delay 0.33
-        which-key-allow-evil-operators t
-        which-key-popup-type 'minibuffer)
+  :custom
+  (which-key-idle-delay 0.33)
+  (which-key-allow-evil-operators t)
+  (which-key-popup-type 'minibuffer)
   :config
   (which-key-mode))
-
-;; Some more sensible defaults
-(use-package better-defaults
-  :custom
-  (apropos-sort-by-scores t))
 
 ;; autoclose paranthesis
 (use-package smartparens
@@ -79,8 +147,7 @@
   (sp-pair "=" "=" :actions '(wrap))
   (sp-pair "+" "+" :actions '(wrap))
   (sp-pair "<" ">" :actions '(wrap))
-  (sp-pair "$" "$" :actions '(wrap))
-  :defer)
+  (sp-pair "$" "$" :actions '(wrap)))
 
 ;; show relative numbers on files
 (use-package prog-mode
@@ -120,12 +187,6 @@
 (use-package doom-modeline
   :hook (after-init . doom-modeline-mode))
 
-;; Vim tabs FIXME: Substitute with eyebrowse
-;; (use-package evil-tabs
-;;   :after evil
-;;   :config
-;;   (global-evil-tabs-mode t))
-
 ;; Rainbow Parentheses
 (use-package rainbow-delimiters
   :hook
@@ -161,14 +222,8 @@
   :bind
   ("M-s a" . ag-project))
 
-;; Make yes or no -> y or n
-(fset 'yes-or-no-p 'y-or-n-p)
-
 ;; better terminal emulation ~ special install akermu/emacs-libvterm
 (use-package vterm)
-
-;; focus moves to help window
-(setq help-window-select t)
 
 ;; more helpful help screens
 (use-package helpful
@@ -185,7 +240,7 @@
   :hook
   (after-init . global-company-mode)
   :commands company-complete-common company-manual-begin company-grab-line
-  :bind
+  :bind*
   (("S-<return>" . company-complete-selection)
    :map company-active-map
    ("C-n" . company-select-next)
@@ -267,32 +322,24 @@
   (after-init . global-flycheck-mode)
   :custom
   (flycheck-emacs-lisp-load-path 'inherit)
-  (flycheck-display-errors-delay .3)
-  :config
-  ;; FIXME: Very ugly hack,open a issue about it?
-(defun flycheck-global-teardown (&optional ignore-local)
-    "Teardown Flycheck in all buffers.
-
-Completely clear the whole Flycheck state in all buffers, stop
-all running checks, remove all temporary files, and empty all
-variables of Flycheck.
-
-Also remove global hooks.  (If optional argument IGNORE-LOCAL is
-non-nil, then only do this and skip per-buffer teardown.)"
-    (unless ignore-local
-      (dolist (buffer (buffer-list))
-        (when (buffer-live-p buffer)
-          (with-current-buffer buffer
-            (when flycheck-mode
-              (flycheck-teardown 'ignore-global))))))
-    (remove-hook 'buffer-list-update-hook #'flycheck-handle-buffer-switch))
-  )
+  (flycheck-display-errors-delay .3))
 
 ;; Use another frame to show error
 (use-package flycheck-posframe
   :after flycheck
   :hook
   (flycheck-mode . flycheck-posframe-mode))
+
+;; Git porcelain
+(use-package magit
+  :custom
+  (magit-auto-revert-mode nil)
+  :bind
+  ("M-g s" . magit-status))
+
+;; Evil-like keybinds for magit
+(use-package evil-magit
+  :after magit)
 
 (provide 'generalconf)
 
