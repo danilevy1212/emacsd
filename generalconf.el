@@ -201,9 +201,8 @@
 
 ;; Project management
 (use-package projectile
-  :diminish
   :bind
-  ("M-o p" . counsel-projectile-switch-project)
+  ("C-c p" . projectile-command-map)
   :config
   (projectile-mode +1))
 

@@ -35,6 +35,10 @@
                           (require 'lsp-python-ms)
                           (lsp))))
 
+(use-package pyvenv
+  :hook
+  (python-mode . pyvenv-mode))
+
 
 (provide 'python)
 ;;; python.el ends here
