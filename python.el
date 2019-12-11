@@ -18,6 +18,9 @@
 (use-package python-mode
   :after ipython-shell-send
   :ensure nil
+  :custom
+  (python-shell-interpreter "ipython")
+  (python-shell-interpreter-args "-i --simple-prompt")
   :bind
   ("C-c C-s" . ipython-shell-send-string)
   ("C-c C-c" . ipython-shell-send-buffer)
@@ -27,13 +30,16 @@
 (use-package ipython-shell-send)
 
 (use-package lsp-python-ms
-  :custom
-  (python-shell-interpreter "ipython")
-  (python-shell-interpreter-args "-i --simple-prompt")
   :hook
   (python-mode . (lambda ()
-                          (require 'lsp-python-ms)
-                          (lsp))))
+		   (require 'lsp-python-ms)
+		   (lsp)))
+  :config
+  (unless (file-exists-p lsp-python-ms-executable)
+    ;; for executable of language server, if it's not symlinked on your PATH
+    (setq lsp-python-ms-executable
+	  "~/python-language-server/output/bin/Release/linux-x64/publish/Microsoft.Python.LanguageServer")))
+
 
 (use-package pyvenv
   :hook

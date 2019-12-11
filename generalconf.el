@@ -52,7 +52,7 @@
  (auto-compile-on-save-mode))
 
 ;; Setup a special file for the customize interface
-(setq custom-file "~/.emacs.d/.config/custom.el")
+(setq custom-file "~/.emacs.d/custom/custom.el")
 (when (file-exists-p custom-file)
   (load custom-file))
 
@@ -365,7 +365,7 @@
   (lsp-ui-doc-max-width 150)
   (lsp-ui-doc-max-height 30)
   (lsp-ui-doc-use-childframe t)
-  (lsp-ui-doc-use-webkit t)
+  (lsp-ui-doc-use-webkit nil)
   ;; lsp-ui-sideline
   (lsp-ui-sideline-enable nil)
   (lsp-ui-sideline-ignore-duplicate t)
