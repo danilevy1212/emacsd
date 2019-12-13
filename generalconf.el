@@ -194,6 +194,17 @@
   :hook
   (prog-mode . rainbow-delimiters-mode))
 
+;; Highlighting indentation
+(use-package highlight-indent-guides
+  :custom
+  (highlight-indent-guides-auto-odd-face-perc 15)
+  (highlight-indent-guides-auto-even-face-perc 15)
+  (highlight-indent-guides-auto-character-face-perc 20)
+  (highlight-indent-guides-method 'character)
+  (highlight-indent-guides-responsive 'stack)
+  :hook
+  (prog-mode . highlight-indent-guides-mode))
+
 ;; Better pdf view experience
 (use-package pdf-tools
   :config

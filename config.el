@@ -43,6 +43,11 @@
 ;; Python
 (load "~/.emacs.d/.config/python" nil nil)
 
+;; Yaml
+(load "~/.emacs.d/.config/yaml" nil nil)
+
+;; Json
+(load "~/.emacs.d/.config/json" nil nil)
 
 ;;; Garbage collection optimization after startup
 ;; A large gc-cons-threshold will cause freezing and stuttering during long-term
