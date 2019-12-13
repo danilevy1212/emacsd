@@ -21,5 +21,12 @@
      (concat "/sudo:root@localhost:"
              buffer-file-name))))
 
+(defun copy-buffer-filename ()
+  "Copy current buffer's filename to the kill ring, else return nil."
+  (interactive)
+  (let ((path (buffer-file-name (current-buffer))))
+    (message "%s" (when path
+		    (kill-new path)))))
+
 (provide '+functions)
 ;;; +functions.el ends here
