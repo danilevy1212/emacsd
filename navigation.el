@@ -7,11 +7,11 @@
 ;;; Code:
 ;; General search engine
 (use-package ivy
-  :init
-  (setq ivy-use-virtual-buffers t)
-  (setq ivy-count-format "%d/%d ")
+  :custom
+  (ivy-use-virtual-buffers t)
+  (ivy-count-format "%d/%d ")
   :config
-  (ivy-mode 1))
+  (ivy-mode +1))
 
 ;; Replace emacs internal search functions with friendlier ones and add some new ones
 (use-package counsel
@@ -37,6 +37,12 @@
    ("C-j"     . 'ivy-immediate-done)
    ("RET"     . 'ivy-alt-done)))
 
+(use-package ivy-posframe
+  :after ivy
+  :custom
+  (ivy-posframe-display-functions-alist '((t . ivy-posframe-display-at-frame-bottom-window-center)))
+  :config
+  (ivy-posframe-mode +1))
 
 (provide 'navigation)
 ;;; navigation.el ends here
