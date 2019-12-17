@@ -212,6 +212,10 @@
 
 ;; Project management
 (use-package projectile
+  :custom
+  (projectile-switch-project-action #'projectile-dired)
+  (projectile-completion-system 'ivy)
+  (projectile-sort-order 'recently-active)
   :bind
   ("C-c p" . projectile-command-map)
   :config

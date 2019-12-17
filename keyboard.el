@@ -52,14 +52,17 @@
     "o a"   'org-agenda
     "o l"   'org-store-link
     "e"     'counsel-find-file
+    "E"     'find-file-other-window
     "b"     'counsel-switch-buffer
+    "B"     'counsel-switch-buffer-other-window
     "r"     'counsel-recentf
     "f"     'counsel-fzf ;; Requires "fzf"
     "C-k"   'kill-buffer
     "C-S-k" 'only-current-buffer
     "k"     'kill-current-buffer
     "K"     'kill-buffer-and-window
-    "t"     'vterm-other-window)
+    "t"     'vterm-other-window
+    "T"     'vterm)
   (global-evil-leader-mode))
 
 ;; Additional matching on pairs, using %
