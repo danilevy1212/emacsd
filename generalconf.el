@@ -364,6 +364,7 @@
   (lsp-auto-guess-root t)
   (lsp-document-sync-method 'incremental)
   (lsp-response-timeout 10)
+  (lsp-eldoc-render-all nil)
   :bind
   (:map lsp-mode-map
 	("C-c r"   . lsp-rename)))
@@ -432,6 +433,11 @@
   (dap-ui-mode 1)
   (dap-tooltip-mode 1)
   (tooltip-mode 1))
+
+;; Eldoc in a posframe
+(use-package eldoc-box
+  :hook
+  (eldoc-mode . eldoc-box-hover-at-point-mode))
 
 (provide 'generalconf)
 
