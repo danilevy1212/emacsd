@@ -365,6 +365,7 @@
   (lsp-document-sync-method 'incremental)
   (lsp-response-timeout 10)
   (lsp-eldoc-render-all nil)
+  (lsp-eldoc-enable-hover nil)
   :bind
   (:map lsp-mode-map
 	("C-c r"   . lsp-rename)))
@@ -398,6 +399,11 @@
   (lsp-ui-peek-peek-height 20)
   (lsp-ui-peek-list-width 50)
   (lsp-ui-peek-fontify 'on-demand)
+  (lsp-ui-imenu-enable t)
+  (lsp-ui-imenu-colors `(,(face-foreground 'font-lock-keyword-face)
+			 ,(face-foreground 'font-lock-string-face)
+			 ,(face-foreground 'font-lock-constant-face)
+			 ,(face-foreground 'font-lock-variable-name-face)))
   :preface
   (defun my/toggle-lsp-ui-doc ()
     (interactive)
@@ -413,9 +419,7 @@
 	("C-c i"   . lsp-ui-peek-find-implementation)
 	("C-c m"   . lsp-ui-imenu)
 	("C-c s"   . lsp-ui-sideline-mode)
-	("C-c d"   . my/toggle-lsp-ui-doc))
-  :hook
-  (lsp-mode . lsp-ui-mode))
+	("C-c d"   . my/toggle-lsp-ui-doc)))
 
 ;; Company backend
 (use-package company-lsp
@@ -432,7 +436,9 @@
   (dap-mode 1)
   (dap-ui-mode 1)
   (dap-tooltip-mode 1)
-  (tooltip-mode 1))
+  (tooltip-mode 1)
+  :hook
+  (python-mode . (lambda () (require 'dap-python))))
 
 ;; Eldoc in a posframe
 (use-package eldoc-box

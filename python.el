@@ -33,7 +33,7 @@
   :hook
   (python-mode . (lambda ()
 		   (require 'lsp-python-ms)
-		   (lsp)))
+		   (lsp-deferred)))
   :config
   (unless (file-exists-p lsp-python-ms-executable)
     ;; for executable of language server, if it's not symlinked on your PATH
