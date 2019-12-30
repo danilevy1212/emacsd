@@ -7,6 +7,7 @@
 ;;; Code:
 ;; Org basic defaults
 (use-package org
+  ;; :after doom-modeline
   :hook
   (org-mode . auto-revert-mode)
   :config
@@ -30,18 +31,18 @@
   (org-agenda-window-setup                          'only-window)
   (org-agenda-skip-scheduled-if-done                nil)
   (org-default-priority                             ?C)
-  (org-modules                                      '(org-w3m
-                                                      org-habit
-                                                      org-bbdb
-                                                      org-bibtex
-                                                      org-docview
-                                                      org-gnus
-                                                      org-info
-                                                      org-irc
-                                                      org-mhe
-                                                      org-rmail
-                                                      org-habit
-                                                      org-checklist)))
+(org-modules                                      '(org-w3m
+						    org-habit
+						    org-bbdb
+						    org-bibtex
+						    org-docview
+						    org-gnus
+						    org-info
+						    org-irc
+						    org-mhe
+						    org-rmail
+						    org-habit
+						    org-checklist)))
 
 ;;; Plugins
 ;; More control over how and when tasks change state
@@ -52,8 +53,8 @@
 
 ;; Switch entry to DONE when all subentries are done, to TODO otherwise.
 (add-hook 'org-after-todo-statistics-hook '(lambda (n-done n-not-done)
-                                             (let (org-log-done org-log-states)
-                                               (org-todo (if (= n-not-done 0) "DONE" "TODO")))))
+					     (let (org-log-done org-log-states)
+					       (org-todo (if (= n-not-done 0) "DONE" "TODO")))))
 
 ;; Switch header TODO state to DONE when all checkboxes are ticked, to TODO otherwise
 (add-hook 'org-checkbox-statistics-hook  '(lambda ()
@@ -80,6 +81,9 @@
                                                           (unless (string-equal todo-state "TODO")
                                                             (org-todo 'todo))))))))))
 
+
+;; Init screen is agenda-view
+(add-hook 'after-init-hook (lambda() (org-agenda nil "n")) t)
+
 (provide 'orgconf)
 ;;; orgconf.el ends here
-

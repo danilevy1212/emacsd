@@ -37,12 +37,23 @@
    ("C-j"     . 'ivy-immediate-done)
    ("RET"     . 'ivy-alt-done)))
 
+;; Childframe for ivy buffers
 (use-package ivy-posframe
   :after ivy
   :custom
   (ivy-posframe-display-functions-alist '((t . ivy-posframe-display-at-frame-bottom-window-center)))
   :config
   (ivy-posframe-mode +1))
+
+;; Virtual workspaces
+(use-package eyebrowse
+  :after evil
+  :config
+  (eyebrowse-mode t)
+  (eyebrowse-setup-evil-keys)
+  (eyebrowse-setup-opinionated-keys)
+  (funcall-interactively 'eyebrowse-switch-to-window-config-0)
+  (funcall-interactively 'eyebrowse-rename-window-config 0 "agenda"))
 
 (provide 'navigation)
 ;;; navigation.el ends here
