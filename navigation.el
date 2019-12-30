@@ -53,7 +53,9 @@
   (eyebrowse-setup-evil-keys)
   (eyebrowse-setup-opinionated-keys)
   (funcall-interactively 'eyebrowse-switch-to-window-config-0)
-  (funcall-interactively 'eyebrowse-rename-window-config 0 "agenda"))
+  (funcall-interactively 'eyebrowse-rename-window-config 0 "agenda")
+  :custom
+  (eyebrowse-new-workspace t))
 
 (provide 'navigation)
 ;;; navigation.el ends here
