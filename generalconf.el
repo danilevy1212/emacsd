@@ -73,6 +73,12 @@
 ;; Don't assume that sentences should have two spaces after periods. This ain't a typewriter.
 (setq sentence-end-double-space nil)
 
+;; Default tabs are not used for indentation
+(setq-default indent-tabs-mode nil)
+
+;; Default tab width
+(setq-default tab-width 4)
+
 ;; When saving a file in a directory that doesn't exist, offer to (recursively) create the file's parent directories.
 (add-hook 'before-save-hook
             (lambda ()
