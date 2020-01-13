@@ -28,21 +28,21 @@
   (org-agenda-skip-scheduled-if-deadline-is-shown   t)
   (org-agenda-span                                  'fortnight)
   (org-capture-templates                            '(("e" "Quick errands" entry (file+headline "~/Dropbox/org/agenda.org" "Quick errands") "* TODO")))
-  (org-agenda-window-setup                          'only-window)
+  (org-agenda-window-setup                          'current-window)
   (org-agenda-skip-scheduled-if-done                nil)
   (org-default-priority                             ?C)
-(org-modules                                      '(org-w3m
-						    org-habit
-						    org-bbdb
-						    org-bibtex
-						    org-docview
-						    org-gnus
-						    org-info
-						    org-irc
-						    org-mhe
-						    org-rmail
-						    org-habit
-						    org-checklist)))
+  (org-modules                                      '(org-w3m
+                                                      org-habit
+                                                      org-bbdb
+                                                      org-bibtex
+                                                      org-docview
+                                                      org-gnus
+                                                      org-info
+                                                      org-irc
+                                                      org-mhe
+                                                      org-rmail
+                                                      org-habit
+                                                      org-checklist)))
 
 ;;; Plugins
 ;; More control over how and when tasks change state

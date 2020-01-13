@@ -35,7 +35,7 @@
                    (require 'lsp-python-ms)
                    (lsp-deferred)
                    (set (make-local-variable 'company-backends)
-                        (append '((company-lsp company-capf company-dabbrev-code)) ()))))
+                        '(company-lsp company-capf company-dabbrev-code))))
   :config
   (unless (file-exists-p lsp-python-ms-executable)
     ;; for executable of language server, if it's not symlinked on your PATH

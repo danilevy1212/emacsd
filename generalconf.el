@@ -259,6 +259,11 @@
   (counsel-describe-function-function #'helpful-callable)
   (counsel-describe-variable-function #'helpful-variable))
 
+;; Highlight TODO, FIXME, BUG words in comments
+(use-package fic-mode
+  :hook
+  (prog-mode . fic-mode))
+
 ;; Auto complete
 (use-package company
   :hook
@@ -373,7 +378,8 @@
   (lsp-document-sync-method 'incremental)
   (lsp-response-timeout 10)
   (lsp-eldoc-render-all nil)
-  (lsp-eldoc-enable-hover nil)
+  (lsp-eldoc-enable-hover t)
+  (lsp-signature-render-all 'eldoc)
   :bind
   (:map lsp-mode-map
 	("C-c r"   . lsp-rename)))

@@ -3,9 +3,7 @@
 ;;; -*- lexical-binding:t -*-
 
 (add-hook 'c-mode-hook '(lambda ()
-                          (require 'lsp)
-                          (require 'lsp-clients)
-                          (lsp)
+                          (lsp-deferred)
                           (lsp-ui-doc-mode -1)
                           (lsp-ui-sideline-mode +1)))
 
