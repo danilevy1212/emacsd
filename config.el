@@ -49,6 +49,12 @@
 ;; Json
 (load "~/.emacs.d/.config/json" nil nil)
 
+;; c-c++
+(load "~/.emacs.d/.config/c_c++" nil nil)
+
+;; web
+(load "~/.emacs.d/.config/web" nil nil)
+
 ;;; Garbage collection optimization after startup
 ;; A large gc-cons-threshold will cause freezing and stuttering during long-term
 ;; interactive use.

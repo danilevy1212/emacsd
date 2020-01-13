@@ -50,8 +50,11 @@
   :after evil
   :config
   (eyebrowse-mode t)
-  (eyebrowse-setup-evil-keys)
   (eyebrowse-setup-opinionated-keys)
+  ;; (eyebrowse-setup-evil-keys) ;; Almost perfect but messes with evil commentary
+  (define-key evil-motion-state-map (kbd "gt") 'eyebrowse-next-window-config)
+  (define-key evil-motion-state-map (kbd "gT") 'eyebrowse-prev-window-config)
+  (define-key evil-motion-state-map (kbd "zx") 'eyebrowse-last-window-config)
   (funcall-interactively 'eyebrowse-switch-to-window-config-0)
   (funcall-interactively 'eyebrowse-rename-window-config 0 "agenda")
   :custom

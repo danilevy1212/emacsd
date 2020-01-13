@@ -20,6 +20,8 @@
         user-mail-address "daniellevymoreno@gmail.com")
 
   ;; Sent font
+  (set-language-environment "UTF-8")
+  (set-default-coding-systems 'utf-8)
   (set-face-attribute 'default nil :font "Ubuntu Mono" :height 120)
   (set-fontset-font t 'latin "Ubuntu Mono")
 
@@ -445,11 +447,6 @@
   (tooltip-mode 1)
   :hook
   (python-mode . (lambda () (require 'dap-python))))
-
-;; Eldoc in a posframe
-(use-package eldoc-box
-  :hook
-  (eldoc-mode . eldoc-box-hover-at-point-mode))
 
 (provide 'generalconf)
 
