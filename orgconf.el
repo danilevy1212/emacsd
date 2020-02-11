@@ -85,5 +85,8 @@
 ;; Init screen is agenda-view
 (add-hook 'after-init-hook (lambda() (org-agenda nil "n")) t)
 
+(setq browse-url-browser-function 'browse-url-generic
+      browse-url-generic-program "firefox")
+
 (provide 'orgconf)
 ;;; orgconf.el ends here
