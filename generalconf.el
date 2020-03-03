@@ -215,6 +215,9 @@
 
 ;; Better pdf view experience
 (use-package pdf-tools
+  :custom
+  (pdf-view-display-size 'fit-page)
+  (pdf-annot-activate-created-annotations t)
   :config
   (pdf-tools-install))
 

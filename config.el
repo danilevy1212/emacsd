@@ -55,6 +55,9 @@
 ;; web
 (load "~/.emacs.d/.config/web" nil nil)
 
+;; latex
+(load "~/.emacs.d/.config/latex" nil nil)
+
 ;;; Garbage collection optimization after startup
 ;; A large gc-cons-threshold will cause freezing and stuttering during long-term
 ;; interactive use.
