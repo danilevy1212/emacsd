@@ -227,7 +227,7 @@
   (projectile-switch-project-action #'projectile-dired)
   (projectile-completion-system 'ivy)
   (projectile-sort-order 'recently-active)
-  :bind
+  :bind-keymap
   ("C-c p" . projectile-command-map)
   :config
   (projectile-mode +1))
