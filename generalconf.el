@@ -276,7 +276,6 @@
               ("C-n" . company-select-next)
               ("C-p" . company-select-previous)
               ("<tab>" . company-complete-common-or-cycle)
-              ("<return>" . company-complete-selection)
          :map company-search-map
               ("C-p" . company-select-previous)
               ("C-n" . company-select-next))
