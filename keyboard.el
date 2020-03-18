@@ -62,7 +62,8 @@
     "k"     'kill-current-buffer
     "K"     'kill-buffer-and-window
     "t"     'vterm-other-window
-    "T"     'vterm)
+    "T"     'vterm
+    "g s"   'magit-status)
   (global-evil-leader-mode))
 
 ;; Additional matching on pairs, using %

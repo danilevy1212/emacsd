@@ -309,9 +309,7 @@
 ;; Git porcelain
 (use-package magit
   :custom
-  (magit-auto-revert-mode nil)
-  :bind
-  ("M-g s" . magit-status))
+  (magit-auto-revert-mode nil))
 
 ;; Evil-like keybinds for magit
 (use-package evil-magit

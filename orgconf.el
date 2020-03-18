@@ -42,7 +42,10 @@
                                                       org-mhe
                                                       org-rmail
                                                       org-habit
-                                                      org-checklist)))
+                                                      org-checklist))
+  (org-agenda-custom-commands '(("n" "Agenda and all TODOs"
+                                 ((alltodo "")
+                                  (agenda  ""))))))
 
 ;;; Plugins
 ;; More control over how and when tasks change state
