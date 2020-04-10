@@ -13,13 +13,15 @@
   :config
   (put 'narrow-to-page 'disabled nil)
   (put 'set-goal-column 'disabled nil)
-  (require 'org-checklist "~/.emacs.d/.config/org-checklist")
+  (require 'org-checklist)
   :custom
-  (org-todo-keywords      '((sequencep "TODO(t)" "PROGRESS(p)" "WAITING(w)" "|" "DONE(d)" "CANCELLED(c)")))
-  (org-todo-keyword-faces '(("PROGRESS" . "#E35DBF")
-                            ("WAITING" . (:foreground "white" :background "#4d4d4d" :weight bold))
-                            ("CANCELLED" . "#800000")))
-  (org-agenda-files        '("~/Dropbox/org/agenda.org"))
+  (org-todo-keywords                                '((sequencep "TODO(t)" "PROGRESS(p)" "WAITING(w)" "|" "DONE(d)" "CANCELLED(c)")))
+  (org-todo-keyword-faces                           '(("PROGRESS" . "#E35DBF")
+                                                    ("WAITING" . (:foreground "white" :background "#4d4d4d" :weight bold))
+                                                    ("CANCELLED" . "#800000")))
+  (org-directory                                    "~/Dropbox/org")
+  (org-agenda-files                                 `(,(expand-file-name "agenda.org" org-directory)))
+  (org-my-anki-file                                 (expand-file-name "anki.org" org-directory))
   (org-agenda-dim-blocked-tasks                     nil)
   (org-agenda-todo-ignore-scheduled                 'future)
   (org-agenda-tags-todo-honor-ignore-options        t)
@@ -51,7 +53,7 @@
 ;; More control over how and when tasks change state
 (use-package org-edna
   :config
-  (org-edna-load))
+  (org-edna-mode))
 
 
 ;; Switch entry to DONE when all subentries are done, to TODO otherwise.
@@ -84,12 +86,5 @@
                                                           (unless (string-equal todo-state "TODO")
                                                             (org-todo 'todo))))))))))
 
-
-;; Init screen is agenda-view
-(add-hook 'after-init-hook (lambda() (org-agenda nil "n")) t)
-
-(setq browse-url-browser-function 'browse-url-generic
-      browse-url-generic-program "firefox")
-
-(provide 'orgconf)
-;;; orgconf.el ends here
+(provide 'org-conf)
+;;; org-conf.el ends here

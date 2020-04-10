@@ -1,143 +1,16 @@
-;;; package --- summary: -*- lexical-binding:t -*-
+;;; package --- summary:
 ;;; Commentary:
 
-;;; General global configuration of Emacs + basic startup setup
+;;; General global configuration of Emacs
 
 ;;; Code:
-
-;; For debugging, uncomment:
-; (setf debug-on-error t)
-
-(eval-when-compile
-  ;; No splash screen on init
-  (setq inhibit-splash-screen t)
-
-  ;; Customize scratch buffer message
-  (setq initial-scratch-message ";; Happy hacking ^_^\n\n")
-
-  ;; Personal info
-  (setq user-full-name "Daniel Levy Moreno"
-        user-mail-address "daniellevymoreno@gmail.com")
-
-  ;; Sent font
-  (set-language-environment "UTF-8")
-  (set-default-coding-systems 'utf-8)
-  (set-face-attribute 'default nil :font "Ubuntu Mono" :height 120)
-  (set-fontset-font t 'latin "Ubuntu Mono")
-
-  ;; Link to MELPA, org and gnu repository to download extra packages
-  (require 'package)
-  (package-initialize)
-  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-  (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
-  (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/") t)
-
-  ;; bootstrap use-package
-  (unless (package-installed-p 'use-package)
-    (package-refresh-contents)
-    (package-install 'use-package)
-    (package-install 'diminish)
-    (package-install 'quelpa)
-    (package-install 'bind-key))
-
-  ;; :ensure is always set to t, thus all packages are checked to exist before loading
-  (require 'use-package-ensure)
-  (setq use-package-always-ensure t)
-
-  ;; Disable warning and error messages at the time of loading packages
-  (setq use-package-expand-minimally t))
+;;; -*- lexical-binding:t -*-
 
 ;; Compile packages for faster loading times
 (use-package auto-compile
  :config
  (auto-compile-on-load-mode)
  (auto-compile-on-save-mode))
-
-;; Setup a special file for the customize interface
-(setq custom-file "~/.emacs.d/custom/custom.el")
-(when (file-exists-p custom-file)
-  (load custom-file))
-
-;;; Sensible defaults (https://github.com/hrs/sensible-defaults.el/blob/master/sensible-defaults.el)
-;; When opening a file, start searching at the user's home directory.
-(setq default-directory "~/")
-
-;; Call DELETE-TRAILING-WHITESPACE every time a buffer is saved.
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
-
-;; When opening a file, always follow symlinks.
-(setq vc-follow-symlinks t)
-
-;; When saving a file that starts with `#!', make it executable.
-(add-hook 'after-save-hook
-	  'executable-make-buffer-file-executable-if-script-p)
-
-;; Don't assume that sentences should have two spaces after periods. This ain't a typewriter.
-(setq sentence-end-double-space nil)
-
-;; Default tabs are not used for indentation
-(setq-default indent-tabs-mode nil)
-
-;; Default tab width
-(setq-default tab-width 4)
-
-;; When saving a file in a directory that doesn't exist, offer to (recursively) create the file's parent directories.
-(add-hook 'before-save-hook
-            (lambda ()
-              (when buffer-file-name
-                (let ((dir (file-name-directory buffer-file-name)))
-                  (when (and (not (file-exists-p dir))
-                             (y-or-n-p (format "Directory %s does not exist. Create it?" dir)))
-                    (make-directory dir t))))))
-
-;; Turn on transient-mark-mode.
-(transient-mark-mode t)
-
-;; If some text is selected, and you type some text, delete the selected text and start inserting your typed text.
-(delete-selection-mode t)
-
-;; If you save a file that doesn't end with a newline,automatically append one.
-(setq require-final-newline t)
-
-;; Ask if you're sure that you want to close Emacs.
-(setq confirm-kill-emacs 'y-or-n-p)
-
-;; Add file sizes in human-readable units (KB, MB, etc) to dired buffers.
-(setq-default dired-listing-switches "-alh")
-
-;; Turn on syntax highlighting whenever possible."
-(global-font-lock-mode t)
-
-;; When something changes a file, automatically refresh the buffer containing that file so they can't get out of sync.
-(global-auto-revert-mode t)
-
-;; Visually indicate matching pairs of parentheses."
-(show-paren-mode t)
-(setq show-paren-delay 0.0)
-
-;; When you perform a problematic operation, flash the screen instead of ringing the terminal bell.
-(setq visible-bell t)
-
-;; Set the default line length to 80."
-(setq-default fill-column 80)
-
-;; When middle-clicking the mouse to yank from the clipboard, insert the text where point is, not where the mouse cursor is.
-(setq mouse-yank-at-point t)
-
-;; Make yes or no -> y or n
-(fset 'yes-or-no-p 'y-or-n-p)
-
-;; focus moves to help window
-(setq help-window-select t)
-
-;; Disable the menu bar.
-(menu-bar-mode -1)
-
-;; Disable the scrollbar.
-(scroll-bar-mode -1)
-
-;; Disable the toolbar.
-(tool-bar-mode -1)
 
 ;; Describe in minibuffer what each key does while typing
 (use-package which-key
@@ -193,7 +66,7 @@
 ;; All the icons (M-x all-the-icons-install-fonts)
 (use-package all-the-icons)
 
-;; Modeline (https://github.com/seagle0128/doom-modeline)
+;; Modeline
 (use-package doom-modeline
   :hook (after-init . doom-modeline-mode))
 
@@ -250,6 +123,7 @@
   ("M-s a" . ag-project))
 
 ;; better terminal emulation ~ special install akermu/emacs-libvterm
+;; FIXME Use emacs application framework terminal?
 (use-package vterm)
 
 ;; more helpful help screens
@@ -262,10 +136,10 @@
   (counsel-describe-function-function #'helpful-callable)
   (counsel-describe-variable-function #'helpful-variable))
 
-;; Highlight TODO, FIXME, BUG words in comments
-(use-package fic-mode
-  :hook
-  (prog-mode . fic-mode))
+;; Highlight TODO, FIXME, BUG words in comments FIXME Change to hl-mode
+(use-package hl-todo
+  :config
+  (global-hl-todo-mode +1))
 
 ;; Auto complete
 (use-package company
@@ -302,18 +176,13 @@
 
 ;; Use another frame to show error
 (use-package flycheck-posframe
-  :after flycheck
   :hook
   (flycheck-mode . flycheck-posframe-mode))
 
 ;; Git porcelain
 (use-package magit
-  :custom
-  (magit-auto-revert-mode nil))
-
-;; Evil-like keybinds for magit
-(use-package evil-magit
-  :after magit)
+  :config
+  (magit-auto-revert-mode +1))
 
 ;;; Language Server Protocol support
 (use-package lsp-mode

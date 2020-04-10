@@ -4,48 +4,41 @@
 
 ;; Start evil mode
 ;;; Code:
-(use-package evil
-  :init
-  (setq evil-want-keybinding                  nil
-        evil-search-module                    'evil-search
-        evil-vsplit-window-right              t
-        evil-indent-convert-tabs              t
-        evil-split-window-below               t
-        evil-ex-search-vim-style-regexp       t
-        evil-shift-round                      nil
-        evil-want-C-u-scroll                  t)
-  :config
-  ;; Remove highlighted sections with ctrl + l
-  (evil-define-key 'normal 'global (kbd "C-l") #'evil-ex-nohighlight)
-  ;; Universal argument mapped to M-u globally
-  (evil-define-key 'normal 'global (kbd "M-u") #'universal-argument)
-  (evil-mode 1))
 
 ;; vim-like keybindings everywhere in emacs
 (use-package evil-collection
-  :after evil
   :config
   (evil-collection-init))
+
+(use-package key-chord
+  :custom
+  (key-chord-two-keys-delay 0.25)
+  :config
+  (key-chord-mode 1)
+  (key-chord-define evil-insert-state-map  "jk" 'evil-normal-state))
+
+;; Evil-like keybinds for magit
+(use-package evil-magit
+  :after magit)
 
 ;; evil-surround
 (use-package evil-surround
   :config
   (global-evil-surround-mode 1))
 
-;; increment/decrement numbers
-(use-package evil-numbers
-  :bind*
-  (("C-c +" . 'evil-numbers/inc-at-pt)
-   ("C-c -" . 'evil-numbers/dec-at-pt)))
+;; FIXME increment/decrement numbers
+;; (use-package evil-numbers
+;;   :bind
+;;   (("C-c +" . 'evil-numbers/inc-at-pt)
+;;    ("C-c -" . 'evil-numbers/dec-at-pt)))
 
 ;; evil-commenter
 (use-package evil-commentary
   :config
   (evil-commentary-mode))
 
-;; Setting a leader key
+;; Setting a leader key FIXME: Use either general or just pure evil
 (use-package evil-leader
-  :after counsel
   :config
   (evil-leader/set-leader "<SPC>")
   (evil-leader/set-key
@@ -53,14 +46,14 @@
     "o l"   'org-store-link
     "e"     'counsel-find-file
     "E"     'find-file-other-window
-    "b"     'counsel-switch-buffer
-    "B"     'counsel-switch-buffer-other-window
+    "b b"   'counsel-switch-buffer
+    "b B"   'counsel-switch-buffer-other-window
     "r"     'counsel-recentf
     "f"     'counsel-fzf ;; Requires "fzf"
     "C-k"   'kill-buffer
     "C-S-k" 'only-current-buffer
-    "k"     'kill-current-buffer
-    "K"     'kill-buffer-and-window
+    "b d"   'kill-current-buffer
+    "b D"   'kill-buffer-and-window
     "t"     'vterm-other-window
     "T"     'vterm
     "g s"   'magit-status)
@@ -77,7 +70,8 @@
   (evil-snipe-scope 'buffer)
   :config
   (evil-snipe-mode          1)
-  (evil-snipe-override-mode 1))
+  (evil-snipe-override-mode 1)
+  )
 
 ;; Better sentence navigation
 (use-package sentence-navigation
@@ -93,7 +87,6 @@
 ;; This package provides gl and gL align operators
 ;; gl MOTION CHAR and right-align gL MOTION CHAR.
 (use-package evil-lion
-  :ensure t
   :config
   (evil-lion-mode))
 
@@ -108,8 +101,6 @@
 
 ;; Vim keys on org-mode
 (use-package evil-org
-  :ensure t
-  :after org
   :config
   (add-hook 'org-mode-hook 'evil-org-mode)
   (add-hook 'evil-org-mode-hook
@@ -125,7 +116,6 @@
 
 ;; vim-gitgutter port
 (use-package git-gutter
-  :after evil
   :custom
   (git-gutter:update-interval 1)
   :config
@@ -142,6 +132,5 @@
   ;; Mark current hunk
   (evil-define-key 'normal 'global (kbd "g h v") 'git-gutter:mark-hunk))
 
-
-(provide 'keyboard)
-;;; keyboard.el ends here
+(provide 'keybinding)
+;;; keybinding.el ends here

@@ -11,4 +11,6 @@
   :hook
   (json-mode . prettier-js-mode))
 
-;;; json.el ends here
+
+(provide 'json-conf)
+;;; json-conf.el ends here

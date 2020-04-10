@@ -37,24 +37,23 @@
    ("C-j"     . 'ivy-immediate-done)
    ("RET"     . 'ivy-alt-done)))
 
-;; Childframe for ivy buffers
-(use-package ivy-posframe
-  :after ivy
-  :custom
-  (ivy-posframe-display-functions-alist '((t . ivy-posframe-display-at-frame-bottom-window-center)))
-  :config
-  (ivy-posframe-mode +1))
-
-;; Virtual workspaces
+;; Virtual workspaces FIXME replace with centaur tabs?
 (use-package eyebrowse
-  :after evil
   :config
   (eyebrowse-mode t)
-  (eyebrowse-setup-opinionated-keys)
-  ;; (eyebrowse-setup-evil-keys) ;; Almost perfect but messes with evil commentary
-  (define-key evil-motion-state-map (kbd "gt") 'eyebrowse-next-window-config)
-  (define-key evil-motion-state-map (kbd "gT") 'eyebrowse-prev-window-config)
-  (define-key evil-motion-state-map (kbd "zx") 'eyebrowse-last-window-config)
+  (evil-define-key '(normal motion) 'global (kbd "gt") 'eyebrowse-next-window-config)
+  (evil-define-key '(normal motion) 'global (kbd "gT") 'eyebrowse-prev-window-config)
+  (evil-define-key '(normal motion) 'global (kbd "zx") 'eyebrowse-last-window-config)
+  (evil-define-key '(normal motion) 'global (kbd "M-0") 'eyebrowse-switch-to-window-config-0)
+  (evil-define-key '(normal motion) 'global (kbd "M-1") 'eyebrowse-switch-to-window-config-1)
+  (evil-define-key '(normal motion) 'global (kbd "M-2") 'eyebrowse-switch-to-window-config-2)
+  (evil-define-key '(normal motion) 'global (kbd "M-3") 'eyebrowse-switch-to-window-config-3)
+  (evil-define-key '(normal motion) 'global (kbd "M-4") 'eyebrowse-switch-to-window-config-4)
+  (evil-define-key '(normal motion) 'global (kbd "M-5") 'eyebrowse-switch-to-window-config-5)
+  (evil-define-key '(normal motion) 'global (kbd "M-6") 'eyebrowse-switch-to-window-config-6)
+  (evil-define-key '(normal motion) 'global (kbd "M-7") 'eyebrowse-switch-to-window-config-7)
+  (evil-define-key '(normal motion) 'global (kbd "M-8") 'eyebrowse-switch-to-window-config-8)
+  (evil-define-key '(normal motion) 'global (kbd "M-9") 'eyebrowse-switch-to-window-config-9)
   (funcall-interactively 'eyebrowse-switch-to-window-config-0)
   (funcall-interactively 'eyebrowse-rename-window-config 0 "agenda")
   :custom
