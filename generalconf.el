@@ -33,12 +33,9 @@
   (sp-pair "$" "$" :actions '(wrap)))
 
 ;; show relative numbers on files
-(use-package prog-mode
-  :ensure nil
-  :config
-  (add-hook 'prog-mode-hook
-            '(lambda ()
-               (setq display-line-numbers 'relative))))
+(add-hook 'prog-mode-hook
+          '(lambda ()
+             (setq display-line-numbers 'relative)))
 
 ;; Don't show minor modes
 (use-package minions
@@ -66,7 +63,7 @@
 ;; All the icons (M-x all-the-icons-install-fonts)
 (use-package all-the-icons)
 
-;; Modeline
+;; Modeline BUG Requires gitlab account through ssh
 (use-package doom-modeline
   :hook (after-init . doom-modeline-mode))
 

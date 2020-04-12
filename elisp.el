@@ -3,11 +3,7 @@
 ;;; -*- lexical-binding:t -*-
 
 ;;; Code:
-(use-package elisp-mode
-  :after helpful
-  :ensure nil
-  :bind
-  ("C-c C-d" . #'helpful-at-point))
+(add-hook 'emacs-lisp-mode-hook (lambda ()
+                                  (evil-define-key 'normal 'local (kbd "C-c C-d") #'helpful-at-point)))
 
-(provide 'elisp)
 ;;; elisp.el ends here

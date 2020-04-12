@@ -198,34 +198,53 @@
 
 ;;; PACKAGE SYSTEM CORE
 ;; FIXME Use straight el here
-;; Link to MELPA, org and gnu repository to download extra packages
-(require 'package)
-(package-initialize)
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
-(add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/") t)
+;; straight.el used by default
+(setq straight-use-package-by-default t)
+
+;; use ssh for downloading packages
+(setq straight-vc-git-default-protocol 'ssh)
+
+;; bootstrap straight.el
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 5))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
 
 ;; load prefers the newest version of a file
 (setq load-prefer-newer t)
 
+;; install use-package
+(straight-use-package 'use-package)
+
 ;; bootstrap use-package
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package)
-  (package-install 'diminish)
-  (package-install 'quelpa)
-  (package-install 'bind-key))
+;; (unless (package-installed-p 'use-package)
+;;   (package-refresh-contents)
+;;   (package-install 'use-package)
+;;   (package-install 'diminish)
+;;   (package-install 'quelpa)
+;;   (package-install 'bind-key))
 
 ;; :ensure is always set to t, thus all packages are checked to exist before loading
-(require 'use-package-ensure)
-(setq use-package-always-ensure t)
+;; (require 'use-package-ensure)
+;; (setq use-package-always-ensure t)
 
 ;; Disable warning and error messages at the time of loading packages
 (setq use-package-expand-minimally t)
 
 ;;; KEYBINDING CORE
 ;; Framework for all keybindings
-; (use-package general)
+;; FIXME
+;; (use-package general)
+;; FIXME
+;; (use-package hydra)
 
 ;; Vim mode for emacs
 (use-package evil
@@ -247,18 +266,18 @@
 
 ;; FIXME Modules should be loaded in some other way, maybe through env variables?
 
-;; Global keybinding system
-(load-config "keybinding")
+;; Editor FIXME Rename
+(load-config "my-editor")
 
-;;  Look and feel
+;; Look and feel FIXME
 (load-config "generalconf")
 
-;; navigation preferences
+;; Navigation preferences
 (load-config "navigation")
 
 ;;; Programming languages / super modes
 ;; Org
-(load-config "org-conf")
+(load-config "my-org")
 
 ;; vimscript + vimrc syntax highlight
 (load-config "vim")

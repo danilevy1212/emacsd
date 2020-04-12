@@ -111,14 +111,14 @@
     ((sequencep "TODO(t)" "PROGRESS(p)" "WAITING(w)" "|" "DONE(d)" "CANCELLED(c)"))))
  '(package-selected-packages
    (quote
-    (ivy lsp-mode flycheck gcmh gchm gchm-mode ghcm-mode yaml-mode which-key wgrep web-mode vterm vimrc-mode use-package smartparens sentence-navigation rainbow-delimiters quelpa projectile prettier-js pdf-tools org-edna nyan-mode minions lsp-ui key-chord json-mode ivy-posframe hl-todo highlight-indent-guides helpful haskell-mode git-gutter flycheck-posframe fic-mode eyebrowse evil-visualstar evil-vimish-fold evil-surround evil-snipe evil-org evil-numbers evil-matchit evil-magit evil-lion evil-leader evil-expat evil-easymotion evil-commentary evil-collection elpy doom-themes doom-modeline diminish dap-mode counsel company-lsp company-box company-auctex auto-dictionary auto-compile auctex-latexmk anki-editor ag)))
+    (company all-the-icons ivy lsp-mode flycheck gcmh gchm gchm-mode ghcm-mode yaml-mode which-key wgrep web-mode vterm vimrc-mode use-package smartparens sentence-navigation rainbow-delimiters quelpa projectile prettier-js pdf-tools org-edna nyan-mode minions lsp-ui key-chord json-mode ivy-posframe hl-todo highlight-indent-guides helpful haskell-mode git-gutter flycheck-posframe fic-mode eyebrowse evil-visualstar evil-vimish-fold evil-surround evil-snipe evil-org evil-numbers evil-matchit evil-magit evil-lion evil-leader evil-expat evil-easymotion evil-commentary evil-collection elpy doom-themes doom-modeline diminish dap-mode counsel company-lsp company-box company-auctex auto-dictionary auto-compile auctex-latexmk anki-editor ag)))
  '(pdf-annot-activate-created-annotations t t)
  '(pdf-view-display-size (quote fit-page))
  '(projectile-completion-system (quote ivy) t)
  '(projectile-sort-order (quote recently-active) t)
  '(projectile-switch-project-action (quote projectile-dired) t)
- '(python-shell-interpreter "ipython" t)
- '(python-shell-interpreter-args "-i --simple-prompt" t)
+ '(python-shell-interpreter "ipython")
+ '(python-shell-interpreter-args "-i --simple-prompt")
  '(reftex-cite-prompt-optional-args t t)
  '(web-mode-attr-indent-offset 2 t)
  '(web-mode-block-padding 2 t)
