@@ -6,31 +6,17 @@
 ;;; Code:
 ;;; -*- lexical-binding:t -*-
 
-;; Compile packages for faster loading times
-(use-package auto-compile
- :config
- (auto-compile-on-load-mode)
- (auto-compile-on-save-mode))
-
-;; Describe in minibuffer what each key does while typing
-(use-package which-key
-  :custom
-  (which-key-idle-delay 0.33)
-  (which-key-allow-evil-operators t)
-  (which-key-popup-type 'minibuffer)
-  :config
-  (which-key-mode))
-
 ;; autoclose paranthesis
+;; FIXME Part of core.el
 (use-package smartparens
-  :hook
-  (after-init . smartparens-global-mode)
   :config
   (require 'smartparens-config)
   (sp-pair "=" "=" :actions '(wrap))
   (sp-pair "+" "+" :actions '(wrap))
   (sp-pair "<" ">" :actions '(wrap))
-  (sp-pair "$" "$" :actions '(wrap)))
+  (sp-pair "$" "$" :actions '(wrap))
+  (add-hook
+   'after-init-hook  #'smartparens-global-mode))
 
 ;; show relative numbers on files
 (add-hook 'prog-mode-hook
@@ -53,6 +39,7 @@
   :config
   (nyan-mode t))
 
+;; FIXME Part of core.el
 ;; Theme
 (use-package doom-themes
   :config
@@ -60,17 +47,19 @@
   (doom-themes-visual-bell-config)
   (doom-themes-org-config))
 
+;; FIXME Part of core.el
 ;; All the icons (M-x all-the-icons-install-fonts)
 (use-package all-the-icons)
 
 ;; Modeline BUG Requires gitlab account through ssh
 (use-package doom-modeline
-  :hook (after-init . doom-modeline-mode))
+  :config (add-hook 'after-init-hook #'doom-modeline-mode))
 
+;; FIXME Part of core.el
 ;; Rainbow Parentheses
 (use-package rainbow-delimiters
-  :hook
-  (prog-mode . rainbow-delimiters-mode))
+  :config
+  (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
 
 ;; Highlighting indentation
 (use-package highlight-indent-guides
@@ -80,8 +69,7 @@
   (highlight-indent-guides-auto-character-face-perc 20)
   (highlight-indent-guides-method 'character)
   (highlight-indent-guides-responsive 'stack)
-  :hook
-  (prog-mode . highlight-indent-guides-mode))
+  (add-hook'prog-mode-hook #'highlight-indent-guides-mode))
 
 ;; Better pdf view experience
 (use-package pdf-tools
@@ -91,15 +79,17 @@
   :config
   (pdf-tools-install))
 
+;; FIXME Part of core.el
 ;; Project management
 (use-package projectile
   :custom
   (projectile-switch-project-action #'projectile-dired)
   (projectile-completion-system 'ivy)
   (projectile-sort-order 'recently-active)
-  :bind-keymap
-  ("C-c p" . projectile-command-map)
+  (projectile-cache-file (expand-file-name "projectile.cache" *my-cache-dir*))
+  (projectile-known-projects-file (expand-file-name "projectile-bookmarks.eld" *my-cache-dir*))
   :config
+  (evil-define-key 'normal 'global (kbd "C-c p") #'projectile-command-map)
   (projectile-mode +1))
 
 ;; Interactive wgrep buffer
@@ -117,12 +107,22 @@
   (ag-reuse-buffers t)
   (ag-reuse-window t)
   :bind
-  ("M-s a" . ag-project))
+  ("M-s a" . #'ag-project))
 
 ;; better terminal emulation ~ special install akermu/emacs-libvterm
 ;; FIXME Use emacs application framework terminal?
-(use-package vterm)
+(use-package vterm
+  :straight
+  (:no-byte-compile t :flavor melpa)
+  :general
+  (my-leader-def
+    :states '(normal motion)
+    :keymaps 'override
+    "t"      '(:ignore t :wk "[t]erminal")
+    "t t"    #'vterm-other-window
+    "t T"    #'vterm))
 
+;; FIXME Part of core.el
 ;; more helpful help screens
 (use-package helpful
   :bind
@@ -144,12 +144,12 @@
   (after-init . global-company-mode)
   :commands company-complete-common company-manual-begin company-grab-line
   :bind (:map company-active-map
-              ("C-n" . company-select-next)
-              ("C-p" . company-select-previous)
-              ("<tab>" . company-complete-common-or-cycle)
+              ("C-n" . #'company-select-next)
+              ("C-p" . #'company-select-previous)
+              ("<tab>" . #'company-complete-common-or-cycle)
          :map company-search-map
-              ("C-p" . company-select-previous)
-              ("C-n" . company-select-next))
+              ("C-p" . #'company-select-previous)
+              ("C-n" . #'company-select-next))
   :custom
   (company-begin-commands '(self-insert-command))
   (company-minimum-prefix-length 1)
@@ -176,10 +176,21 @@
   :hook
   (flycheck-mode . flycheck-posframe-mode))
 
+;; FIXME Part of core.el
 ;; Git porcelain
 (use-package magit
   :config
-  (magit-auto-revert-mode +1))
+  (magit-auto-revert-mode +1)
+  :general
+  (my-leader-def
+    :states '(normal motion)
+    :keymaps 'override
+    "g"   '(:ignore t :wk "[g]it")
+    "g s" #'magit-status))
+
+;; FIXME Part of core.el
+;; Evil-like keybinds for magit
+(use-package evil-magit)
 
 ;;; Language Server Protocol support
 (use-package lsp-mode

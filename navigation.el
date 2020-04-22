@@ -5,6 +5,9 @@
 ;;; General navigation accross files and buffers
 
 ;;; Code:
+;; FIXME ALL OF THIS; PART OF CORE.EL
+
+
 ;; General search engine
 (use-package ivy
   :custom
@@ -13,14 +16,22 @@
   :config
   (ivy-mode +1))
 
+;; TODO https://github.com/asok/all-the-icons-ivy?
+
 ;; Replace emacs internal search functions with friendlier ones and add some new ones
 (use-package counsel
   :after ivy
+  :general
+  (my-leader-def
+    :states '(normal motion)
+    :keymaps 'override
+    "f r" #'counsel-recentf
+    "b b" #'counsel-switch-buffer
+    "b B" #'counsel-switch-buffer-other-window)
   :config
-  (counsel-mode 1)
+  (counsel-mode +1)
   :bind*
   (("M-s r"   . 'ivy-resume)
-   ("M-x"     . 'counsel-M-x)
    ("<f1> l"  . 'counsel-find-library)
    ("<f2> i"  . 'counsel-info-lookup-symbol)
    ("<f2> u"  . 'counsel-unicode-char)
@@ -30,12 +41,13 @@
    ("M-y"     . 'counsel-yank-pop)
    ("M-o a"   . 'counsel-ag)
    ("C-x l"   . 'counsel-locate)
-   ("C-M-r"   . 'counsel-recentf)
    :map ivy-minibuffer-map
    ("C-w"     . 'ivy-backward-kill-word)
    ("C-k"     . 'ivy-kill-line)
    ("C-j"     . 'ivy-immediate-done)
    ("RET"     . 'ivy-alt-done)))
+
+;; TODO Use AMX?
 
 ;; Virtual workspaces FIXME replace with centaur tabs?
 (use-package eyebrowse

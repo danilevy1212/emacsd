@@ -7,13 +7,18 @@
 ;;; Code:
 ;; Org basic defaults
 (use-package org
-  ;; :after doom-modeline
-  :hook
-  (org-mode . auto-revert-mode)
+  :straight org-plus-contrib (:no-byte-compile t)
+  :general
+  (my-leader-def
+    :states '(normal motion)
+    :keymaps 'override
+    "o" '(:ignore t :wk "[o]rg")
+    "o a" #'org-agenda
+    "o l" #'org-store-link)
   :config
   (put 'narrow-to-page 'disabled nil)
   (put 'set-goal-column 'disabled nil)
-  (require 'org-checklist)
+  (add-hook 'org-mode-hook 'auto-revert-mode)
   :custom
   (org-todo-keywords                                '((sequencep "TODO(t)" "PROGRESS(p)" "WAITING(w)" "|" "DONE(d)" "CANCELLED(c)")))
   (org-todo-keyword-faces                           '(("PROGRESS" . "#E35DBF")
@@ -21,7 +26,6 @@
                                                     ("CANCELLED" . "#800000")))
   (org-directory                                    "~/Dropbox/org")
   (org-agenda-files                                 `(,(expand-file-name "agenda.org" org-directory)))
-  (org-my-anki-file                                 (expand-file-name "anki.org" org-directory))
   (org-agenda-dim-blocked-tasks                     nil)
   (org-agenda-todo-ignore-scheduled                 'future)
   (org-agenda-tags-todo-honor-ignore-options        t)
@@ -29,21 +33,21 @@
   (org-agenda-skip-deadline-prewarning-if-scheduled t)
   (org-agenda-skip-scheduled-if-deadline-is-shown   t)
   (org-agenda-span                                  'fortnight)
-  (org-capture-templates                            '(("e" "Quick errands" entry (file+headline "~/Dropbox/org/agenda.org" "Quick errands") "* TODO")))
+  (org-capture-templates                            `(("e" "Quick errands" entry (file+headline ,(car org-agenda-files) "Quick errands") "* TODO")))
   (org-agenda-window-setup                          'current-window)
   (org-agenda-skip-scheduled-if-done                nil)
   (org-default-priority                             ?C)
-  (org-modules                                      '(org-w3m
+  (org-modules                                      '(
+                                                      ;; org-w3m
                                                       org-habit
-                                                      org-bbdb
-                                                      org-bibtex
-                                                      org-docview
-                                                      org-gnus
-                                                      org-info
-                                                      org-irc
-                                                      org-mhe
-                                                      org-rmail
-                                                      org-habit
+                                                      ;; org-bbdb
+                                                      ;; org-bibtex
+                                                      ;; org-docview
+                                                      ;; org-gnus
+                                                      ;; org-info
+                                                      ;; org-irc
+                                                      ;; org-mhe
+                                                      ;; org-rmail
                                                       org-checklist))
   (org-agenda-custom-commands '(("n" "Agenda and all TODOs"
                                  ((alltodo "")
@@ -85,6 +89,15 @@
                                                               (org-todo 'done))
                                                           (unless (string-equal todo-state "TODO")
                                                             (org-todo 'todo))))))))))
+;; Vim keys on org-mode
+(use-package evil-org
+  :config
+  (defun my-org-agenda-hook ()
+    (require 'evil-org-agenda)
+    (evil-org-agenda-set-keys))
+  (add-hook 'org-mode-hook 'evil-org-mode)
+  (add-hook 'evil-org-mode-hook 'evil-org-set-key-theme)
+  (add-hook 'org-agenda-mode-hook 'my-org-agenda-hook))
 
-(provide 'org-conf)
-;;; org-conf.el ends here
+(provide 'my-org)
+;;; my-org.el ends her'e

@@ -50,3 +50,9 @@ flycheck_*.el
 # straight
 transient/
 straight/
+
+# Backup
+backup/
+
+# Cache
+cache/

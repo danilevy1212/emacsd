@@ -14,9 +14,28 @@
       file-name-handler-alist nil)
 
 ;; Config directory, all other dirs are relative to this
-(defvar *my-config-dir* (file-name-directory (or load-file-name (concat user-emacs-directory "config/"))))
-(defvar *my-site-lisp-dir* (concat *my-config-dir* "site-lisp/"))
-(defvar *my-lisp-dir* (concat *my-config-dir* "lisp/"))
+(defconst *my-site-lisp-dir* (concat user-emacs-directory "site-lisp/"))
+(defconst *my-lisp-dir* (concat user-emacs-directory "lisp/"))
+(defconst *my-cache-dir* (concat user-emacs-directory "cache/"))
+(defconst *my-backup-dir* (concat user-emacs-directory "backup/"))
+
+;; Create the cache dir
+(when (not (file-accessible-directory-p *my-cache-dir*))
+  (make-directory *my-cache-dir*))
+
+;; create a centralized backup directory
+(when (not (file-accessible-directory-p *my-backup-dir*))
+  (make-directory *my-backup-dir*))
+
+;; setup backups directory
+(setq backup-directory-alist `(("." . ,*my-backup-dir*))
+      make-backup-files t
+      backup-by-copying t
+      version-control t
+      kept-old-versions 2
+      kept-new-versions 6
+      auto-save-default t
+      delete-old-versions t)
 
 ;; Load my custom scripts and downloaded scripts to emacs
 (setq load-path (append load-path `(,*my-site-lisp-dir* ,*my-lisp-dir*)))
@@ -86,19 +105,129 @@
 ;; When middle-clicking the mouse to yank from the clipboard, insert the text where point is, not where the mouse cursor is.
 (setq mouse-yank-at-point t)
 
-;; Adopt a sneaky garbage collection strategy of waiting until idle time to
-;; collect; staving off the collector while the user is working.
+;; Garbage collection
 (require 'gcmh)
 (add-hook 'pre-command-hook (gcmh-mode +1))
 (with-eval-after-load 'gcmh
-  (setq gcmh-idle-delay 10
-        gcmh-high-cons-threshold 16777216
-        gcmh-verbose t
-        gc-cons-percentage 0.1)
-  (add-hook 'focus-out-hook #'gcmh-idle-garbage-collect))
+  (defun my-garbage-collecting-strategy-after-init-hook ()
+    "Adopt a sneaky garbage collection strategy of waiting until idle time to collect staving off the collector while the user is working."
+    (setq gcmh-idle-delay 10
+          gcmh-high-cons-threshold 16777216
+          gcmh-verbose nil
+          gc-cons-percentage 0.1
+          file-name-handler-alist last-file-name-handler-alist))
+  (add-hook 'focus-out-hook #'gcmh-idle-garbage-collect)
+  (add-hook 'after-init-hook #'my-garbage-collecting-strategy-after-init-hook))
 
 ;;; Load my Elisp utils
 (load (concat *my-lisp-dir* "+functions") nil nil)
+
+;;; PACKAGE SYSTEM CORE
+;; straight.el used by default
+(setq straight-use-package-by-default t)
+
+;; use ssh for downloading packages
+(setq straight-vc-git-default-protocol 'ssh)
+
+;; bootstrap straight.el
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 5))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
+
+;; load prefers the newest version of a file
+(setq load-prefer-newer t)
+
+;; install use-package
+(straight-use-package 'use-package)
+
+;; Disable warning and error messages at the time of loading packages
+(setq use-package-expand-minimally t)
+
+;; Auto-compile emacslisp
+(use-package auto-compile
+  :config
+  (auto-compile-on-save-mode)
+  ;; FIXME Uncomment once setup is a bit more stable
+  ;; (auto-compile-on-load-mode)
+  )
+
+;;; KEYBINDING CORE
+;; Leader key
+(defvar *my-leader-key* "SPC" "Keymap for \"leader key\" shortcuts.")
+
+;; Local leader key
+(defvar *my-local-leader-key* "SPC SPC" "Keymap for \"local leader key\" shortcuts.")
+
+;; (defvar *my-local-leader-key* (concat *my-leader-key* "m") "Keymap for \"local leader key\" shortcuts.")
+;; Framework for all keybindings
+;; FIXME
+(use-package general
+  :config
+  ;; Advise define-key to automatically unbind keys when necessary.
+  (general-auto-unbind-keys)
+
+  ;; Definer for global leader keybindings
+  (general-create-definer my-leader-def :prefix (symbol-value '*my-leader-key*))
+
+  ;; Some default bindings (using builtins)
+  (my-leader-def
+    :states '(normal motion visual)
+    :keymaps 'override
+    "f"      '(:ignore t :wk "[f]ile")
+    "f f"    #'find-file
+    "f F"    #'find-file-other-window
+    "f y"    #'yank-buffer-filename
+    "f p"    `((lambda () (interactive)
+                (find-file ,user-emacs-directory)) :wk "private config")
+    "b"      '(:ignore t :wk "[b]uffer")
+    "b d"    #'kill-current-buffer
+    "w"      '(:ignore t :wk "[w]indow")
+    "w C"    #'kill-buffer-and-window)
+
+  ;; Definer for local leader keybindings
+  (general-create-definer my-local-leader-def :prefix (symbol-value '*my-local-leader-key*))
+
+  ;; leader m for mode specific bindings (a la spacemacs)
+  (my-local-leader-def
+    :states '(normal motion visual)
+    :keymaps 'override
+    "" '(:ignore t :wk "[SPC]ific to local/mode")))
+
+;; FIXME
+;; (use-package hydra)
+
+;; Vim mode for emacs
+(use-package evil
+  :init
+  (setq evil-want-keybinding                  nil
+        evil-search-module                    'evil-search
+        evil-vsplit-window-right              t
+        evil-indent-convert-tabs              t
+        evil-split-window-below               t
+        evil-ex-search-vim-style-regexp       t
+        evil-shift-round                      nil
+        evil-want-C-u-scroll                  t)
+  :general
+  (:states 'normal :keymaps 'override
+           ;; Remove highlighted sections with ctrl + l
+           "C-l" #'evil-ex-nohighlight
+           ;; Universal argument mapped to M-u globally
+           "M-u" #'universal-argument)
+  (my-leader-def
+    :states '(normal motion)
+    :keymaps 'override
+    "w c"    '#'evil-quit)
+  :config
+  (evil-mode +1))
 
 ;;; PRESENTATION CORE
 ;; Get that ugly thing out of my sight
@@ -196,73 +325,33 @@
 ;; focus moves to help window
 (setq help-window-select t)
 
-;;; PACKAGE SYSTEM CORE
-;; FIXME Use straight el here
-;; straight.el used by default
-(setq straight-use-package-by-default t)
-
-;; use ssh for downloading packages
-(setq straight-vc-git-default-protocol 'ssh)
-
-;; bootstrap straight.el
-(defvar bootstrap-version)
-(let ((bootstrap-file
-       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
-      (bootstrap-version 5))
-  (unless (file-exists-p bootstrap-file)
-    (with-current-buffer
-        (url-retrieve-synchronously
-         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
-         'silent 'inhibit-cookies)
-      (goto-char (point-max))
-      (eval-print-last-sexp)))
-  (load bootstrap-file nil 'nomessage))
-
-;; load prefers the newest version of a file
-(setq load-prefer-newer t)
-
-;; install use-package
-(straight-use-package 'use-package)
-
-;; bootstrap use-package
-;; (unless (package-installed-p 'use-package)
-;;   (package-refresh-contents)
-;;   (package-install 'use-package)
-;;   (package-install 'diminish)
-;;   (package-install 'quelpa)
-;;   (package-install 'bind-key))
-
-;; :ensure is always set to t, thus all packages are checked to exist before loading
-;; (require 'use-package-ensure)
-;; (setq use-package-always-ensure t)
-
-;; Disable warning and error messages at the time of loading packages
-(setq use-package-expand-minimally t)
-
-;;; KEYBINDING CORE
-;; Framework for all keybindings
-;; FIXME
-;; (use-package general)
-;; FIXME
-;; (use-package hydra)
-
-;; Vim mode for emacs
-(use-package evil
-  :init
-  (setq evil-want-keybinding                  nil
-        evil-search-module                    'evil-search
-        evil-vsplit-window-right              t
-        evil-indent-convert-tabs              t
-        evil-split-window-below               t
-        evil-ex-search-vim-style-regexp       t
-        evil-shift-round                      nil
-        evil-want-C-u-scroll                  t)
+;; Describe what each key does while typing
+(use-package which-key
+  :custom
+  (which-key-idle-delay 0.1)
+  (which-key-idle-secondary-delay 0.05)
+  (which-key-show-early-on-C-h t)
+  (which-key-allow-evil-operators t)
+  (which-key-popup-type 'side-window)
+  (which-key-side-window-location '(bottom right))
+  (which-key-show-prefix t)
+  (which-key-show-remaining-keys t)
   :config
-  ;; Remove highlighted sections with ctrl + l
-  (evil-define-key 'normal 'global (kbd "C-l") #'evil-ex-nohighlight)
-  ;; Universal argument mapped to M-u globally
-  (evil-define-key 'normal 'global (kbd "M-u") #'universal-argument)
-  (evil-mode 1))
+  (my-local-leader-def
+    :states '(normal motion)
+    :keymaps 'override
+    "h"     '(:ignore t :wk "[h]elp")
+    "h k"   '(:ignore t :wk "[k]eybinds")
+    "h k M" #'which-key-show-full-major-mode
+    "h k m" #'which-key-show-minor-mode-keymap
+    "h k t" #'which-key-show-top-level
+    "h k k" #'which-key-show-full-keymap)
+  (which-key-mode))
+
+;;; UTILS CORE
+(use-package xref
+  :custom
+  (xref-prompt-for-identifier nil))
 
 ;; FIXME Modules should be loaded in some other way, maybe through env variables?
 

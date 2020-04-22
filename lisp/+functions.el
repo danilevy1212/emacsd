@@ -28,8 +28,8 @@
   "Yank current buffer's filename to the kill ring, else return nil."
   (interactive)
   (let ((path (buffer-file-name (current-buffer))))
-    (message "%s" (when path
-		    (kill-new path)))))
+    (message "Inserted in kill ring: %s" (when path
+                                           (kill-new path)))))
 
 ;;;###autoload
 (defun my/create-directories-recursively ()
@@ -45,7 +45,7 @@
 ;;;###autoload
 (defun load-config (filename)
   "Load FILENAME inside the config directory."
-  (load (concat *my-config-dir* filename) nil nil))
+  (load (concat user-emacs-directory filename) nil nil))
 
 (provide '+functions)
 ;;; +functions.el ends here

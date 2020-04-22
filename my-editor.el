@@ -5,6 +5,9 @@
 ;; Start evil mode
 ;;; Code:
 
+;; FIXME Make this part of core.el
+
+
 ;; vim-like keybindings everywhere in emacs
 (use-package evil-collection
   :config
@@ -16,10 +19,6 @@
   :config
   (key-chord-mode 1)
   (key-chord-define evil-insert-state-map  "jk" 'evil-normal-state))
-
-;; Evil-like keybinds for magit
-(use-package evil-magit
-  :after magit)
 
 ;; evil-surround
 (use-package evil-surround
@@ -36,28 +35,6 @@
 (use-package evil-commentary
   :config
   (evil-commentary-mode))
-
-;; Setting a leader key FIXME: Use either general or just pure evil
-(use-package evil-leader
-  :config
-  (evil-leader/set-leader "<SPC>")
-  (evil-leader/set-key
-    "o a"   'org-agenda
-    "o l"   'org-store-link
-    "e"     'counsel-find-file
-    "E"     'find-file-other-window
-    "b b"   'counsel-switch-buffer
-    "b B"   'counsel-switch-buffer-other-window
-    "r"     'counsel-recentf
-    "f"     'counsel-fzf ;; Requires "fzf"
-    "C-k"   'kill-buffer
-    "C-S-k" 'only-current-buffer
-    "b d"   'kill-current-buffer
-    "b D"   'kill-buffer-and-window
-    "t"     'vterm-other-window
-    "T"     'vterm
-    "g s"   'magit-status)
-  (global-evil-leader-mode))
 
 ;; Additional matching on pairs, using %
 (use-package evil-matchit
@@ -98,16 +75,6 @@
 (use-package evil-visualstar
   :config
   (global-evil-visualstar-mode))
-
-;; Vim keys on org-mode
-(use-package evil-org
-  :config
-  (add-hook 'org-mode-hook 'evil-org-mode)
-  (add-hook 'evil-org-mode-hook
-            '(lambda ()
-              (evil-org-set-key-theme)))
-  (require 'evil-org-agenda)
-  (evil-org-agenda-set-keys))
 
 ;; Folding
 (use-package evil-vimish-fold
