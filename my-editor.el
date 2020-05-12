@@ -7,48 +7,11 @@
 
 ;; FIXME Make this part of core.el
 
-
-;; vim-like keybindings everywhere in emacs
-(use-package evil-collection
-  :config
-  (evil-collection-init))
-
-(use-package key-chord
-  :custom
-  (key-chord-two-keys-delay 0.25)
-  :config
-  (key-chord-mode 1)
-  (key-chord-define evil-insert-state-map  "jk" 'evil-normal-state))
-
-;; evil-surround
-(use-package evil-surround
-  :config
-  (global-evil-surround-mode 1))
-
 ;; FIXME increment/decrement numbers
 ;; (use-package evil-numbers
 ;;   :bind
 ;;   (("C-c +" . 'evil-numbers/inc-at-pt)
 ;;    ("C-c -" . 'evil-numbers/dec-at-pt)))
-
-;; evil-commenter
-(use-package evil-commentary
-  :config
-  (evil-commentary-mode))
-
-;; Additional matching on pairs, using %
-(use-package evil-matchit
- :config
- (global-evil-matchit-mode 1))
-
-;; Evil Snipe, move the cursor more precisely!
-(use-package evil-snipe
-  :custom
-  (evil-snipe-scope 'buffer)
-  :config
-  (evil-snipe-mode          1)
-  (evil-snipe-override-mode 1)
-  )
 
 ;; Better sentence navigation
 (use-package sentence-navigation

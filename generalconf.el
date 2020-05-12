@@ -48,12 +48,13 @@
   (doom-themes-org-config))
 
 ;; FIXME Part of core.el
-;; All the icons (M-x all-the-icons-install-fonts)
-(use-package all-the-icons)
-
 ;; Modeline BUG Requires gitlab account through ssh
 (use-package doom-modeline
-  :config (add-hook 'after-init-hook #'doom-modeline-mode))
+  :custom
+  (doom-modeline-modal-icon nil)
+  :config
+  (add-hook 'after-init-hook #'doom-modeline-mode))
+
 
 ;; FIXME Part of core.el
 ;; Rainbow Parentheses
@@ -61,36 +62,34 @@
   :config
   (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
 
-;; Highlighting indentation
-(use-package highlight-indent-guides
-  :custom
-  (highlight-indent-guides-auto-odd-face-perc 15)
-  (highlight-indent-guides-auto-even-face-perc 15)
-  (highlight-indent-guides-auto-character-face-perc 20)
-  (highlight-indent-guides-method 'character)
-  (highlight-indent-guides-responsive 'stack)
-  (add-hook'prog-mode-hook #'highlight-indent-guides-mode))
-
 ;; Better pdf view experience
 (use-package pdf-tools
   :custom
   (pdf-view-display-size 'fit-page)
   (pdf-annot-activate-created-annotations t)
-  :config
-  (pdf-tools-install))
+  ;; :config
+  ;; (pdf-tools-install)
+  )
 
 ;; FIXME Part of core.el
 ;; Project management
 (use-package projectile
   :custom
   (projectile-switch-project-action #'projectile-dired)
-  (projectile-completion-system 'ivy)
+  (projectile-completion-system 'default)
   (projectile-sort-order 'recently-active)
   (projectile-cache-file (expand-file-name "projectile.cache" *my-cache-dir*))
   (projectile-known-projects-file (expand-file-name "projectile-bookmarks.eld" *my-cache-dir*))
   :config
-  (evil-define-key 'normal 'global (kbd "C-c p") #'projectile-command-map)
-  (projectile-mode +1))
+  (projectile-mode +1)
+  :general
+  (my-leader-def
+    :keymaps 'override
+    :states  '(normal motion)
+    ;; "p"     '(:prefix-map projectile-command-map :wk "[p]rojectile")
+    "p"     '(:ignore t :wk "[p]rojectile")
+    "p p"   '((lambda () (interactive) (projectile-switch-project)) :wk "[p]rojects")))
+
 
 ;; Interactive wgrep buffer
 (use-package wgrep
@@ -114,13 +113,25 @@
 (use-package vterm
   :straight
   (:no-byte-compile t :flavor melpa)
-  :general
+  :config
+
+  ;; FIXME Work on this.
+  ;; (setq display-buffer-alist
+  ;;       '(("vterm"
+  ;;          (display-buffer-in-side-window)
+  ;;          (window-height . 0.25)
+  ;;          (side . bottom)
+  ;;          (slot . -1))))
+
+
   (my-leader-def
     :states '(normal motion)
     :keymaps 'override
     "t"      '(:ignore t :wk "[t]erminal")
     "t t"    #'vterm-other-window
-    "t T"    #'vterm))
+    "t T"    #'vterm)
+  ;;FIXME change `vterm-exit-functions' to use `kill-buffer-and-window' if more than one window with `count-windows'
+  )
 
 ;; FIXME Part of core.el
 ;; more helpful help screens
@@ -141,15 +152,15 @@
 ;; Auto complete
 (use-package company
   :hook
-  (after-init . global-company-mode)
+  '(after-init . global-company-mode)
   :commands company-complete-common company-manual-begin company-grab-line
-  :bind (:map company-active-map
-              ("C-n" . #'company-select-next)
-              ("C-p" . #'company-select-previous)
-              ("<tab>" . #'company-complete-common-or-cycle)
-         :map company-search-map
-              ("C-p" . #'company-select-previous)
-              ("C-n" . #'company-select-next))
+  ;; :bind  (:map company-active-map
+        ;;       ("C-n" . #'company-select-next)
+        ;;       ("C-p" . #'company-select-previous)
+        ;;       ("<tab>" . #'company-complete-common-or-cycle)
+        ;;  :map company-search-map
+        ;;       ("C-p" . #'company-select-previous)
+        ;;       ("C-n" . #'company-select-next))
   :custom
   (company-begin-commands '(self-insert-command))
   (company-minimum-prefix-length 1)
