@@ -40,21 +40,12 @@
   (nyan-mode t))
 
 ;; FIXME Part of core.el
-;; Theme
-(use-package doom-themes
-  :config
-  (load-theme 'doom-one t)
-  (doom-themes-visual-bell-config)
-  (doom-themes-org-config))
-
-;; FIXME Part of core.el
 ;; Modeline BUG Requires gitlab account through ssh
 (use-package doom-modeline
   :custom
   (doom-modeline-modal-icon nil)
   :config
   (add-hook 'after-init-hook #'doom-modeline-mode))
-
 
 ;; FIXME Part of core.el
 ;; Rainbow Parentheses

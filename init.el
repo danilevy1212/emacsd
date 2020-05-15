@@ -209,23 +209,30 @@
 ;;; COMPLETION ;;;
 ;;;;;;;;;;;;;;;;;;
 
-;; TODO https://github.com/oantolin/orderless
 
+;; TODO https://github.com/oantolin/orderless
 
 ;; General search engine. FIXME Customize
 (use-package ivy
   :custom
   (ivy-use-virtual-buffers t)
   (ivy-wrap t)
+  ;; Define the optimal height of the ivy buffer.
+  (ivy-height-alist
+   '(((t lambda (_caller) (/ (window-height) 4)))))
   (ivy-height 15)
   :config
   (ivy-mode +1)
-
+  :general
+  (:states '(motion normal)
+           "<s-up>"   #'ivy-push-view
+           "<s-down>" #'ivy-switch-view)
   (my-leader-def
-    :states '(normal motion)
-    :keymaps 'override
-    ;; "f r" #'counsel-recentf
-    "b b" #'switch-to-buffer))
+    :states   '(normal motion)
+    :keymaps  'override
+    "b b"      #'switch-to-buffer
+    "i"        '(:ignore t :wk "[i]vy")
+    "i r"      #'ivy-resume))
 
 (use-package ivy-hydra
   :custom
@@ -233,20 +240,33 @@
   :config
   (general-define-key :keymaps 'ivy-mode-map "C-c C-h" #'hydra-ivy/body))
 
-;; Extra functions, powered by ivy. FIXME Customize
+;; Extra functions, powered by ivy.
 (use-package counsel
-  :config
+  :general
   (my-leader-def
-    :states  '(normal motion)
-    :keymaps 'override
-    "f f"    #'counsel-find-file
-    "f r"    #'counsel-recentf)
+    :states   '(normal motion)
+    :keymaps  'override
+    "b B"     #'counsel-switch-buffer
+    "f f"     #'counsel-find-file
+    "f r"     #'counsel-recentf
+    "f l"     #'counsel-find-library
+    "f F"     #'counsel-faces)
+  (:keymaps
+   'global-map [remap execute-extended-command] 'counsel-M-x))
 
-  (general-define-key :keymaps 'global-map [remap execute-extended-command] 'counsel-M-x))
+;; Added M-x heuristics FIXME customize!
+(use-package amx)
 
-(use-package swiper)
+;; Improve the default searching text functionality.
+(use-package swiper
+  :config
+  (general-define-key :keymaps 'evil-motion-state-map
+                      [remap evil-ex-search-forward]       #'swiper
+                      [remap evil-ex-search-backward]      #'swiper-all
+                      [remap evil-ex-search-word-forward]  #'swiper-thing-at-point
+                      [remap evil-ex-search-word-backward] #'swiper-all-thing-at-point))
 
-;; use-package company
+;; (use-package company)
 
 ;; (use-package iedit)
 
@@ -263,7 +283,6 @@
 (use-package evil
   :init
   (setq evil-want-keybinding                  nil
-        evil-search-module                    'evil-search
         evil-vsplit-window-right              t
         evil-indent-convert-tabs              t
         evil-split-window-below               t
@@ -277,7 +296,6 @@
            "C-l" #'evil-ex-nohighlight
            ;; Universal argument mapped to M-u globally
            "M-u" #'universal-argument)
-
   (my-leader-def
     :states  '(normal motion)
     :keymaps 'override
@@ -293,7 +311,12 @@
                             :timeout 0.25
                             "j" 'evil-normal-state))
   :config
-  (evil-mode +1))
+  (evil-mode +1)
+  :custom
+  (evil-search-module                  'evil-search)
+  (evil-ex-search-persistent-highlight nil)
+  (evil-ex-search-highlight-all        t)
+  (evil-symbol-word-search             t))
 
 ;; vim-like keybindings everywhere in emacs
 (use-package evil-collection
@@ -307,7 +330,7 @@
   (evil-collection-init)
   ;; (add-hook 'dired-mode-hook #'evil-collection-dired-setup)
   (general-define-key
-   :states  'normal
+   :states  '(normal motion)
    :keymaps 'evil-ex-completion-map
    "q"      #'abort-recursive-edit))
 
@@ -481,6 +504,37 @@
 ;; focus moves to help window
 (setq help-window-select t)
 
+;; Window history.
+(use-package winner
+  :config
+  (winner-mode)
+  (general-define-key
+   :states   '(normal motion)
+   :keymaps  'winner-mode-map
+             "<s-left>"  #'winner-undo
+             "<s-right>" #'winner-redo))
+
+;; Variation on one theme.
+(use-package doom-themes
+  :custom
+  (doom-one-brighter-comments t)
+  (doom-one-comment-bg nil)
+  :config
+  (load-theme 'doom-one t)
+  (doom-themes-visual-bell-config)
+  (doom-themes-org-config)
+  ;; The default region color can be a bit hard to see when other faces are active. Let's make it pop more.
+  (set-face-attribute 'region nil
+                      :background (doom-darken 'blue 0.55)
+                      :inherit 'region))
+
+;; Display battery info
+(use-package battery
+  :hook
+  ;; FIXME Make it laptop specific
+  ;; FIXME Further customize?
+  '((after-init . display-battery-mode)))
+
 ;; Describe what each key does while typing
 (use-package which-key
   :custom
@@ -492,6 +546,7 @@
   (which-key-side-window-location '(bottom right))
   (which-key-show-prefix t)
   (which-key-show-remaining-keys t)
+
   :config
   (my-local-leader-def
     :states  '(normal visual motion)
@@ -505,21 +560,35 @@
 ;; https://github.com/DarthFennec/highlight-indent-guides
 (use-package highlight-indent-guides)
 
-;; Dashboard, splash screen
+;; Never loose the cursor again!
+(use-package beacon
+  :custom
+  (beacon-color (doom-darken 'blue 0.15))
+  :config
+  ;; FIXME Customize!
+  ;; (setq beacon-blink-delay 0.1)
+  ;; (setq beacon-blink-duration 0.25)
+  ;; (setq beacon-size 25)
+  (general-define-key
+   :states '(normal motion)
+   "S-SPC" #'beacon-blink)
+  (beacon-mode))
+
+;; Dashboard splash screen
 (use-package dashboard
   :config
   (dashboard-setup-startup-hook)
-  (add-to-list 'dashboard-items '(agenda) t)
+  ;; FIXME create a `my/dashboard-goto' interactive function.
   :custom
   (initial-buffer-choice (get-buffer "*dashboard*"))
   ;; FIXME Further customization here plz
   (dashboard-set-heading-icons t)
   (dashboard-set-file-icons t)
-  (dashboard-items '((recents  . 5)
+  (show-week-agenda-p t)
+  (dashboard-items '((recents   . 5)
                      (bookmarks . 5)
-                     (projects . 5)
-                     (agenda . 5)
-                     (registers . 5)))
+                     (projects  . 5)
+                     (agenda    . 5)))
   (dashboard-show-shortcuts t))
 
 ;; FIXME Customize

@@ -45,6 +45,7 @@
     (my-local-leader-def
       :keymaps emacs-modes-maps
       :states 'normal
+      ;; FIXME Make some of these part of global too.
       "h v"   #'describe-variable
       "h f"   #'describe-function
       "h i"   #'info-lookup-symbol
