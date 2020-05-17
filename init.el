@@ -79,8 +79,18 @@
 ;; Config directory, all other dirs are relative to this
 (defconst *my-site-lisp-dir* (concat user-emacs-directory "site-lisp/"))
 (defconst *my-lisp-dir* (concat user-emacs-directory "lisp/"))
-(defconst *my-cache-dir* (concat user-emacs-directory "cache/"))
-(defconst *my-backup-dir* (concat user-emacs-directory "backup/"))
+
+;; Create the cache dir
+(defconst *my-cache-dir* (concat user-emacs-directory "cache/")
+  "Directory where cache files will be stored.")
+(when (not (file-accessible-directory-p *my-cache-dir*))
+  (make-directory *my-cache-dir*))
+
+;; Create a centralized backup directory
+(defconst *my-backup-dir* (concat user-emacs-directory "backup/")
+  "Directory where the backup files will be stored.")
+(when (not (file-accessible-directory-p *my-backup-dir*))
+  (make-directory *my-backup-dir*))
 
 ;; Load my custom scripts and downloaded scripts to emacs
 (setq load-path (append load-path `(,*my-site-lisp-dir* ,*my-lisp-dir*)))
@@ -165,8 +175,49 @@
   ;; switch to help org file automatically
   (advice-add #'general-describe-keybindings :after #'other-window))
 
-;; FIXME
-(use-package hydra)
+;; Can'live without vim-keys man!
+(use-package evil
+  :init
+  (setq evil-want-keybinding                  nil
+        evil-vsplit-window-right              t
+        evil-indent-convert-tabs              t
+        evil-split-window-below               t
+        evil-ex-search-vim-style-regexp       t
+        evil-shift-round                      nil
+        evil-want-C-u-scroll                  t
+        evil-cross-lines                      t)
+  :general
+  (:states '(normal motion visual) :keymaps 'override
+           ;; Remove highlighted sections with ctrl + l
+           "C-l" #'evil-ex-nohighlight
+           ;; Universal argument mapped to M-u globally
+           "M-u" #'universal-argument)
+  (my-leader-def
+    :states  '(normal motion)
+    :keymaps 'override
+    "w q"    '#'evil-quit)
+
+  ;; Keychord to get out of insert mode
+  (general-define-key :state 'insert
+                      "j" (general-key-dispatch 'self-insert-command
+                            :timeout 0.25
+                            "k" 'evil-normal-state))
+  (general-define-key :state 'insert
+                      "k" (general-key-dispatch 'self-insert-command
+                            :timeout 0.25
+                            "j" 'evil-normal-state))
+  :config
+  (evil-mode +1)
+  :custom
+  (evil-search-module                  'evil-search)
+  (evil-ex-search-persistent-highlight nil)
+  (evil-ex-search-highlight-all        t)
+  (evil-symbol-word-search             t))
+
+;; FIXME Customize!
+(use-package hydra
+  :custom
+  (hydra-look-for-remap t))
 
 ;; Typing yes/no is obnoxious when y/n will do
 (advice-add #'yes-or-no-p :override #'y-or-n-p)
@@ -185,15 +236,9 @@
 ;; Cache of recently visited files.
 (use-package recentf
   :custom
-  (recentf-save-file (concat *my-cache-dir* "recentf")))
-
-;; Create the cache dir
-(when (not (file-accessible-directory-p *my-cache-dir*))
-  (make-directory *my-cache-dir*))
-
-;; Create a centralized backup directory
-(when (not (file-accessible-directory-p *my-backup-dir*))
-  (make-directory *my-backup-dir*))
+  (recentf-save-file (concat *my-cache-dir* "recentf"))
+  (recentf-max-saved-items 30)
+  (recentf-max-menu-items  30))
 
 ;; setup backups directory
 (setq backup-directory-alist `(("." . ,*my-backup-dir*))
@@ -208,7 +253,6 @@
 ;;;;;;;;;;;;;;;;;;
 ;;; COMPLETION ;;;
 ;;;;;;;;;;;;;;;;;;
-
 
 ;; TODO https://github.com/oantolin/orderless
 
@@ -254,8 +298,11 @@
   (:keymaps
    'global-map [remap execute-extended-command] 'counsel-M-x))
 
-;; Added M-x heuristics FIXME customize!
-(use-package amx)
+;; Added M-x heuristics.
+(use-package amx
+  :custom
+  (amx-backend 'ivy)
+  (amx-save-file (concat *my-cache-dir* "amx-items")))
 
 ;; Improve the default searching text functionality.
 (use-package swiper
@@ -266,7 +313,51 @@
                       [remap evil-ex-search-word-forward]  #'swiper-thing-at-point
                       [remap evil-ex-search-word-backward] #'swiper-all-thing-at-point))
 
-;; (use-package company)
+;; Auto complete
+;; (use-package company
+;;   :hook
+;;   '(after-init . global-company-mode)
+;;   :commands company-complete-common company-manual-begin company-grab-line
+;;   ;; :bind  (:map company-active-map
+;;         ;;       ("C-n" . #'company-select-next)
+;;         ;;       ("C-p" . #'company-select-previous)
+;;         ;;       ("<tab>" . #'company-complete-common-or-cycle)
+;;         ;;  :map company-search-map
+;;         ;;       ("C-p" . #'company-select-previous)
+;;         ;;       ("C-n" . #'company-select-next))
+;;   :custom
+;;   (company-begin-commands '(self-insert-command))
+;;   (company-minimum-prefix-length 1)
+;;   (company-idle-delay 0.1)
+;;   (company-show-numbers t)
+;;   (company-tooltip-align-annotations 't)
+;;   (company-global-modes
+;;    '(not erc-mode message-mode help-mode gud-mode eshell-mode))
+;;   (company-backends '(company-capf company-dabbrev company-dabbrev-code))
+;;   (company-frontends
+;;    '(company-pseudo-tooltip-frontend
+;;      company-echo-metadata-frontend)))
+
+;; FIXME Customize.
+(use-package company
+  :hook
+  '(after-init . global-company-mode)
+  ;; :config
+  ;; (setq company-clang-insert-arguments nil
+  ;;       company-semantic-insert-arguments nil
+  ;;       company-rtags-insert-arguments nil
+  ;;       lsp-enable-snippet nil)
+  ;; (advice-add #'eglot--snippet-expansion-fn :override #'ignore)
+  ;; :custom
+  ;; (company-require-match nil)
+  ;; (company-frontends '(company-tng-frontend
+  ;;                      company-pseudo-tooltip-frontend
+  ;;                      company-echo-metadata-frontend))
+  ;; :general
+  ;; (:keymaps 'company-active-map
+  ;;   "TAB"   'company-select-next
+  ;;   "S-TAB" 'company-select-previous)
+  )
 
 ;; (use-package iedit)
 
@@ -275,60 +366,53 @@
 ;; https://blog.binchen.org/posts/how-to-use-expand-region-efficiently.html
 ;; (use-package expand-region)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; CORE VIM EMULATION ;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;
+;;; SYSTEM TOOLS ;;;
+;;;;;;;;;;;;;;;;;;;;
 
-;; Vim mode for emacs
-(use-package evil
-  :init
-  (setq evil-want-keybinding                  nil
-        evil-vsplit-window-right              t
-        evil-indent-convert-tabs              t
-        evil-split-window-below               t
-        evil-ex-search-vim-style-regexp       t
-        evil-shift-round                      nil
-        evil-want-C-u-scroll                  t
-        evil-cross-lines                      t)
-  :general
-  (:states '(normal motion visual) :keymaps 'override
-           ;; Remove highlighted sections with ctrl + l
-           "C-l" #'evil-ex-nohighlight
-           ;; Universal argument mapped to M-u globally
-           "M-u" #'universal-argument)
-  (my-leader-def
-    :states  '(normal motion)
-    :keymaps 'override
-    "w q"    '#'evil-quit)
-
-  ;; Keychord to get out of insert mode
-  (general-define-key :state 'insert
-                      "j" (general-key-dispatch 'self-insert-command
-                            :timeout 0.25
-                            "k" 'evil-normal-state))
-  (general-define-key :state 'insert
-                      "k" (general-key-dispatch 'self-insert-command
-                            :timeout 0.25
-                            "j" 'evil-normal-state))
+;; FIXME Part of core.el
+;; Git porcelain
+(use-package magit
   :config
-  (evil-mode +1)
-  :custom
-  (evil-search-module                  'evil-search)
-  (evil-ex-search-persistent-highlight nil)
-  (evil-ex-search-highlight-all        t)
-  (evil-symbol-word-search             t))
+  (magit-auto-revert-mode +1)
+  :general
+  (my-leader-def
+    :states '(normal motion)
+    :keymaps 'override
+    "g"   '(:ignore t :wk "[g]it")
+    "g s" #'magit-status))
 
-;; vim-like keybindings everywhere in emacs
+;;;;;;;;;;;;;;;;;;;
+;;; VIM PLUGINS ;;;
+;;;;;;;;;;;;;;;;;;;
+
+;; Evil-like keybinds for magit
+(use-package evil-magit)
+
+;; FIXME This mode is way too much bloat, keep it for reference, and only pick and choose what I like from it.
+;; FIXME Translate the keybindings I like with general.
 (use-package evil-collection
   :custom
-  (evil-collection-outline-bind-tab-p         t)
-  (evil-collection-company-use-tng            t)
-  (evil-collection-term-sync-state-and-mode-p t)
-  (evil-collection-setup-minibuffer           t)
-  (evil-collection-setup-debugger-keys        t)
+  (evil-collection-mode-list '(ivy
+                               info
+                               dired
+                               helpful
+                               magit
+                               minibuffer
+                               dashboard
+                               company
+                               popup
+                               help
+                               helpful
+                               vterm))
+  (evil-collection-outline-bind-tab-p           t)
+  (evil-collection-company-use-tng              t)
+  (evil-collection-term-sync-state-and-mode-p   t)
+  (evil-collection-setup-minibuffer             t)
+  (evil-collection-setup-debugger-keys          t)
+  (evil-collection-company-use-tng            nil)
   :config
   (evil-collection-init)
-  ;; (add-hook 'dired-mode-hook #'evil-collection-dired-setup)
   (general-define-key
    :states  '(normal motion)
    :keymaps 'evil-ex-completion-map
@@ -419,7 +503,8 @@
 (set-language-environment "UTF-8")
 (set-default-coding-systems 'utf-8)
 (set-face-attribute 'default nil :font "Ubuntu Mono" :height 120)
-(set-fontset-font t 'latin "Ubuntu Mono")
+(when (display-graphic-p)
+  (set-fontset-font t 'latin "Ubuntu Mono"))
 
 ;; Disable tool and scrollbars.
 (unless (assq 'menu-bar-lines default-frame-alist)

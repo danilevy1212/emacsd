@@ -67,7 +67,7 @@
 (use-package projectile
   :custom
   (projectile-switch-project-action #'projectile-dired)
-  (projectile-completion-system 'default)
+  (projectile-completion-system 'ivy)
   (projectile-sort-order 'recently-active)
   (projectile-cache-file (expand-file-name "projectile.cache" *my-cache-dir*))
   (projectile-known-projects-file (expand-file-name "projectile-bookmarks.eld" *my-cache-dir*))
@@ -140,35 +140,10 @@
   :config
   (global-hl-todo-mode +1))
 
-;; Auto complete
-(use-package company
-  :hook
-  '(after-init . global-company-mode)
-  :commands company-complete-common company-manual-begin company-grab-line
-  ;; :bind  (:map company-active-map
-        ;;       ("C-n" . #'company-select-next)
-        ;;       ("C-p" . #'company-select-previous)
-        ;;       ("<tab>" . #'company-complete-common-or-cycle)
-        ;;  :map company-search-map
-        ;;       ("C-p" . #'company-select-previous)
-        ;;       ("C-n" . #'company-select-next))
-  :custom
-  (company-begin-commands '(self-insert-command))
-  (company-minimum-prefix-length 1)
-  (company-idle-delay 0.1)
-  (company-show-numbers t)
-  (company-tooltip-align-annotations 't)
-  (company-global-modes
-   '(not erc-mode message-mode help-mode gud-mode eshell-mode))
-  (company-backends '(company-capf company-dabbrev company-dabbrev-code))
-  (company-frontends
-   '(company-pseudo-tooltip-frontend
-     company-echo-metadata-frontend)))
-
 ;; Linting
 (use-package flycheck
   :hook
-  (after-init . global-flycheck-mode)
+  '(after-init . global-flycheck-mode)
   :custom
   (flycheck-emacs-lisp-load-path 'inherit)
   (flycheck-display-errors-delay .3))
@@ -176,23 +151,7 @@
 ;; Use another frame to show error
 (use-package flycheck-posframe
   :hook
-  (flycheck-mode . flycheck-posframe-mode))
-
-;; FIXME Part of core.el
-;; Git porcelain
-(use-package magit
-  :config
-  (magit-auto-revert-mode +1)
-  :general
-  (my-leader-def
-    :states '(normal motion)
-    :keymaps 'override
-    "g"   '(:ignore t :wk "[g]it")
-    "g s" #'magit-status))
-
-;; FIXME Part of core.el
-;; Evil-like keybinds for magit
-(use-package evil-magit)
+  '(flycheck-mode . flycheck-posframe-mode))
 
 ;;; Language Server Protocol support
 (use-package lsp-mode
@@ -204,9 +163,9 @@
   (lsp-eldoc-render-all nil)
   (lsp-eldoc-enable-hover t)
   (lsp-signature-render-all 'eldoc)
-  :bind
-  (:map lsp-mode-map
-	("C-c r"   . lsp-rename)))
+  :general
+  (:keymaps 'lsp-mode-map
+	"C-c r" #'lsp-rename))
 
 ;; UI tweaks
 (use-package lsp-ui

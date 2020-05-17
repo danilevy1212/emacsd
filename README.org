@@ -1,2 +1,14 @@
 * My emacs config
 ** TODO Install instructions
+
+   To install:
+
+    #+BEGIN_SRC shell
+      git clone https://github.com/danilevy1212/emacsd ~/.emacs.d
+    #+END_SRC
+
+    If using ~emacs-version >= 27~ you can also install in the ~$XDG_CONFIG_HOME~ directory.
+
+    #+BEGIN_SRC shell
+      git clone https://github.com/danilevy1212/emacsd ~/$XDG_CONFIG_HOME/emacs
+    #+END_SRC

@@ -20,7 +20,7 @@
   (put 'set-goal-column 'disabled nil)
   (add-hook 'org-mode-hook 'auto-revert-mode)
   :custom
-  (org-todo-keywords                                '((sequencep "TODO(t)" "PROGRESS(p)" "WAITING(w)" "|" "DONE(d)" "CANCELLED(c)")))
+  (org-todo-keywords                                '((sequence "TODO(t)" "PROGRESS(p)" "WAITING(w)" "|" "DONE(d)" "CANCELLED(c)")))
   (org-todo-keyword-faces                           '(("PROGRESS" . "#E35DBF")
                                                     ("WAITING" . (:foreground "white" :background "#4d4d4d" :weight bold))
                                                     ("CANCELLED" . "#800000")))
@@ -58,7 +58,6 @@
 (use-package org-edna
   :config
   (org-edna-mode))
-
 
 ;; Switch entry to DONE when all subentries are done, to TODO otherwise.
 (add-hook 'org-after-todo-statistics-hook '(lambda (n-done n-not-done)

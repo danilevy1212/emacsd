@@ -34,11 +34,6 @@
 (use-package evil-expat
   :defer t)
 
-;; Selected text in visual mode with * and # operators
-(use-package evil-visualstar
-  :config
-  (global-evil-visualstar-mode))
-
 ;; Folding
 (use-package evil-vimish-fold
   :config
