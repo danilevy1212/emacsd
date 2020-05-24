@@ -1,8 +1,10 @@
-;;; package --- summary:
-;;; Commentary:
-;;; -*- lexical-binding:t -*-
+;;;###autoload
+(defun dan/load-dir (dir)
+  "Load all the elisp files of a given DIR, non recursively."
+  (let ((files (directory-files dir t "\\.el$")))
+    (mapc (lambda (file)
+              (load (string-remove-suffix ".el" file)) nil 'nomessage) files)))
 
-;;; Code:
 ;;;###autoload
 (defun dan/only-current-buffer ()
   "Function to kill all other buffers except current one and special ones."
@@ -45,7 +47,12 @@
 ;;;###autoload
 (defun dan/load-config (filename)
   "Load FILENAME inside the config directory."
-  (load (concat user-emacs-directory filename) nil nil))
+  (load (concat user-emacs-directory filename) nil 'nomessage))
 
-(provide '+functions)
-;;; +functions.el ends here
+(defconst dan/core-libs '("pacman" "utils" "system" "evil" "ui")
+  "List of files which make the core of my config. They will be loaded in sequential appearing order.")
+
+(let ((core-dir (concat user-emacs-directory "core-lib/")))
+  (mapc (lambda (filename)
+          (load (concat core-dir filename) nil 'nomessage))
+        dan/core-libs))

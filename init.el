@@ -10,6 +10,19 @@
 ;;; INIT SYSTEM ;;;
 ;;;;;;;;;;;;;;;;;;;
 
+;; A big contributor to startup times is garbage collection. We up the gc
+;; threshold to temporarily prevent it from running, then reset it later by
+;; enabling `gcmh-mode'. Not resetting it will cause stuttering/freezes.
+(setq gc-cons-threshold most-positive-fixnum)
+
+;; In noninteractive sessions, prioritize non-byte-compiled source files to
+;; prevent the use of stale byte-code. Otherwise, it saves us a little IO time
+;; to skip the mtime checks on every *.elc file.
+(setq load-prefer-newer noninteractive)
+
+;; Load the heart of my config FIXME When its ready
+;; (load (concat user-emacs-directory "core-lib/core") nil nil)
+
 ;; When opening a file, always follow symlinks.
 (setq vc-follow-symlinks t)
 
@@ -58,9 +71,6 @@
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
 
-;; load prefers the newest version of a file
-(setq load-prefer-newer t)
-
 ;; install use-package
 (straight-use-package 'use-package)
 
@@ -92,32 +102,30 @@
 (when (not (file-accessible-directory-p *my-backup-dir*))
   (make-directory *my-backup-dir*))
 
-;; Load my custom scripts and downloaded scripts to emacs
+;; Load my custom scripts and downloaded scripts to emacs ;; FIXME
 (setq load-path (append load-path `(,*my-site-lisp-dir* ,*my-lisp-dir*)))
 
-;; Garbage collection optimization on startup
-(defvar last-file-name-handler-alist file-name-handler-alist)
-(setq gc-cons-threshold most-positive-fixnum
-      gc-cons-percentage 0.6
-      file-name-handler-alist nil)
+;; Garbage collection optimization.
+(defvar dan/last-file-name-handler-alist file-name-handler-alist)
 
-;; Garbage collection
-;; FIXME Pass this to `use-package'
-(require 'gcmh)
-(add-hook 'pre-command-hook (gcmh-mode +1))
-(with-eval-after-load 'gcmh
-  (defun my-garbage-collecting-strategy-after-init-hook ()
-    "Adopt a sneaky garbage collection strategy of waiting until idle time to collect staving off the collector while the user is working."
-    (setq gcmh-idle-delay 10
-          gcmh-high-cons-threshold 16777216
-          gcmh-verbose nil
-          gc-cons-percentage 0.1
-          file-name-handler-alist last-file-name-handler-alist))
+(defun dan/garbage-collecting-strategy-after-init-hook ()
+  "Adopt a sneaky garbage collection strategy of waiting until idle time to collect staving off the collector while the user is working."
+  (setq gcmh-idle-delay 5
+        gcmh-high-cons-threshold 16777216
+        gcmh-verbose nil
+        gc-cons-percentage 0.1
+        file-name-handler-alist dan/last-file-name-handler-alist))
+
+(use-package gcmh
+  :custom
+  (gc-cons-percentage 0.6)
+  (file-name-handler-alist nil)
+  :config
   (fset 'after-focus-change-function #'gcmh-idle-garbage-collect)
-  (add-hook 'after-init-hook #'my-garbage-collecting-strategy-after-init-hook))
+  (add-hook 'after-init-hook #'dan/garbage-collecting-strategy-after-init-hook)
+  (gcmh-mode))
 
-
-;; FIXME
+;; FIXME, make it part of core/core?
 ;;; Load my Elisp utils
 (load (concat *my-lisp-dir* "+functions") nil nil)
 
@@ -148,7 +156,7 @@
     :keymaps 'override
     "f"      '(:ignore t :wk "[f]ile")
     "f y"    #'yank-buffer-filename
-    ;; FIXME make a macro for this?, my/wk-wrap? INSPIRATION https://cestlaz.github.io/posts/using-emacs-31-elfeed-3/
+    ;; FIXME make a macro for this?, dan/wk-wrap? INSPIRATION https://cestlaz.github.io/posts/using-emacs-31-elfeed-3/
     "f p"    `((lambda () (interactive)
                  (find-file ,user-emacs-directory)) :wk "[p]rivate config")
     "b"      '(:ignore t :wk "[b]uffer")
@@ -278,6 +286,7 @@
     "i"        '(:ignore t :wk "[i]vy")
     "i r"      #'ivy-resume))
 
+;; Hydra powered ivy!
 (use-package ivy-hydra
   :custom
   (ivy-read-action-function 'ivy-hydra-read-action)
@@ -395,6 +404,7 @@
   :custom
   (evil-collection-mode-list '(ivy
                                info
+                               occur
                                dired
                                helpful
                                magit
@@ -404,7 +414,8 @@
                                popup
                                help
                                helpful
-                               vterm))
+                               vterm
+                               wgrep))
   (evil-collection-outline-bind-tab-p           t)
   (evil-collection-company-use-tng              t)
   (evil-collection-term-sync-state-and-mode-p   t)
@@ -663,7 +674,7 @@
 (use-package dashboard
   :config
   (dashboard-setup-startup-hook)
-  ;; FIXME create a `my/dashboard-goto' interactive function.
+  ;; FIXME create a `dan/dashboard-goto' interactive function.
   :custom
   (initial-buffer-choice (get-buffer "*dashboard*"))
   ;; FIXME Further customization here plz
@@ -676,145 +687,69 @@
                      (agenda    . 5)))
   (dashboard-show-shortcuts t))
 
-;; FIXME Customize
 ;; All the icons (M-x all-the-icons-install-fonts)
 (use-package all-the-icons)
 
-;; ivy-rich (Fancy ivy) FIXME Customize
+;; All the icons for ivy helper.
+(use-package all-the-icons-ivy-rich
+  :init
+  (all-the-icons-ivy-rich-mode 1)
+  :custom
+  (all-the-icons-ivy-rich-icon-size 1.0)
+  ;; Definitions for ivy-rich transformers.
+  ;; See `ivy-rich-display-transformers-list' for details."
+  ;; FIXME Mega slow down when searching for a single dot, maybe auto-translate it to \.?
+  ;; FIXME the culprit for the slowdown is `ivy--resize-minibuffer-to-fit', elp
+  )
+
+;; ivy-rich (Fancy ivy)
 (use-package ivy-rich
   :config
-  ;; All the icons integration (Mostly an example).
-  (defun ivy-rich-switch-buffer-icon (candidate)
-    (with-current-buffer
-        (get-buffer candidate)
-      (let ((icon (all-the-icons-icon-for-mode major-mode)))
-        (if (symbolp icon)
-            (all-the-icons-icon-for-mode 'fundamental-mode)
-          icon))))
-
-  ;; FIXME CUSTOMIZE
-  (defun ivy-rich-file-icon (candidate)
-    (let ((icon (if (directory-name-p candidate)
-                    (all-the-icons-icon-for-dir candidate)
-                  (all-the-icons-icon-for-file candidate))))
-      (if (symbolp icon)
-          (all-the-icons-icon-for-file "unknown")
-        icon)))
-
-  (setq ivy-rich-display-transformers-list
-        '(
-          ivy-switch-buffer
-          (:columns
-           ;; FIXME Any way to "justify columns?"
-           ((ivy-rich-switch-buffer-icon (:width 5))
-            (ivy-switch-buffer-transformer
-             (:width 50))
-            (ivy-rich-switch-buffer-size
-             (:width 7))
-            (ivy-rich-switch-buffer-indicators
-             (:width 3 :face error :align right))
-            (ivy-rich-switch-buffer-major-mode
-             (:width 12 :face warning))
-            (ivy-rich-switch-buffer-project
-             (:width 15 :face success))
-            (ivy-rich-switch-buffer-path
-             (:width
-              (lambda
-                (x)
-                (ivy-rich-switch-buffer-shorten-path x
-                                                     (ivy-rich-minibuffer-width 0.3))))))
-           :predicate
-           (lambda
-             (cand)
-             (get-buffer cand)))
-          counsel-find-file
-          (:columns
-           ((ivy-rich-file-icon (:width 5))
-            (ivy-read-file-transformer (:width 30))
-            (ivy-rich-counsel-find-file-truename
-             (:face font-lock-doc-face))))
-          counsel-M-x
-          (:columns
-           ((counsel-M-x-transformer
-             (:width 40))
-            (ivy-rich-counsel-function-docstring
-             (:face font-lock-doc-face))))
-          counsel-describe-function
-          (:columns
-           ((counsel-describe-function-transformer
-             (:width 40))
-            (ivy-rich-counsel-function-docstring
-             (:face font-lock-doc-face))))
-          counsel-describe-variable
-          (:columns
-           ((counsel-describe-variable-transformer
-             (:width 40))
-            (ivy-rich-counsel-variable-docstring
-             (:face font-lock-doc-face))))
-          counsel-recentf
-          (:columns
-           ((ivy-rich-file-icon (:width 5))
-            (ivy-rich-candidate
-             (:width 0.8))
-            (ivy-rich-file-last-modified-time
-             (:face font-lock-comment-face))))
-          package-install
-          (:columns
-           ((ivy-rich-candidate
-             (:width 30))
-            (ivy-rich-package-version
-             (:width 16 :face font-lock-comment-face))
-            (ivy-rich-package-archive-summary
-             (:width 7 :face font-lock-builtin-face))
-            (ivy-rich-package-install-summary
-             (:face font-lock-doc-face))))))
-
   (setcdr (assq t ivy-format-functions-alist) #'ivy-format-function-line)
-
   (ivy-rich-mode +1))
 
 
 ;; FIXME modules should be loaded in some other way, maybe through env variables?
 
 ;; editor fixme rename
-(load-config "my-editor")
+(dan/load-config "my-editor")
 
 ;; look and feel fixme
-(load-config "generalconf")
+(dan/load-config "generalconf")
 
 ;; navigation preferences
-;; (load-config "navigation")
+;; (dan/load-config "navigation")
 
 ;;; programming languages / super modes
 ;; org
-(load-config "my-org")
+(dan/load-config "my-org")
 
 ;; vimscript + vimrc syntax highlight
-(load-config "vim")
+(dan/load-config "vim")
 
 ;; elisp
-(load-config "elisp")
+(dan/load-config "elisp")
 
 ;; haskell
-(load-config "haskell")
+(dan/load-config "haskell")
 
 ;; Python
-(load-config "python")
+(dan/load-config "python")
 
 ;; Yaml
-(load-config "yaml")
+(dan/load-config "yaml")
 
 ;; Json
-(load-config "json-conf")
+(dan/load-config "json-conf")
 
 ;; c-c++
-(load-config "c_c++")
+(dan/load-config "c_c++")
 
 ;; web
-(load-config "web")
+(dan/load-config "web")
 
 ;; latex
-(load-config "latex")
+(dan/load-config "latex")
 
 (provide 'config)
 ;;; config.el ends here

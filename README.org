@@ -1,5 +1,8 @@
+#+STARTUP: entitiespretty nohideblocks
+
+
 * My emacs config
-** TODO Install instructions
+** TODO Install Instructions
 
    To install:
 
@@ -7,8 +10,22 @@
       git clone https://github.com/danilevy1212/emacsd ~/.emacs.d
     #+END_SRC
 
-    If using ~emacs-version >= 27~ you can also install in the ~$XDG_CONFIG_HOME~ directory.
+    If using ~emacs-version >= 27~ you can also install in the =$XDG_CONFIG_HOME= directory.
 
     #+BEGIN_SRC shell
       git clone https://github.com/danilevy1212/emacsd ~/$XDG_CONFIG_HOME/emacs
     #+END_SRC
+
+** TODO Dependencies
+
+   - Cmake :: For vterm
+   - SSH needs to be setted up with Github and Gitlab accounts. :: For straight.el
+
+** TODO Rationale
+
+   Here I explained why my config is layed out the way it is.
+
+** TODO Tips and Tricks
+
+   Stuff I wish someone had to told me before I got serious with emacs. It may help people
+   starting out with emacs.
