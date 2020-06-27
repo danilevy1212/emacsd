@@ -16,16 +16,20 @@
 ;; highlight quoted symbol
 (use-package highlight-quoted
   :hook
-  '((emacs-lisp-mode lisp-mode lisp-interaction-mode) . highlight-quoted-mode))
+  '((emacs-lisp-mode lisp-mode lisp-interaction-mode) . highlight-quoted-mode)
+  :defer t)
 
 ;; TODO if I ever get into other lisps, maybe good to create a lisp module and bring some stuff there
 ;; Highlight sexp (Useful when evaluating from source)
 (use-package highlight-sexp
   :hook
-  '((emacs-lisp-mode lisp-mode lisp-interaction-mode) . highlight-sexp-mode))
+  '((emacs-lisp-mode lisp-mode lisp-interaction-mode) . highlight-sexp-mode)
+  :defer t)
 
 ;; Jump to definitions
-(use-package elisp-def)
+(use-package elisp-def
+  :hook
+  '(emacs-lisp-mode . elisp-def-mode))
 
 ;; Find references
 (use-package elisp-refs
@@ -35,14 +39,10 @@
   ;; Use the definition fro helpful-at-point for inpiration
   )
 
-(defun my/emacs-lisp-hook ()
+(defun dan/emacs-lisp-hook ()
   "Function to be run dureing the `emacs-lisp-mode-hook'. Mainly configures keybindings for `emacs-lisp-mode'."
   (let ((emacs-modes-maps '(emacs-lisp-mode-map lisp-mode-map lisp-interaction-mode-map)))
-    (general-define-key
-     :states 'normal
-     :keymaps emacs-modes-maps
-     "C-c C-d" #'helpful-at-point)
-    (my-local-leader-def
+    (dan/local-leader
       :keymaps emacs-modes-maps
       :states 'normal
       ;; FIXME Make some of these part of global too.
@@ -100,6 +100,6 @@
 ;;                  ")"))))
 
 (dolist (hook '(emacs-lisp-mode-hook lisp-mode-hook lisp-interaction-mode-hook))
-  (add-hook hook #'my/emacs-lisp-hook))
+  (add-hook hook #'dan/emacs-lisp-hook))
 
 ;;; elisp.el ends here

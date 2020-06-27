@@ -1,6 +1,5 @@
 #+STARTUP: entitiespretty nohideblocks
 
-
 * My emacs config
 ** TODO Install Instructions
 
@@ -13,17 +12,40 @@
     If using ~emacs-version >= 27~ you can also install in the =$XDG_CONFIG_HOME= directory.
 
     #+BEGIN_SRC shell
-      git clone https://github.com/danilevy1212/emacsd ~/$XDG_CONFIG_HOME/emacs
+      git clone https://github.com/danilevy1212/emacsd $XDG_CONFIG_HOME/emacs
     #+END_SRC
 
 ** TODO Dependencies
 
    - Cmake :: For vterm
    - SSH needs to be setted up with Github and Gitlab accounts. :: For straight.el
+   - mozc, mozc\under{}emacs\under{}helper :: For mozc.el
 
 ** TODO Rationale
 
    Here I explained why my config is layed out the way it is.
+
+*** Libraries
+
+    1. utils
+    2. completion
+    3. system
+    4. evil-plugins
+    5. ui
+    6. editor-conf
+    7. rss
+    8. org-lib
+    9. pdf
+    10. lsp
+    11. elisp
+    12. frontend (UNTESTED)
+    13. python (UNTESTED)
+    14. vim (UNTESTED)
+    15. yaml (UNTESTED)
+    16. json (UNTESTED)
+    17. latex (UNTESTED)
+    18. c/c++ (UNTESTED)
+    19. haskell (UNTESTED)
 
 ** TODO Tips and Tricks
 
