@@ -67,4 +67,9 @@
                            (when (memq evil-this-operator
                                        evil-collection-yank-operators)
                              (setq evil-inhibit-operator t)
-                             #'elfeed-show-yank)))))
+                             #'elfeed-show-yank))))
+  (dan/leader
+    :keymaps 'override
+    :states  '(normal motion)
+    "r"      '(:ignore t :wk "[r]ss")
+    "r e"    #'elfeed))

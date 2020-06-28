@@ -124,7 +124,14 @@
   :custom
   (rmh-elfeed-org-files (list (concat org-directory "elfeed.org")))
   :config
-  (elfeed-org))
+  (elfeed-org)
+  :general
+  (dan/leader
+    :keymaps 'override
+    :states  '(normal motion)
+    "r p"    `((lambda ()
+                 (interactive)
+                 (find-file ,(car rmh-elfeed-org-files))) :wk "[p]rivate config")))
 
 ;; Vim keys on org-mode
 (use-package evil-org
