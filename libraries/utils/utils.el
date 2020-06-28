@@ -1,3 +1,5 @@
+;;; -*- lexical-binding:t -*-
+
 ; Auto-compile emacslisp
 (use-package auto-compile
   :config
@@ -6,10 +8,40 @@
 ;; A second, case-insensitive pass over `auto-mode-alist' is time wasted.
 (setq auto-mode-case-fold nil)
 
-;; Setup a special file for the customize interface.
-(setq custom-file (concat dan/cache-dir "custom"))
-(when (file-exists-p custom-file)
-  (load custom-file nil nil))
+;; Customize away!
+(use-package cus-edit
+  :straight (:type built-in)
+  :after evil
+  :custom
+  ;; Setup a special file for the customize interface.
+  (custom-file (concat dan/cache-dir "custom"))
+  :config
+  (evil-set-initial-state 'Custom-mode 'normal)
+  (when (file-exists-p custom-file)
+    (load custom-file nil nil))
+  (general-define-key
+   :keymaps 'custom-mode-map :states 'normal
+   ;; motion
+   "<tab>" 'widget-forward
+   "S-<tab>" 'widget-backward
+   "<backtab>" 'widget-backward
+   "SPC" 'scroll-up-command
+   "S-SPC" 'scroll-down-command
+   "<delete>" 'scroll-down-command
+   "RET" 'Custom-newline
+   "]]" 'widget-forward
+   "[[" 'widget-backward
+   "C-j" 'widget-forward
+   "C-k" 'widget-backward
+   "gj" 'widget-forward
+   "gk" 'widget-backward
+   "^" 'Custom-goto-parent
+   "C-o" 'Custom-goto-parent
+   "<" 'Custom-goto-parent
+   ;; quit
+   "q" 'Custom-buffer-done
+   "ZQ" 'evil-quit
+   "ZZ" 'Custom-buffer-done))
 
 ;; Cache of recently visited files.
 (use-package recentf
@@ -27,6 +59,16 @@
       kept-new-versions 6
       auto-save-default t
       delete-old-versions t)
+
+;; Bookmarks
+(use-package bookmark
+  :custom
+  (bookmark-default-file (concat dan/cache-dir "bookmarks")))
+
+
+;; Create directories of the buffer filename.
+(add-hook 'before-save-hook
+          'dan/create-directories-recursively)
 
 ;; More Helpful help screens
 (use-package helpful

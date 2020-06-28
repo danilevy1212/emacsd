@@ -1,10 +1,6 @@
-;;; package --- summary:
-;;; Commentary:
 ;;; -*- lexical-binding:t -*-
 
-;;; Code:
+;;; Color coding for vim files.
 (use-package vimrc-mode
-  :mode ("\\.vim\\(rc\\)?\\'" . vimrc-mode))
-
-(provide 'vim)
-;;; vim.el ends here
+  :mode
+  (("\\.vim\\(rc\\)?\\'" . vimrc-mode)))

@@ -1,9 +1,11 @@
+;;; -*- lexical-binding:t -*-
+
 ;; RSS client
 (use-package elfeed
   :config
-  (dan/inhibit-evil-insert-state elfeed-search-mode-map)
+  (dan/inhibit-evil-insert-state 'elfeed-search-mode-map)
   (evil-set-initial-state 'elfeed-search-mode 'normal)
-  (dan/inhibit-evil-insert-state elfeed-show-mode-map)
+  (dan/inhibit-evil-insert-state 'elfeed-show-mode-map)
   (evil-set-initial-state 'elfeed-show-mode 'normal)
   :custom
   (elfeed-db-directory (concat dan/cache-dir "elfeed/"))

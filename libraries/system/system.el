@@ -1,3 +1,5 @@
+;;; -*- lexical-binding:t -*-
+
 ;;;;;;;;;;;;;;;;;;;;
 ;;; SYSTEM TOOLS ;;;
 ;;;;;;;;;;;;;;;;;;;;
@@ -50,8 +52,8 @@
 (use-package git-gutter
   :custom
   (git-gutter:update-interval 1)
-  :config
-  (global-git-gutter-mode t)
+  :hook
+  '(after-init . global-git-gutter-mode)
   ;; g-based hunk previews
   :general
   (:states 'normal
@@ -68,7 +70,8 @@
 
 ;; System directory browser.
 (use-package dired
-  :straight nil
+  :straight
+  (:type built-in)
   :custom
   (dired-listing-switches "-alh")
   :general
@@ -228,11 +231,13 @@
 
 ;; Writable dired buffers.
 (use-package wdired
-  :straight nil)
+  :straight
+  (:type built-in))
 
 ;; Extra features for directories.
 (use-package dired-x
-  :straight nil)
+  :straight
+  (:type built-in))
 
 (use-package dired-subtree
   :general

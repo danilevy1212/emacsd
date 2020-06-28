@@ -1,3 +1,5 @@
+;;; -*- lexical-binding:t -*-
+
 ;;;;;;;;;;;;;;;;;;
 ;;; COMPLETION ;;;
 ;;;;;;;;;;;;;;;;;;
@@ -40,7 +42,8 @@
     :states   '(normal motion)
     :keymaps  'override
     "b B"     #'counsel-switch-buffer
-    "f f"     #'counsel-find-file
+    "f f"     #'counsel-fzf
+    "f o"     #'counsel-find-file
     "f r"     #'counsel-recentf
     "f l"     #'counsel-find-library
     "f F"     #'counsel-faces)

@@ -1,3 +1,5 @@
+;;; -*- lexical-binding:t -*-
+
 ;;;;;;;;;;;;;;;;;;;;;
 ;;; VIM EMULATION ;;;
 ;;;;;;;;;;;;;;;;;;;;;
@@ -14,7 +16,7 @@
                                occur
                                ;; dired
                                doc-view
-                               ;; (pdf pdf-view)
+                               (pdf pdf-view)
                                helpful
                                magit
                                minibuffer

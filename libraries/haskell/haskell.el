@@ -1,5 +1,3 @@
-;;; package --- summary:
-;;; Commentary:
 ;;; -*- lexical-binding:t -*-
 
 ;;; Code:
@@ -18,6 +16,3 @@
 ;; FIXME Alternative to intereo/date, cos I rather not have to use lsp if I don't need to.
 ;; https://github.com/haskell/haskell-ide-engine
 ;; https://github.com/digital-asset/ghcide
-
-(provide 'haskell)
-;;; haskell.el ends here

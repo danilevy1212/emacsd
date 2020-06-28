@@ -1,10 +1,5 @@
-;;; package --- summary:
-;;; Commentary:
 ;;; -*- lexical-binding:t -*-
 
-;;; ORG-MODE config
-
-;;; Code:
 ;; Org basic defaults
 (use-package org
   :straight org-plus-contrib (:no-byte-compile t)
@@ -140,3 +135,6 @@
   (add-hook 'org-mode-hook 'evil-org-mode)
   (add-hook 'evil-org-mode-hook 'evil-org-set-key-theme)
   (add-hook 'org-agenda-mode-hook 'my-org-agenda-hook))
+
+;; Preview current org file in eww whenever you save it.
+(use-package org-preview-html)

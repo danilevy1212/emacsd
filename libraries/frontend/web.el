@@ -1,8 +1,6 @@
-;;; package --- summary:
-;;; Commentary:
 ;;; -*- lexical-binding:t -*-
 
-;;; Code:
+;;; Major mode for all sorts of frontend file types.
 (use-package web-mode
   :mode (("\\.html?\\'" . web-mode))
   :custom
@@ -20,7 +18,3 @@
                       (set (make-local-variable 'company-backends)
                            (append '((company-lsp company-capf company-dabbrev-code)) '()))
                       (lsp-deferred))))
-
-
-(provide 'web)
-;;; web.el ends here

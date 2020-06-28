@@ -20,6 +20,8 @@
    - Cmake :: For vterm
    - SSH needs to be setted up with Github and Gitlab accounts. :: For straight.el
    - mozc, mozc\under{}emacs\under{}helper :: For mozc.el
+   - imagemagick :: For pdf-tools
+
 
 ** TODO Rationale
 
@@ -40,8 +42,8 @@
     11. elisp
     12. frontend (UNTESTED)
     13. python (UNTESTED)
-    14. vim (UNTESTED)
-    15. yaml (UNTESTED)
+    14. vim
+    15. yaml
     16. json (UNTESTED)
     17. latex (UNTESTED)
     18. c/c++ (UNTESTED)

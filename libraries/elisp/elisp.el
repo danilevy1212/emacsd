@@ -1,7 +1,4 @@
-;;; package --- summary:
-;;; Commentary:
 ;;; -*- lexical-binding:t -*-
-;;; Code:
 
 ;; Customize scratch buffer message
 (setq initial-scratch-message (concat initial-scratch-message ";; Happy hacking ^_^\n\n"))

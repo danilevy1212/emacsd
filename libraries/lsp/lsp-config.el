@@ -1,3 +1,5 @@
+;;; -*- lexical-binding:t -*-
+
 ;; FIXME Reconsider this whole file, and refactor it for sure.
 ;;; Language Server Protocol support
 (use-package lsp-mode

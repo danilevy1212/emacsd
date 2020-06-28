@@ -1,13 +1,17 @@
+;;; -*- lexical-binding:t -*-
+
 ;; Better pdf viewing experience
 (use-package pdf-tools
+  :commands pdf-view-mode
+  :mode ("\\.pdf\\'" . #'pdf-view-mode)
   :custom
   (pdf-view-display-size 'fit-page)
   (pdf-annot-activate-created-annotations t)
   (pdf-view-use-imagemagick t)
   (pdf-view-use-scaling t)
-  ;; :: Installed wirth  (pdf-tools-install)
+  (pdf-view-resize-factor  1.125)
   :config
-  (pdf-loader-install))
+  (pdf-loader-install :no-query))
 
 
 ;; FIXME Should translate this to my config.

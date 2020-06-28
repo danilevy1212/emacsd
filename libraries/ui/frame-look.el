@@ -1,9 +1,11 @@
-;; Sent font FIXME nicer fonts please
+;;; -*- lexical-binding:t -*-
+
+;; The font of the hackermen.
 (set-language-environment "UTF-8")
 (set-default-coding-systems 'utf-8)
-(set-face-attribute 'default nil :font "Ubuntu Mono" :height 120)
+(set-face-attribute 'default nil :font "Roboto Mono" :height 120)
 (when (display-graphic-p)
-  (set-fontset-font t 'latin "Ubuntu Mono"))
+  (set-fontset-font t 'latin "Roboto Mono"))
 
 ;; Disable tool and scrollbars.
 (unless (assq 'menu-bar-lines default-frame-alist)
@@ -133,6 +135,9 @@
   :config
   (load-theme 'nord t))
 
+;; All the icons, to install -> (M-x all-the-icons-install-fonts)
+(use-package all-the-icons)
+
 ;; Modeline BUG Requires gitlab account through ssh
 (use-package doom-modeline
   :custom
@@ -174,11 +179,8 @@
 
 ;; Highlight indentation
 ;; FIXME Customize!
-;; https://github.com/DarthFennec/highlight-indent-guides
 (use-package highlight-indent-guides
-  :hook
-  '((python-mode
-     js-mode) . highlight-indent-guides-mode))
+  :defer t)
 
 ;; FIXME Customize!
 ;; Highlight TODO, FIXME words in comments FIXME Change to hl-mode
@@ -201,9 +203,6 @@
 (use-package rainbow-delimiters
   :hook
   '(prog-mode . rainbow-delimiters-mode-enable))
-
-;; All the icons, to install -> (M-x all-the-icons-install-fonts)
-(use-package all-the-icons)
 
 ;; All the icons for ivy helper.
 (use-package all-the-icons-ivy-rich

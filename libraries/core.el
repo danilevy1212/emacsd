@@ -1,15 +1,15 @@
+;;; -*- lexical-binding:t -*-
+
 ;;;;;;;;;;;;;;;;;;;;;;
 ;;; AUTOLOAD UTILS ;;;
 ;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;###autoload
-(defun dan/inhibit-evil-insert-state (map)
-  "Unmap insertion keys from normal state of MAP.
-This is particularly useful for read-only modes.
+(defmacro dan/inhibit-evil-insert-state (keymap)
+  "Unmap insertion keys from normal state of KEYMAP.
 
-Inspired by `evil-collection-inhibit-insert-state'."
-;;; FIXME Try this out but as a `defmacro'
-  (general-unbind 'normal map
+This is particularly useful for read-only modes. Inspired by `evil-collection-inhibit-insert-state'."
+  `(general-unbind 'normal keymap
     :with #'ignore
     [remap evil-append]
     [remap evil-append-line]
@@ -34,19 +34,6 @@ Inspired by `evil-collection-inhibit-insert-state'."
     [remap evil-shift-left]
     [remap evil-shift-right]
     [remap evil-invert-char]))
-
-;;;###autoload
-(defmacro dan/setq (&rest symbol-vals)
-  "Set the values of a list SYMBOL-VALS.
-
-The SYMBOL-VALS structure must be a list of elements, with the uneventh menbers being symbols and eventh being thedesignated value."
-  (let* ((flat (-flatten symbol-vals))
-         (flat-ln (length symbol-vals)))
-    (when (or (< flat-ln 1)
-              (/= (mod flat-ln 2) 0))
-      (error "Wrong input")))
-  ;; TODO May not be needed.
-  )
 
 ;;;###autoload
 (defun dan/only-current-buffer ()
@@ -85,9 +72,14 @@ The SYMBOL-VALS structure must be a list of elements, with the uneventh menbers 
                  (yes-or-no-p (format "Directory %s does not exist. Create it?" dir)))
         (make-directory dir t)))))
 
-;; FIXME Put this in utils
-(add-hook 'before-save-hook
-          'dan/create-directories-recursively)
+;;;###autoload
+(defun dan/garbage-collecting-strategy-after-init-hook ()
+  "Adopt a sneaky garbage collection strategy of waiting until idle time to collect staving off the collector while the user is working."
+  (setq gcmh-idle-delay 5
+        gcmh-high-cons-threshold 16777216
+        gcmh-verbose nil
+        gc-cons-percentage 0.1
+        file-name-handler-alist dan/last-file-name-handler-alist))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; AUTOLOAD LIBRARIES ;;;
@@ -120,7 +112,7 @@ First, the library is resolved into a directory. Then, a list of files with a '.
 (setq straight-use-package-by-default t)
 
 ;; use ssh for downloading packages
-(setq straight-vc-git-default-protocol 'ssh)
+(setq straight-vc-git-default-protocol 'https)
 
 ;; bootstrap straight.el
 (defvar bootstrap-version)
@@ -161,14 +153,6 @@ First, the library is resolved into a directory. Then, a list of files with a '.
 
 ;; Garbage collection optimization.
 (defvar dan/last-file-name-handler-alist file-name-handler-alist)
-
-(defun dan/garbage-collecting-strategy-after-init-hook ()
-  "Adopt a sneaky garbage collection strategy of waiting until idle time to collect staving off the collector while the user is working."
-  (setq gcmh-idle-delay 5
-        gcmh-high-cons-threshold 16777216
-        gcmh-verbose nil
-        gc-cons-percentage 0.1
-        file-name-handler-alist dan/last-file-name-handler-alist))
 
 (use-package gcmh
   :custom
@@ -271,6 +255,7 @@ First, the library is resolved into a directory. Then, a list of files with a '.
   :custom
   (hydra-look-for-remap t))
 
+;; FIXME Put this in its own subsection, together with s.el f.el and other utils libraries.
 ;; Convinience functions used in many places of the config, so better load it soon.
 (use-package dash)
 
@@ -291,7 +276,9 @@ First, the library is resolved into a directory. Then, a list of files with a '.
                            org-lib
                            pdf
                            lsp
-                           elisp)
+                           elisp
+                           yaml
+                           vim)
   "List of files which make the core of my config. They will be loaded in sequential order.")
 
 ;; Load all the libraries

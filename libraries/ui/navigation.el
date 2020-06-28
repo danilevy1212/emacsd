@@ -1,3 +1,5 @@
+;;; -*- lexical-binding:t -*-
+
 ;; Typing yes/no is obnoxious when y/n will do
 (advice-add #'yes-or-no-p :override #'y-or-n-p)
 
