@@ -81,6 +81,13 @@ This is particularly useful for read-only modes. Inspired by `evil-collection-in
         gc-cons-percentage 0.1
         file-name-handler-alist dan/last-file-name-handler-alist))
 
+;;;###autoload
+(defun dan/throw-error-after-startup (error-message)
+  ;; FIXME There is definetly a better way to do this, somehow.
+  "Throw an error after Emacs has finished loading with ERROR-MESSAGE."
+  (add-hook 'emacs-startup-hook #'(lambda ()
+                                    (error error-message))))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; AUTOLOAD LIBRARIES ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -146,6 +153,15 @@ First, the library is resolved into a directory. Then, a list of files with a '.
   "Directory where the backup files will be stored.")
 (when (not (file-accessible-directory-p dan/backup-dir))
   (make-directory dan/backup-dir))
+
+
+;; Create a centralized backup directory
+(defconst dan/cloud-dir (concat (getenv "HOME") "/Cloud/")
+  "Directory where the cloud service stores files.")
+(when (not (file-accessible-directory-p dan/cloud-dir))
+  (dan/throw-error-after-startup (format
+                                  "Cloud directory %s does not exist, please assign dan/cloud-dir to a real directory"
+                                  dan/cloud-dir)))
 
 ;;;;;;;;;;;;;;;;;;
 ;;; CORE UTILS ;;;
@@ -250,6 +266,7 @@ First, the library is resolved into a directory. Then, a list of files with a '.
   (evil-ex-search-highlight-all         t)
   (evil-symbol-word-search              t))
 
+;; FIXME May not make sense to have this here.
 ;; It takes many strokes to rule the world!
 (use-package hydra
   :custom

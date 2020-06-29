@@ -8,7 +8,7 @@
   (dan/inhibit-evil-insert-state 'elfeed-show-mode-map)
   (evil-set-initial-state 'elfeed-show-mode 'normal)
   :custom
-  (elfeed-db-directory (concat dan/cache-dir "elfeed/"))
+  (elfeed-db-directory (concat dan/cloud-dir "elfeed/"))
   :general
   (:states 'normal :keymaps 'elfeed-search-mode-map
            ;; open
