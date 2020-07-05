@@ -4,9 +4,6 @@
 ;;; VIM EMULATION ;;;
 ;;;;;;;;;;;;;;;;;;;;;
 
-;; Evil-like keybinds for magit
-(use-package evil-magit)
-
 ;; FIXME This mode is way too much bloat, keep it for reference, and only pick and choose what I like from it.
 ;; FIXME Translate the keybindings I like with general.
 (use-package evil-collection
@@ -48,6 +45,8 @@
   (evil-snipe-mode          1)
   (evil-snipe-override-mode 1)
   :general
+
+  ;; FIXME Since using an american keyboard, maybe this is hugely unnecesary?
   ;; Switch , with ; in snipe movements
   (general-define-key
    :states 'motion

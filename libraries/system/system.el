@@ -37,8 +37,18 @@
   ;;FIXME change `vterm-exit-functions' to use `kill-buffer-and-window' if more than one window with `count-windows'
   )
 
+;; Evil-like keybinds for magit
+(use-package evil-magit
+  :commands dan/init-evil-magit
+  :init
+  (defun dan/init-evil-magit ()
+    (require 'evil-magit)))
+
 ;; Git porcelain
 (use-package magit
+  :commands magit-status
+  :init
+  (dan/init-evil-magit)
   :config
   (magit-auto-revert-mode +1)
   :general
@@ -48,8 +58,11 @@
     "g"   '(:ignore t :wk "[g]it")
     "g s" #'magit-status))
 
+
+;; TODO Customize further, change background. Look into git-gutter-fringe.
 ;; vim-gitgutter port
 (use-package git-gutter
+  :commands global-git-gutter-mode
   :custom
   (git-gutter:update-interval 1)
   :hook
@@ -262,11 +275,11 @@
 
 ;; MOZC integration in emacs. すごいですね！
 (use-package mozc
-  :commands 'mozc-mode
+  :commands mozc-mode
   :general
   ;; FIXME A bit hacky and unrefined, needs more work.
-  (:states 'insert
-           "C-M-SPC" (lambda ()
+  (:states '(normal insert)
+           "C-x j" (lambda ()
                        (interactive)
                        (progn
                          (message "mozc-mode %s" (mozc-mode))))))

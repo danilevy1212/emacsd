@@ -3,15 +3,15 @@
 ;; The font of the hackermen.
 (set-language-environment "UTF-8")
 (set-default-coding-systems 'utf-8)
-(set-face-attribute 'default nil :font "Roboto Mono" :height 120)
-(when (display-graphic-p)
-  (set-fontset-font t 'latin "Roboto Mono"))
 
+;; FIXME Customize frame parameters to something that makes sense, they are
+;; pretty big potential time savers!
 ;; Disable tool and scrollbars.
 (unless (assq 'menu-bar-lines default-frame-alist)
   (add-to-list 'default-frame-alist '(menu-bar-lines . 0))
   (add-to-list 'default-frame-alist '(tool-bar-lines . 0))
   (add-to-list 'default-frame-alist '(vertical-scroll-bars))
+  (add-to-list 'default-frame-alist '(font . "Roboto Mono"))
   (menu-bar-mode -1))
 
 ;; The native border "consumes" a pixel of the fringe on righter-most splits,
@@ -44,11 +44,8 @@
 ;; always avoid GUI
 (setq use-dialog-box nil)
 
-;; Don't display floating tooltips; display their contents in the echo-area,
-;; because native tooltips are ugly.
-(when (bound-and-true-p tooltip-mode)
-  (tooltip-mode -1))
-(setq x-gtk-use-system-tooltips nil)
+;; x-gtk tooltips are ugly dude!
+(setq x-gtk-use-system-tooltips t)
 
 ;; Favor vertical splits over horizontal ones. Screens are usually wide.
 (setq split-width-threshold 160
@@ -125,18 +122,15 @@
     "Set the background color when in terminal Emacs, so it's consistent."
     (unless (display-graphic-p (selected-frame))
       (set-face-background 'default "black" (selected-frame))))
-
   (add-hook 'window-setup-hook #'dan/set-background-when-in-terminal)
-
   :custom
   (nord-comment-brightness 20)
   (nord-region-highlight "snowstorm")
   (nord-uniform-mode-lines t)
+  :custom-face
+  (line-number-current-line ((t (:inherit line-number :foreground "white"))))
   :config
   (load-theme 'nord t))
-
-;; All the icons, to install -> (M-x all-the-icons-install-fonts)
-(use-package all-the-icons)
 
 ;; Modeline BUG Requires gitlab account through ssh
 (use-package doom-modeline
@@ -156,7 +150,7 @@
   :hook
   ;; FIXME Make it laptop specific
   ;; FIXME Further customize?
-  '((after-init . display-battery-mode)))
+  '(after-init . display-battery-mode))
 
 ;; Describe what each key does while typing
 (use-package which-key
@@ -169,13 +163,14 @@
   (which-key-side-window-location '(bottom right))
   (which-key-show-prefix t)
   (which-key-show-remaining-keys t)
-  :config
+  :general
   (dan/local-leader
     :states  '(normal visual motion)
     :keymaps 'override
     "h k M"  #'which-key-show-full-major-mode
     "h k m"  #'which-key-show-minor-mode-keymap)
-  (which-key-mode))
+  :hook
+  '(after-init . which-key-mode))
 
 ;; Highlight indentation
 ;; FIXME Customize!
@@ -185,6 +180,7 @@
 ;; FIXME Customize!
 ;; Highlight TODO, FIXME words in comments FIXME Change to hl-mode
 (use-package hl-todo
+  :commands hl-todo-mode
   :hook
   '(prog-mode . hl-todo-mode))
 
@@ -195,12 +191,15 @@
   (beacon-blink-duration 0.25)
   (beacon-blink-when-focused t)
   (beacon-size 50)
-  :config
-  (general-define-key :states '(normal motion)
+  :general
+  (:states '(normal motion)
                       "C-M-s-SPC" #'beacon-blink)
-  (beacon-mode))
+  :hook
+  '(after-init . beacon-mode))
 
+;; Have you seen here dressed in blue?
 (use-package rainbow-delimiters
+  :commands rainbow-delimiters-mode-enable
   :hook
   '(prog-mode . rainbow-delimiters-mode-enable))
 

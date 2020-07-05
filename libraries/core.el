@@ -83,9 +83,9 @@ This is particularly useful for read-only modes. Inspired by `evil-collection-in
 
 ;;;###autoload
 (defun dan/throw-error-after-startup (error-message)
-  ;; FIXME There is definetly a better way to do this, somehow.
+  ;; FIXME There is definetly a better way to do this, somehow. Maybe use `window-setup-hook' instead?
   "Throw an error after Emacs has finished loading with ERROR-MESSAGE."
-  (add-hook 'emacs-startup-hook #'(lambda ()
+  (add-hook 'after-init-hook #'(lambda ()
                                     (error error-message))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -106,6 +106,7 @@ First, the library is resolved into a directory. Then, a list of files with a '.
   "Helper function that recieves a FILE with '.el' extension and will load it into Emacs, checking if a bytecompiled version exist, which it will load instead."
   (load (string-remove-suffix ".el" file)) nil 'nomessage)
 
+;; FIXME Optionally wrap this in a timer function, for profiling.
 ;;;###autoload
 (defun dan/load-config (filename)
   "Load FILENAME inside the config directory."
@@ -200,7 +201,6 @@ First, the library is resolved into a directory. Then, a list of files with a '.
     :keymaps 'override
     "f"      '(:ignore t :wk "[f]ile")
     "f y"    #'yank-buffer-filename
-    ;; FIXME make a macro for this?, dan/wk-wrap? INSPIRATION https://cestlaz.github.io/posts/using-emacs-31-elfeed-3/
     "f p"    `((lambda () (interactive)
                  (find-file ,user-emacs-directory)) :wk "[p]rivate config")
     "b"      '(:ignore t :wk "[b]uffer")
@@ -266,15 +266,108 @@ First, the library is resolved into a directory. Then, a list of files with a '.
   (evil-ex-search-highlight-all         t)
   (evil-symbol-word-search              t))
 
-;; FIXME May not make sense to have this here.
-;; It takes many strokes to rule the world!
-(use-package hydra
+;; General search engine. FIXME Customize
+(use-package ivy
   :custom
-  (hydra-look-for-remap t))
+  (ivy-use-virtual-buffers t)
+  (ivy-wrap t)
+  ;; Define the optimal height of the ivy buffer.
+  (ivy-height-alist
+   '(((t lambda (_caller) (/ (window-height) 4)))))
+  (ivy-height 15)
+  :config
+  (ivy-mode +1)
+  :general
+  (:states '(motion normal)
+           "<s-up>"   #'ivy-push-view
+           "<s-down>" #'ivy-switch-view)
+  (dan/leader
+    :states   '(normal motion)
+    :keymaps  'override
+    "b b"      #'switch-to-buffer
+    "i"        '(:ignore t :wk "[i]vy")
+    "i r"      #'ivy-resume))
 
-;; FIXME Put this in its own subsection, together with s.el f.el and other utils libraries.
-;; Convinience functions used in many places of the config, so better load it soon.
-(use-package dash)
+;; Extra functions, powered by ivy.
+(use-package counsel
+  :demand t
+  :commands (counsel-switch-buffer
+             counsel-ag
+             counsel-fzf
+             counsel-find-file
+             counsel-recentf
+             counsel-find-library
+             counsel-faces)
+  :general
+  (dan/leader
+    :states   '(normal motion)
+    :keymaps  'override
+    "b B"     #'counsel-switch-buffer
+    "f a"     #'counsel-ag
+    "f f"     #'counsel-fzf
+    "f o"     #'counsel-find-file
+    "f r"     #'counsel-recentf
+    "f l"     #'counsel-find-library
+    "f F"     #'counsel-faces)
+  (:keymaps
+   'global-map [remap execute-extended-command] #'counsel-M-x))
+
+;; Improve the default searching text functionality.
+(use-package swiper
+  :demand t
+  :general
+  (:keymaps 'evil-motion-state-map
+                      [remap evil-ex-search-forward]       #'swiper
+                      [remap evil-ex-search-backward]      #'swiper-all
+                      [remap evil-ex-search-word-forward]  #'swiper-thing-at-point
+                      [remap evil-ex-search-word-backward] #'swiper-all-thing-at-point))
+
+
+;; Auto complete
+;; (use-package company
+;;   :hook
+;;   '(after-init . global-company-mode)
+;;   :commands company-complete-common company-manual-begin company-grab-line
+;;   ;; :bind  (:map company-active-map
+;;         ;;       ("C-n" . #'company-select-next)
+;;         ;;       ("C-p" . #'company-select-previous)
+;;         ;;       ("<tab>" . #'company-complete-common-or-cycle)
+;;         ;;  :map company-search-map
+;;         ;;       ("C-p" . #'company-select-previous)
+;;         ;;       ("C-n" . #'company-select-next))
+;;   :custom
+;;   (company-begin-commands '(self-insert-command))
+;;   (company-minimum-prefix-length 1)
+;;   (company-idle-delay 0.1)
+;;   (company-show-numbers t)
+;;   (company-tooltip-align-annotations 't)
+;;   (company-global-modes
+;;    '(not erc-mode message-mode help-mode gud-mode eshell-mode))
+;;   (company-backends '(company-capf company-dabbrev company-dabbrev-code))
+;;   (company-frontends
+;;    '(company-pseudo-tooltip-frontend
+;;      company-echo-metadata-frontend)))
+
+;; FIXME Customize.
+(use-package company
+  :hook
+  '(after-init . global-company-mode)
+  ;; :config
+  ;; (setq company-clang-insert-arguments nil
+  ;;       company-semantic-insert-arguments nil
+  ;;       company-rtags-insert-arguments nil
+  ;;       lsp-enable-snippet nil)
+  ;; (advice-add #'eglot--snippet-expansion-fn :override #'ignore)
+  ;; :custom
+  ;; (company-require-match nil)
+  ;; (company-frontends '(company-tng-frontend
+  ;;                      company-pseudo-tooltip-frontend
+  ;;                      company-echo-metadata-frontend))
+  ;; :general
+  ;; (:keymaps 'company-active-map
+  ;;   "TAB"   'company-select-next
+  ;;   "S-TAB" 'company-select-previous)
+  )
 
 ;;;;;;;;;;;;;;;;;;;;;;
 ;;; LOAD LIBRARIES ;;;
@@ -283,20 +376,23 @@ First, the library is resolved into a directory. Then, a list of files with a '.
 (defconst dan/libraries-directory (concat user-emacs-directory "libraries/")
   "Directory name containing all the libraries of Dan's configuration.")
 
-(defvar dan/library-list '(utils
-                           completion
-                           system
-                           evil-plugins
-                           ui
+(defvar dan/library-list '(
+                           utils
+                           completion   ;; FIXME Slow
+                           system       ;; FIXME Slow
+                           evil-plugins ;; FIXME Slow
+                           ui           ;; FIXME Slow
                            editor-conf
                            rss
-                           org-lib
+                           org-lib      ;; FIXME Slow
                            pdf
                            lsp
+                           haskell
                            elisp
                            yaml
-                           vim)
+                           vim
+                           )
   "List of files which make the core of my config. They will be loaded in sequential order.")
 
-;; Load all the libraries
+;; ;; Load all the libraries
 (mapc #'dan/load-library dan/library-list)

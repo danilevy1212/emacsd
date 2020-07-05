@@ -13,7 +13,7 @@
   :config
   (put 'narrow-to-page 'disabled nil)
   (put 'set-goal-column 'disabled nil)
-  (add-hook 'org-mode-hook 'auto-revert-mode)
+  (add-hook 'org-mode-hook  #'auto-revert-mode)
   :custom
   (org-todo-keywords                                '((sequence "TODO(t)" "PROGRESS(p)" "WAITING(w)" "|" "DONE(d)" "CANCELLED(c)")))
   (org-todo-keyword-faces                           '(("PROGRESS" . "#E35DBF")

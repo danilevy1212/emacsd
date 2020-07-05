@@ -25,8 +25,8 @@
 
 ;; Jump to definitions
 (use-package elisp-def
-  :hook
-  '(emacs-lisp-mode . elisp-def-mode))
+  :commands elisp-def)
+
 
 ;; Find references
 (use-package elisp-refs
@@ -52,7 +52,9 @@
       "f D"   #'xref-find-definitions-other-window ;; FIXME
       "f r"   '(:ignore t :wk "[r]eferences")
       ;; FIXME make the search limited to current project directory, then all directories?
-      "f r s" #'elisp-refs-symbol
+      "f r s" (lambda () (interactive)
+                (elisp-refs-symbol 'pdf-loader-install
+                                   (projectile-project-root)))
       "r"     '(:ignore t :wk "[r]efactor")
       ;; FIXME use unread-command.events + xref-find-references?
       ;;       probably will use idit, defined in core-utils
@@ -68,7 +70,7 @@
       "d"     '(:ignore t :which-key "[d]ebug"))))
 
 
-;; FIXME adapt to mey setup
+;; FIXME adapt to my setup
 ;; (defun +emacs-lisp-reduce-flycheck-errors-in-emacs-config-h ()
 ;;   "Remove `emacs-lisp-checkdoc' checker and reduce `emacs-lisp' checker
 ;; verbosity when editing a file in `doom-private-dir' or `doom-emacs-dir'."

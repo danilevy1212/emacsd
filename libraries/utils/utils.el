@@ -51,7 +51,7 @@
   (recentf-max-menu-items  30))
 
 ;; setup backups directory
-(setq backup-directory-alist `(("." . ,dan/backup-dir))
+(setq backup-directory-alist `((".*" . ,dan/backup-dir))
       make-backup-files t
       backup-by-copying t
       version-control   t
@@ -109,7 +109,11 @@
   '(after-init . global-flycheck-mode)
   :custom
   (flycheck-emacs-lisp-load-path 'inherit)
-  (flycheck-display-errors-delay .3))
+  (flycheck-display-errors-delay .3)
+  ;; FIXME Customize this
+  ;; (flycheck-global-modes t)
+  )
+
 
 ;; https://blog.binchen.org/posts/how-to-use-expand-region-efficiently.html
 ;; (use-package expand-region)

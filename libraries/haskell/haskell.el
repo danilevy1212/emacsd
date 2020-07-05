@@ -1,13 +1,24 @@
 ;;; -*- lexical-binding:t -*-
 
-;;; Code:
+;;; Static functional goodness!
 (use-package haskell-mode
+  :mode
+  ("\\.hs\\'" . #'haskell-mode)
   ;; :custom
   ;; FIXME Until I use stack for xmonad.
   ;; (flycheck-ghc-args '("-dynamic"))
-  :config
-  (set (make-local-variable 'company-backends)
-       '(company-capf company-dabbrev-code)))
+  )
+
+;; FIXME This ain't working man...
+(use-package company-ghci
+  :init
+  (defun dan/haskell-set-company-backends-hook ()
+    "Hook to set the company-backends in `haskell-mode'"
+    (set (make-local-variable 'company-backends)
+         '(company-ghci company-capf company-dabbrev-code)))
+  :hook
+  '(haskell-mode . dan/haskell-set-company-backends-hook))
+
 
 ;; FIXME Use this for autocompletion.
 ;; https://chrisdone.github.io/intero/ NOTE No longer maintained!

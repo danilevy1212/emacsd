@@ -2,6 +2,7 @@
 
 ;; RSS client
 (use-package elfeed
+  :commands elfeed
   :config
   (dan/inhibit-evil-insert-state 'elfeed-search-mode-map)
   (evil-set-initial-state 'elfeed-search-mode 'normal)
