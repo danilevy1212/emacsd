@@ -36,6 +36,12 @@
   ;; Use the definition fro helpful-at-point for inpiration
   )
 
+; Auto-compile emacslisp
+(use-package auto-compile
+  :commands auto-compile-on-save-mode
+  :hook
+  '(emacs-lisp-mode . auto-compile-on-save-mode))
+
 (defun dan/emacs-lisp-hook ()
   "Function to be run dureing the `emacs-lisp-mode-hook'. Mainly configures keybindings for `emacs-lisp-mode'."
   (let ((emacs-modes-maps '(emacs-lisp-mode-map lisp-mode-map lisp-interaction-mode-map)))

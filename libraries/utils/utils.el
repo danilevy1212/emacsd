@@ -1,10 +1,5 @@
 ;;; -*- lexical-binding:t -*-
 
-; Auto-compile emacslisp
-(use-package auto-compile
-  :config
-  (auto-compile-on-save-mode))
-
 ;; A second, case-insensitive pass over `auto-mode-alist' is time wasted.
 (setq auto-mode-case-fold nil)
 

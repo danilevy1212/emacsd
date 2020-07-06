@@ -180,6 +180,9 @@ First, the library is resolved into a directory. Then, a list of files with a '.
   (add-hook 'after-init-hook #'dan/garbage-collecting-strategy-after-init-hook)
   (gcmh-mode))
 
+;; Don't load irrelevant bytecode
+(setq load-prefer-newer t)
+
 ;; Leader key
 (defconst dan/leader-key "SPC" "Keymap for \"leader key\" shortcuts.")
 
