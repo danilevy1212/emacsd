@@ -353,8 +353,11 @@ First, the library is resolved into a directory. Then, a list of files with a '.
 
 ;; FIXME Customize.
 (use-package company
-  :hook
-  '(after-init . global-company-mode)
+  :defer 1
+  :config
+  (global-company-mode)
+  ;; :hook
+  ;; '(after-init . global-company-mode)
   ;; :config
   ;; (setq company-clang-insert-arguments nil
   ;;       company-semantic-insert-arguments nil
@@ -379,11 +382,10 @@ First, the library is resolved into a directory. Then, a list of files with a '.
 (defconst dan/libraries-directory (concat user-emacs-directory "libraries/")
   "Directory name containing all the libraries of Dan's configuration.")
 
-(defvar dan/library-list '(
-                           utils
+(defvar dan/library-list '(utils
                            completion   ;; FIXME Slow
                            system       ;; FIXME Slow
-                           evil-plugins ;; FIXME Slow
+                           evil-plugins
                            ui           ;; FIXME Slow
                            editor-conf
                            rss
@@ -393,8 +395,7 @@ First, the library is resolved into a directory. Then, a list of files with a '.
                            haskell
                            elisp
                            yaml
-                           vim
-                           )
+                           vim)
   "List of files which make the core of my config. They will be loaded in sequential order.")
 
 ;; ;; Load all the libraries

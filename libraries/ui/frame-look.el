@@ -45,7 +45,7 @@
 (setq use-dialog-box nil)
 
 ;; x-gtk tooltips are ugly dude!
-(setq x-gtk-use-system-tooltips t)
+(setq x-gtk-use-system-tooltips nil)
 
 ;; Favor vertical splits over horizontal ones. Screens are usually wide.
 (setq split-width-threshold 160

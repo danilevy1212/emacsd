@@ -4,14 +4,16 @@
 ;;; VIM EMULATION ;;;
 ;;;;;;;;;;;;;;;;;;;;;
 
-;; FIXME This mode is way too much bloat, keep it for reference, and only pick and choose what I like from it.
-;; FIXME Translate the keybindings I like with general.
+;; FIXME This mode is way too much bloat, keep it for reference, and only pick
+;; and choose what I like from it
+
+;; FIXME Translate the keybindings I like with
+;; general, use doom/modules/evil as inspiraton.
 (use-package evil-collection
   :custom
   (evil-collection-mode-list '(ivy
                                info
                                occur
-                               ;; dired
                                doc-view
                                (pdf pdf-view)
                                helpful
@@ -43,25 +45,7 @@
   (evil-snipe-scope 'buffer)
   :config
   (evil-snipe-mode          1)
-  (evil-snipe-override-mode 1)
-  :general
-
-  ;; FIXME Since using an american keyboard, maybe this is hugely unnecesary?
-  ;; Switch , with ; in snipe movements
-  (general-define-key
-   :states 'motion
-   :keymaps 'evil-snipe-override-local-mode-map
-   "," '(:ignore t)
-   ";" '(:ignore t)
-   ";" #'evil-snipe-repeat-reverse
-   "," #'evil-snipe-repeat)
-
-  (general-define-key
-   :keymaps 'evil-snipe-parent-transient-map
-   "," '(:ignore t)
-   ";" '(:ignore t)
-   ";" #'evil-snipe-repeat-reverse
-   "," #'evil-snipe-repeat))
+  (evil-snipe-override-mode 1))
 
 ;; Evil-surround
 (use-package evil-surround
@@ -76,11 +60,13 @@
 
 ;; Additional matching on pairs, using %
 (use-package evil-matchit
- :config
- (global-evil-matchit-mode 1))
+  :defer 1
+  :config
+  (global-evil-matchit-mode 1))
 
 ;; Better sentence navigation
 (use-package sentence-navigation
+  :defer 1
   :general
   (:keymaps 'evil-motion-state-map
             ")"  'sentence-nav-evil-forward
@@ -95,6 +81,7 @@
 ;; This package provides gl and gL align operators
 ;; gl MOTION CHAR and right-align gL MOTION CHAR.
 (use-package evil-lion
+  :defer 1
   :config
   (evil-lion-mode))
 
