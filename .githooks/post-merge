@@ -1,0 +1,6 @@
+#!/usr/bin/env sh
+
+PROJECT_DIR="$(git rev-parse --show-toplevel)"
+LIBRARIES_FOLDER="libraries"
+
+emacs --batch --eval "(byte-recompile-directory \"$PROJECT_DIR/$LIBRARIES_FOLDER\")"

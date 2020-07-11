@@ -15,6 +15,21 @@
       git clone https://github.com/danilevy1212/emacsd $XDG_CONFIG_HOME/emacs
     #+END_SRC
 
+    Optionally, if using this configuration in multiple machines, you can enable
+    my custom githooks, that recompile the "libraries" folder on each pull,
+    making sure no stale byte-code will be loaded, by running:
+
+    #+BEGIN_SRC shell
+      git config core.hooksPath .githooks
+    #+END_SRC
+
+    or
+
+    #+BEGIN_SRC shell
+      find .git/hooks -type l -exec rm {} \;
+      find .githooks -type f -exec ln -sf ../../{} .git/hooks/ \;
+    #+END_SRC
+
 ** TODO Dependencies
 
    - Cmake :: For vterm
