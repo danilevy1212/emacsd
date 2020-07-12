@@ -16,5 +16,4 @@
   (web-mode-script-padding                    0)
   :hook (web-mode . (lambda ()
                       (set (make-local-variable 'company-backends)
-                           (append '((company-lsp company-capf company-dabbrev-code)) '()))
-                      (lsp-deferred))))
+                           (append '(company-capf company-dabbrev-code))))))

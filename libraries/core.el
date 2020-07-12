@@ -183,6 +183,9 @@ First, the library is resolved into a directory. Then, a list of files with a '.
 ;; Don't load irrelevant bytecode
 (setq load-prefer-newer t)
 
+;; Manage those dependencies!
+(use-package use-package-ensure-system-package)
+
 ;; Leader key
 (defconst dan/leader-key "SPC" "Keymap for \"leader key\" shortcuts.")
 
@@ -294,8 +297,9 @@ First, the library is resolved into a directory. Then, a list of files with a '.
 ;; Extra functions, powered by ivy.
 (use-package counsel
   :demand t
+  :ensure-system-package ((rg . ripgrep))
   :commands (counsel-switch-buffer
-             counsel-ag
+             counsel-rg
              counsel-fzf
              counsel-find-file
              counsel-recentf
@@ -306,7 +310,7 @@ First, the library is resolved into a directory. Then, a list of files with a '.
     :states   '(normal motion)
     :keymaps  'override
     "b B"     #'counsel-switch-buffer
-    "f a"     #'counsel-ag
+    "f a"     #'counsel-rg
     "f f"     #'counsel-fzf
     "f o"     #'counsel-find-file
     "f r"     #'counsel-recentf

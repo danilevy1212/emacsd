@@ -1,6 +1,10 @@
 #!/usr/bin/env sh
 
+unset GIT_LITERAL_PATHSPECS
+
 PROJECT_DIR="$(git rev-parse --show-toplevel)"
 LIBRARIES_FOLDER="libraries"
+CORE_FILE="core"
 
-emacs --batch --eval "(byte-recompile-directory \"$PROJECT_DIR/$LIBRARIES_FOLDER\")"
+emacs --batch -l "$PROJECT_DIR/$LIBRARIES_FOLDER/$CORE_FILE" \
+      --eval "(byte-recompile-directory \"$PROJECT_DIR/$LIBRARIES_FOLDER\")"

@@ -65,22 +65,3 @@
             "C-c m"   #'lsp-ui-imenu
 	        "C-c s"   #'lsp-ui-sideline-mode
 	        "C-c d"   #'my/toggle-lsp-ui-doc))
-
-;; Company backend
-(use-package company-lsp
-  :commands company-lsp
-  :custom
-  (company-lsp-cache-candidates t) ;; auto, t(always using a cache), or nil
-  (company-lsp-async t)
-  (company-lsp-enable-snippet t)
-  (company-lsp-enable-recompletion t))
-
-;; Debugger
-;; (use-package dap-mode
-;;   :config
-;;   (dap-mode 1)
-;;   (dap-ui-mode 1)
-;;   (dap-tooltip-mode 1)
-;;   (tooltip-mode 1)
-;;   :hook
-;;   (python-mode . (lambda () (require 'dap-python))))

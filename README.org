@@ -55,7 +55,7 @@
     9. pdf
     10. lsp
     11. elisp
-    12. frontend (UNTESTED)
+    12. web (UNTESTED)
     13. python (UNTESTED)
     14. vim
     15. yaml
