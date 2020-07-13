@@ -297,7 +297,10 @@ First, the library is resolved into a directory. Then, a list of files with a '.
 ;; Extra functions, powered by ivy.
 (use-package counsel
   :demand t
-  :ensure-system-package ((rg . ripgrep))
+  :ensure-system-package
+  ;; TODO I have no idea why it says this is an error. If it fail at work, put
+  ;; it how it was
+  (rg . ripgrep)
   :commands (counsel-switch-buffer
              counsel-rg
              counsel-fzf
