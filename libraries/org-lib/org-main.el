@@ -32,6 +32,8 @@
   (org-agenda-window-setup                          'current-window)
   (org-agenda-skip-scheduled-if-done                nil)
   (org-default-priority                             ?C)
+  (org-startup-indented                             t)
+  (org-indent-indentation-per-level                 1)
   (org-modules                                      '(
                                                       ;; org-w3m
                                                       org-habit

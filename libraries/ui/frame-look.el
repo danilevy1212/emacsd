@@ -203,26 +203,6 @@
   :hook
   '(prog-mode . rainbow-delimiters-mode-enable))
 
-;; All the icons for ivy helper.
-(use-package all-the-icons-ivy-rich
-  :if ivy-mode
-  :init
-  (all-the-icons-ivy-rich-mode +1)
-  :custom
-  (all-the-icons-ivy-rich-icon-size 1.0)
-  ;; Definitions for ivy-rich transformers.
-  ;; See `ivy-rich-display-transformers-list' for details."
-  ;; FIXME Mega slow down when searching for a single dot, maybe auto-translate it to \.?
-  ;; FIXME the culprit for the slowdown is `ivy--resize-minibuffer-to-fit', elp
-  )
-
-;; ivy-rich (Fancy ivy)
-(use-package ivy-rich
-  :if ivy-mode
-  :config
-  (setcdr (assq t ivy-format-functions-alist) #'ivy-format-function-line)
-  (ivy-rich-mode +1))
-
 ;; Use another frame to show linting errors
 (use-package flycheck-posframe
   :if (display-graphic-p)

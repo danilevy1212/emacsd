@@ -298,8 +298,7 @@ First, the library is resolved into a directory. Then, a list of files with a '.
 (use-package counsel
   :demand t
   :ensure-system-package
-  ;; TODO I have no idea why it says this is an error. If it fail at work, put
-  ;; it how it was
+  ;; TODO I have no idea why flycheck says this is an error.
   (rg . ripgrep)
   :commands (counsel-switch-buffer
              counsel-rg
@@ -322,6 +321,29 @@ First, the library is resolved into a directory. Then, a list of files with a '.
   (:keymaps
    'global-map [remap execute-extended-command] #'counsel-M-x))
 
+
+;; All the icons for ivy helper.
+(use-package all-the-icons-ivy-rich
+  :after counsel
+  :init
+  ;; FIXME Re-examine this, this does not look right
+  (all-the-icons-ivy-rich-mode +1)
+  :custom
+  (all-the-icons-ivy-rich-icon-size 1.0)
+  ;; Definitions for ivy-rich transformers.
+  ;; See `ivy-rich-display-transformers-list' for details."
+  ;; FIXME Mega slow down when searching for a single dot, maybe auto-translate it to \.?
+  ;; FIXME the culprit for the slowdown is `ivy--resize-minibuffer-to-fit', elp
+  )
+
+;; ivy-rich (Fancy ivy)
+(use-package ivy-rich
+  :after counsel
+  :config
+  (setcdr (assq t ivy-format-functions-alist) #'ivy-format-function-line)
+  ;; FIXME Can;t we lazy load this?
+  (ivy-rich-mode +1))
+
 ;; Improve the default searching text functionality.
 (use-package swiper
   :demand t
@@ -331,7 +353,6 @@ First, the library is resolved into a directory. Then, a list of files with a '.
                       [remap evil-ex-search-backward]      #'swiper-all
                       [remap evil-ex-search-word-forward]  #'swiper-thing-at-point
                       [remap evil-ex-search-word-backward] #'swiper-all-thing-at-point))
-
 
 ;; Auto complete
 ;; (use-package company
