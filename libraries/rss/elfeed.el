@@ -23,7 +23,7 @@
            "s" 'elfeed-search-live-filter
            "S" 'elfeed-search-set-filter
            ;; refresh
-           "gR" 'elfeed-search-fetch ; TODO: Which update function is more useful?
+           "gR" 'elfeed-search-fetch
            "gr" 'elfeed-search-update--force
            ;; quit
            "q" 'quit-window

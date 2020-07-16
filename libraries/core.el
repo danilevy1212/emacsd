@@ -184,7 +184,9 @@ First, the library is resolved into a directory. Then, a list of files with a '.
 (setq load-prefer-newer t)
 
 ;; Manage those dependencies!
-(use-package use-package-ensure-system-package)
+(use-package use-package-ensure-system-package
+  :straight
+  (:flavor melpa))
 
 ;; Leader key
 (defconst dan/leader-key "SPC" "Keymap for \"leader key\" shortcuts.")
@@ -297,9 +299,10 @@ First, the library is resolved into a directory. Then, a list of files with a '.
 ;; Extra functions, powered by ivy.
 (use-package counsel
   :demand t
+  :after ivy
   :ensure-system-package
-  ;; TODO I have no idea why flycheck says this is an error.
-  (rg . ripgrep)
+  ;; FIXME: Throws error on Ubuntu 18.04
+  ((rg . ripgrep))
   :commands (counsel-switch-buffer
              counsel-rg
              counsel-fzf
@@ -326,14 +329,14 @@ First, the library is resolved into a directory. Then, a list of files with a '.
 (use-package all-the-icons-ivy-rich
   :after counsel
   :init
-  ;; FIXME Re-examine this, this does not look right
+  ;; FIXME: Re-examine this, this does not look right
   (all-the-icons-ivy-rich-mode +1)
   :custom
   (all-the-icons-ivy-rich-icon-size 1.0)
   ;; Definitions for ivy-rich transformers.
   ;; See `ivy-rich-display-transformers-list' for details."
-  ;; FIXME Mega slow down when searching for a single dot, maybe auto-translate it to \.?
-  ;; FIXME the culprit for the slowdown is `ivy--resize-minibuffer-to-fit', elp
+  ;; FIXME: Mega slow down when searching for a single dot, maybe auto-translate it to \.?
+  ;; FIXME: the culprit for the slowdown is `ivy--resize-minibuffer-to-fit', elp
   )
 
 ;; ivy-rich (Fancy ivy)
@@ -346,6 +349,7 @@ First, the library is resolved into a directory. Then, a list of files with a '.
 
 ;; Improve the default searching text functionality.
 (use-package swiper
+  :after ivy
   :demand t
   :general
   (:keymaps 'evil-motion-state-map

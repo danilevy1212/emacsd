@@ -1,7 +1,7 @@
 ;;; -*- lexical-binding:t -*-
 
 ;; Typing yes/no is obnoxious when y/n will do
-(advice-add #'yes-or-no-p :override #'y-or-n-p)
+(defalias 'yes-or-no-p 'y-or-n-p)
 
 ;; Ask if you're sure that you want to close Emacs.
 (setq confirm-kill-emacs 'y-or-n-p)

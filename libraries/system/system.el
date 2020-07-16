@@ -52,12 +52,32 @@
   :config
   (magit-auto-revert-mode +1)
   :general
+  (:states '(normal motion) :keymaps  'magit-blame-mode-map
+             "q" #'magit-blame-quit)
+  (:states '(normal motion) :keymaps 'magit-blame-read-only-mode-map
+           "q" #'magit-blame-quit)
   (dan/leader
     :states '(normal motion)
     :keymaps 'override
     "g"   '(:ignore t :wk "[g]it")
     "g s" #'magit-status))
 
+;; NO TODO LEFT BEHIND!
+(use-package magit-todos
+  :hook
+  '(magit-mode . magit-todos-mode)
+  :custom
+  (magit-todos-auto-group-items 'always)
+  (magit-todos-keyword-suffix  (rx (optional "(" (1+ (not (any ")"))) ")") (optional ?: ) blank))
+  :general
+  (:keymaps '(magit-todos-section-map magit-todos-item-section-map)
+            "jT" nil
+            "jl" nil
+            "j" nil)
+  (dan/leader
+    :states '(normal motion)
+    :keymaps 'override
+    "i t"   #'ivy-magit-todos))
 
 ;; TODO Customize further, change background. Look into git-gutter-fringe.
 ;; vim-gitgutter port
@@ -104,7 +124,7 @@
              "C" 'dired-do-copy
              "B" 'dired-do-byte-compile
              "D" 'dired-do-delete
-             "gG" 'dired-do-chgrp ;; FIXME: This can probably live on a better binding.
+             "gG" 'dired-do-chgrp
              "H" 'dired-do-hardlink
              "L" 'dired-do-load
              "M" 'dired-do-chmod
@@ -244,15 +264,18 @@
 
 ;; Writable dired buffers.
 (use-package wdired
+  :after dired
   :straight
   (:type built-in))
 
 ;; Extra features for directories.
 (use-package dired-x
+  :after dired
   :straight
   (:type built-in))
 
 (use-package dired-subtree
+  :after dired
   :general
   (:keymaps 'dired-mode-map
              :states 'normal
@@ -263,6 +286,7 @@
              "M-k" 'dired-subtree-previous-sibling))
 
 (use-package dired-filter
+  :after dired
   :general
   (:keymaps 'dired-mode-map :states'normal
              "*"  'dired-filter-mark-map
