@@ -10,6 +10,7 @@
 ;; FIXME Translate the keybindings I like with
 ;; general, use doom/modules/evil as inspiraton.
 (use-package evil-collection
+  :defer 1
   :custom
   (evil-collection-mode-list '(ivy
                                info
@@ -17,7 +18,6 @@
                                doc-view
                                (pdf pdf-view)
                                helpful
-                               magit
                                minibuffer
                                dashboard
                                company
@@ -49,12 +49,14 @@
 
 ;; Evil-surround
 (use-package evil-surround
+  :defer 1
   :config
   ;; `evil-surround-pairs-alist' is useful for definining new pairs
   (global-evil-surround-mode 1))
 
 ;; Evil commenter
 (use-package evil-commentary
+  :defer 1
   :config
   (evil-commentary-mode))
 
@@ -66,7 +68,6 @@
 
 ;; Better sentence navigation
 (use-package sentence-navigation
-  :defer 1
   :general
   (:keymaps 'evil-motion-state-map
             ")"  'sentence-nav-evil-forward
@@ -81,13 +82,13 @@
 ;; This package provides gl and gL align operators
 ;; gl MOTION CHAR and right-align gL MOTION CHAR.
 (use-package evil-lion
-  :defer 1
+  :defer 2
   :config
   (evil-lion-mode))
 
 ;; ex commands, which a vim user is likely to be familiar with
 (use-package evil-expat
-  :defer 1)
+  :defer 2)
 
 ;; FIXME increment/decrement numbers, using `HYDRA'
 ;; (use-package evil-numbers

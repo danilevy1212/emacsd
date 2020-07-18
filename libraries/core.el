@@ -83,7 +83,6 @@ This is particularly useful for read-only modes. Inspired by `evil-collection-in
 
 ;;;###autoload
 (defun dan/throw-error-after-startup (error-message)
-  ;; FIXME There is definetly a better way to do this, somehow. Maybe use `window-setup-hook' instead?
   "Throw an error after Emacs has finished loading with ERROR-MESSAGE."
   (add-hook 'after-init-hook #'(lambda ()
                                     (error error-message))))
@@ -324,6 +323,16 @@ First, the library is resolved into a directory. Then, a list of files with a '.
   (:keymaps
    'global-map [remap execute-extended-command] #'counsel-M-x))
 
+;; Improve the default searching text functionality.
+(use-package swiper
+  :after ivy
+  :demand t
+  :general
+  (:keymaps 'evil-motion-state-map
+                      [remap evil-ex-search-forward]       #'swiper
+                      [remap evil-ex-search-backward]      #'swiper-all
+                      [remap evil-ex-search-word-forward]  #'swiper-thing-at-point
+                      [remap evil-ex-search-word-backward] #'swiper-all-thing-at-point))
 
 ;; All the icons for ivy helper.
 (use-package all-the-icons-ivy-rich
@@ -347,16 +356,6 @@ First, the library is resolved into a directory. Then, a list of files with a '.
   ;; FIXME Can;t we lazy load this?
   (ivy-rich-mode +1))
 
-;; Improve the default searching text functionality.
-(use-package swiper
-  :after ivy
-  :demand t
-  :general
-  (:keymaps 'evil-motion-state-map
-                      [remap evil-ex-search-forward]       #'swiper
-                      [remap evil-ex-search-backward]      #'swiper-all
-                      [remap evil-ex-search-word-forward]  #'swiper-thing-at-point
-                      [remap evil-ex-search-word-backward] #'swiper-all-thing-at-point))
 
 ;; Auto complete
 ;; (use-package company
@@ -414,7 +413,8 @@ First, the library is resolved into a directory. Then, a list of files with a '.
 (defconst dan/libraries-directory (concat user-emacs-directory "libraries/")
   "Directory name containing all the libraries of Dan's configuration.")
 
-(defvar dan/library-list '(utils
+(defvar dan/library-list '(
+                           utils
                            completion   ;; FIXME Slow
                            system       ;; FIXME Slow
                            evil-plugins

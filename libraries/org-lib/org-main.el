@@ -56,12 +56,14 @@
   :hook
   '(org-mode . org-edna-mode))
 
-;; Switch entry to DONE when all subentries are done, to TODO otherwise.
+;; Switch entry to 'DONE' when all subentries are done, to 'TODO' otherwise.
 (add-hook 'org-after-todo-statistics-hook '(lambda (n-done n-not-done)
 					     (let (org-log-done org-log-states)
 					       (org-todo (if (= n-not-done 0) "DONE" "TODO")))))
 
-;; Switch header TODO state to DONE when all checkboxes are ticked, to TODO otherwise
+;; TODO Try out org-superstar
+
+;; Switch header 'TODO' state to 'DONE' when all checkboxes are ticked, to 'TODO' otherwise
 (add-hook 'org-checkbox-statistics-hook  '(lambda ()
                                             (let ((todo-state (org-get-todo-state)) beg end)
                                               (unless (not todo-state)
@@ -85,41 +87,6 @@
                                                               (org-todo 'done))
                                                           (unless (string-equal todo-state "TODO")
                                                             (org-todo 'todo))))))))))
-
-;; Make org headings a bit more fashionable. FIXME Customization
-;; (use-package org-superstar ; "prettier" bullets
-;;   :config
-;;   ;; Make leading stars truly invisible, by rendering them as spaces!
-;;   (setq org-superstar-leading-bullet ?\s
-;;         org-superstar-leading-fallback ?\s
-;;         org-hide-leading-stars nil)
-;;   ;; Don't do anything special for item bullets or TODOs by default; these slow
-;;   ;; down larger org buffers.
-;;   (setq org-superstar-prettify-item-bullets nil
-;;         org-superstar-special-todo-items nil
-;;         ;; ...but configure it in case the user wants it later
-;;         org-superstar-todo-bullet-alist
-;;         '(("TODO" . 9744)
-;;           ("[ ]"  . 9744)
-;;           ("DONE" . 9745)
-;;           ("[X]"  . 9745)))
-;;   (defun my-auto-lightweight-mode ()
-;;     "Start Org Superstar differently depending on the number of lists items."
-;;     (let ((list-items
-;;            (count-matches "^[ \t]*?\\([+-]\\|[ \t]\\*\\)"
-;;                           (point-min) (point-max))))
-;;       (unless (< list-items 100)
-;;         (org-superstar-toggle-lightweight-lists)))
-;;     (org-superstar))
-
-;;   (add-hook 'org-mode-hook #'my-auto-lightweight-mode))
-
-;; https://github.com/Titan-C/org-cv
-;; (use-package ox-altacv
-;;   :straight
-;;   (:host gitlab :repo "Titan-C/org-cv" :branch "master"))
-
-;; ALTERNATIVE --> https://github.com/liantze/AltaCV, https://titan-c.gitlab.io/org-cv/
 
 ;; Manage elfeed from an org file!
 (use-package elfeed-org

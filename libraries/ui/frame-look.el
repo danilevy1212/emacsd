@@ -11,8 +11,7 @@
   (add-to-list 'default-frame-alist '(menu-bar-lines . 0))
   (add-to-list 'default-frame-alist '(tool-bar-lines . 0))
   (add-to-list 'default-frame-alist '(vertical-scroll-bars))
-  (add-to-list 'default-frame-alist '(font . "Roboto Mono"))
-  (menu-bar-mode -1))
+  (add-to-list 'default-frame-alist '(font . "Roboto Mono")))
 
 ;; The native border "consumes" a pixel of the fringe on righter-most splits,
 ;; `window-divider' does not. Available since Emacs 25.1.
@@ -77,9 +76,17 @@
 ;; been determined, but we inhibit it there anyway.
 (setq inhibit-compacting-font-caches t)
 
-;; Visually indicate matching pairs of parentheses."
-(show-paren-mode t)
-(setq show-paren-delay 0.05)
+;; ;; Visually indicate matching pairs of parentheses."
+;; (show-paren-mode t)
+;; (setq show-paren-delay 0.05)
+(use-package paren
+  :straight
+  (:type built-in)
+  :custom
+  (show-paren-delay 0.05)
+  :config
+  ;; TODO show paren mode cover expression for lisp modes
+  (show-paren-mode t))
 
 ;; When you perform a problematic operation, flash the screen instead of ringing the terminal bell.
 (setq visible-bell t)
@@ -129,6 +136,8 @@
   (nord-uniform-mode-lines t)
   :custom-face
   (line-number-current-line ((t (:inherit line-number :foreground "white"))))
+  :custom-face
+  (show-paren-match ((t (:background unspecified :foreground unspecified :box (:color  "#88C0D0" :line-width 1)))))
   :config
   (load-theme 'nord t))
 
@@ -142,7 +151,8 @@
 ;; FIXME Add all other options that come from simple.el here
 ;; Show column position in mode-line
 (use-package simple
-  :straight nil
+  :straight
+  (:type built-in)
   :config
   (column-number-mode))
 
@@ -174,8 +184,8 @@
 
 ;; Highlight indentation
 ;; FIXME Customize!
-(use-package highlight-indent-guides
-  :defer t)
+;; (use-package highlight-indent-guides
+;;   :defer t)
 
 ;; FIXME Customize!
 ;; Highlight TODO, FIXME words in comments FIXME Change to hl-mode
@@ -186,6 +196,7 @@
 
 ;; Never loose the cursor again!
 (use-package beacon
+  :defer 1
   :custom
   (beacon-blink-delay 0.1)
   (beacon-blink-duration 0.25)
@@ -193,9 +204,7 @@
   (beacon-size 50)
   :general
   (:states '(normal motion)
-                      "C-M-s-SPC" #'beacon-blink)
-  :hook
-  '(after-init . beacon-mode))
+                      "C-M-s-SPC" #'beacon-blink))
 
 ;; Have you seen here dressed in blue?
 (use-package rainbow-delimiters

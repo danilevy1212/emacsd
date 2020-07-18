@@ -8,6 +8,7 @@
 
 ;; Window history.
 (use-package winner
+  :defer t
   :config
   (winner-mode)
   (general-define-key

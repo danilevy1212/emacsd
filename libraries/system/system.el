@@ -15,10 +15,7 @@
 ;; FIXME Use emacs application framework terminal?
 ;; better terminal emulation ~ special install akermu/emacs-libvterm
 (use-package vterm
-  :straight
-  (:no-byte-compile t :flavor melpa)
   :config
-
   ;; FIXME Work on this.
   ;; (setq display-buffer-alist
   ;;       '(("vterm"
@@ -26,8 +23,6 @@
   ;;          (window-height . 0.25)
   ;;          (side . bottom)
   ;;          (slot . -1))))
-
-
   (dan/leader
     :states '(normal motion)
     :keymaps 'override
@@ -36,6 +31,16 @@
     "t T"    #'vterm)
   ;;FIXME change `vterm-exit-functions' to use `kill-buffer-and-window' if more than one window with `count-windows'
   )
+
+;; Get me those delicious ENV variables.
+(use-package exec-path-from-shell
+  :defer 1
+  :custom
+  (exec-path-from-shell-variables '("PATH"
+                                    "FZF_DEFAULT_COMMAND"))
+  (exec-path-from-shell-check-startup-files nil)
+  :config
+  (exec-path-from-shell-initialize))
 
 ;; Evil-like keybinds for magit
 (use-package evil-magit
@@ -62,7 +67,7 @@
     "g"   '(:ignore t :wk "[g]it")
     "g s" #'magit-status))
 
-;; NO TODO LEFT BEHIND!
+;; No todo left behind!
 (use-package magit-todos
   :hook
   '(magit-mode . magit-todos-mode)
@@ -86,7 +91,7 @@
   :custom
   (git-gutter:update-interval 1)
   :hook
-  '(after-init . global-git-gutter-mode)
+  '(prog-mode . global-git-gutter-mode)
   ;; g-based hunk previews
   :general
   (:states 'normal
@@ -202,7 +207,7 @@
              "u" 'dired-unmark                   ; also "*u"
              "W" 'browse-url-of-dired-file
              "x" 'dired-do-flagged-delete
-             "gy" 'dired-show-file-type ;; FIXME: This could probably go on a better key.
+             "gy" 'dired-show-file-type
              "Y" 'dired-copy-filename-as-kill
              "+" 'dired-create-directory
              ;; open
@@ -227,7 +232,7 @@
              [remap next-line] 'dired-next-line
              [remap previous-line] 'dired-previous-line
              ;; hiding
-             "g$" 'dired-hide-subdir ;; FIXME: This can probably live on a better binding.
+             "g$" 'dired-hide-subdir
              "M-$" 'dired-hide-all
              "(" 'dired-hide-details-mode
              ;; isearch
@@ -301,7 +306,8 @@
 (use-package mozc
   :commands mozc-mode
   :general
-  ;; FIXME A bit hacky and unrefined, needs more work.
+  ;; FIXME A bit hacky and unrefined, needs more work. Also requires
+  ;; emacs_mozc_helper and mozc
   (:states '(normal insert)
            "C-x j" (lambda ()
                        (interactive)

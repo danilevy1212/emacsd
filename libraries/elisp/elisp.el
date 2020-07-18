@@ -7,8 +7,6 @@
 
 ;; FIXME with-simulated-input, make part of core utils?
 
-;; TODO Make a macro so prompted interactive function only prompt me if there is no symbol at point
-
 ;; TODO if I ever get into other lisps, maybe good to create a lisp module and bring some stuff there
 ;; highlight quoted symbol
 (use-package highlight-quoted
@@ -19,6 +17,7 @@
 ;; TODO if I ever get into other lisps, maybe good to create a lisp module and bring some stuff there
 ;; Highlight sexp (Useful when evaluating from source)
 (use-package highlight-sexp
+  ;; TODO This may not be necessary, research `show-paren-match-expression'
   :hook
   '((emacs-lisp-mode lisp-mode lisp-interaction-mode) . highlight-sexp-mode)
   :defer t)
@@ -26,7 +25,6 @@
 ;; Jump to definitions
 (use-package elisp-def
   :commands elisp-def)
-
 
 ;; Find references
 (use-package elisp-refs
@@ -58,9 +56,11 @@
       "f D"   #'xref-find-definitions-other-window ;; FIXME
       "f r"   '(:ignore t :wk "[r]eferences")
       ;; FIXME make the search limited to current project directory, then all directories?
-      "f r s" (lambda () (interactive)
-                (elisp-refs-symbol 'pdf-loader-install
-                                   (projectile-project-root)))
+      "f r s" '((lambda (symbol)
+                  (interactive
+                   (list (symbol-at-point)))
+                  (elisp-refs-symbol symbol
+                                     (projectile-project-root))) :wk "[s]ymbol")
       "r"     '(:ignore t :wk "[r]efactor")
       ;; FIXME use unread-command.events + xref-find-references?
       ;;       probably will use idit, defined in core-utils

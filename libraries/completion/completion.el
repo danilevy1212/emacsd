@@ -8,6 +8,7 @@
 
 ;; Hydra powered ivy!
 (use-package ivy-hydra
+  :defer 1
   :custom
   (ivy-read-action-function 'ivy-hydra-read-action)
   :general
@@ -15,6 +16,7 @@
 
 ;; Added M-x heuristics.
 (use-package amx
+  :defer 1
   :custom
   (amx-backend 'ivy)
   (amx-save-file (concat dan/cache-dir "amx-items")))

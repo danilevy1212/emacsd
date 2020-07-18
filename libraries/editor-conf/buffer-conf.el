@@ -31,3 +31,10 @@
 
 ;; If you save a file that doesn't end with a newline,automatically append one.
 (setq require-final-newline t)
+
+;; Auto close text pairs.
+(use-package elec-pair
+  :straight
+  (:type built-in)
+  :config
+  (electric-pair-mode))

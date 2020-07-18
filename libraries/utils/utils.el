@@ -6,37 +6,41 @@
 ;; Customize away!
 (use-package cus-edit
   :straight (:type built-in)
-  :after evil
+  :init
+  (defun dan/load-custom-file-hook ()
+    "Load the file containing the Customize interface options."
+    (when (file-exists-p (symbol-value 'custom-file))
+      (load custom-file nil nil)))
   :custom
   ;; Setup a special file for the customize interface.
-  (custom-file (concat dan/cache-dir "custom"))
+  (custom-file (concat dan/cache-dir "custom.el"))
+  :hook
+  '(Custom-mode . dan/load-custom-file-hook)
   :config
   (evil-set-initial-state 'Custom-mode 'normal)
-  (when (file-exists-p custom-file)
-    (load custom-file nil nil))
-  (general-define-key
-   :keymaps 'custom-mode-map :states 'normal
-   ;; motion
-   "<tab>" 'widget-forward
-   "S-<tab>" 'widget-backward
-   "<backtab>" 'widget-backward
-   "SPC" 'scroll-up-command
-   "S-SPC" 'scroll-down-command
-   "<delete>" 'scroll-down-command
-   "RET" 'Custom-newline
-   "]]" 'widget-forward
-   "[[" 'widget-backward
-   "C-j" 'widget-forward
-   "C-k" 'widget-backward
-   "gj" 'widget-forward
-   "gk" 'widget-backward
-   "^" 'Custom-goto-parent
-   "C-o" 'Custom-goto-parent
-   "<" 'Custom-goto-parent
-   ;; quit
-   "q" 'Custom-buffer-done
-   "ZQ" 'evil-quit
-   "ZZ" 'Custom-buffer-done))
+  :general
+  (:keymaps 'custom-mode-map :states 'normal
+            ;; motion
+            "<tab>" 'widget-forward
+            "S-<tab>" 'widget-backward
+            "<backtab>" 'widget-backward
+            "SPC" 'scroll-up-command
+            "S-SPC" 'scroll-down-command
+            "<delete>" 'scroll-down-command
+            "RET" 'Custom-newline
+            "]]" 'widget-forward
+            "[[" 'widget-backward
+            "C-j" 'widget-forward
+            "C-k" 'widget-backward
+            "gj" 'widget-forward
+            "gk" 'widget-backward
+            "^" 'Custom-goto-parent
+            "C-o" 'Custom-goto-parent
+            "<" 'Custom-goto-parent
+            ;; quit
+            "q" 'Custom-buffer-done
+            "ZQ" 'evil-quit
+            "ZZ" 'Custom-buffer-done))
 
 ;; Cache of recently visited files.
 (use-package recentf
@@ -94,14 +98,13 @@
   (dan/leader
     :keymaps 'override
     :states  '(normal motion)
-    ;; "p"     '(:prefix-map projectile-command-map :wk "[p]rojectile")
     "p"     '(:ignore t :wk "[p]rojectile")
     "p p"   '((lambda () (interactive) (projectile-switch-project)) :wk "[p]rojects")))
 
 ;; Linting
 (use-package flycheck
   :hook
-  '(after-init . global-flycheck-mode)
+  '(prog-mode . global-flycheck-mode)
   :custom
   (flycheck-emacs-lisp-load-path 'inherit)
   (flycheck-display-errors-delay .3)
