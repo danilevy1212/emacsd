@@ -104,7 +104,7 @@
 ;; Linting
 (use-package flycheck
   :hook
-  '(prog-mode . global-flycheck-mode)
+  '(prog-mode . flycheck-mode)
   :custom
   (flycheck-emacs-lisp-load-path 'inherit)
   (flycheck-display-errors-delay .3)

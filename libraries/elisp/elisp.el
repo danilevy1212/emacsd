@@ -5,7 +5,14 @@
 
 ;; FIXME Use this as inpiration https://www.reddit.com/r/emacs/comments/6un4xo/developing_elisp/
 
-;; FIXME with-simulated-input, make part of core utils?
+;;; TODO Use
+;;; https://github.com/hlissner/doom-emacs/blob/develop/modules/lang/emacs-lisp/autoload.el#L217
+;;; as inspiration to reduce the number of errors produces by checkdoc in
+;;; libraries folder.
+
+;;; TODO Add `lispyville' and `lispy'
+
+;;; TODO  https://github.com/mhayashi1120/Emacs-erefactor/ Refactoring library
 
 ;; TODO if I ever get into other lisps, maybe good to create a lisp module and bring some stuff there
 ;; highlight quoted symbol
@@ -14,10 +21,8 @@
   '((emacs-lisp-mode lisp-mode lisp-interaction-mode) . highlight-quoted-mode)
   :defer t)
 
-;; TODO if I ever get into other lisps, maybe good to create a lisp module and bring some stuff there
 ;; Highlight sexp (Useful when evaluating from source)
 (use-package highlight-sexp
-  ;; TODO This may not be necessary, research `show-paren-match-expression'
   :hook
   '((emacs-lisp-mode lisp-mode lisp-interaction-mode) . highlight-sexp-mode)
   :defer t)

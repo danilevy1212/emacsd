@@ -4,8 +4,7 @@
 (set-language-environment "UTF-8")
 (set-default-coding-systems 'utf-8)
 
-;; FIXME Customize frame parameters to something that makes sense, they are
-;; pretty big potential time savers!
+;; NOTE Frame parameters are pretty big potential time savers!
 ;; Disable tool and scrollbars.
 (unless (assq 'menu-bar-lines default-frame-alist)
   (add-to-list 'default-frame-alist '(menu-bar-lines . 0))
@@ -88,7 +87,8 @@
   ;; TODO show paren mode cover expression for lisp modes
   (show-paren-mode t))
 
-;; When you perform a problematic operation, flash the screen instead of ringing the terminal bell.
+;; When you perform a problematic operation, flash the screen instead of ringing
+;; the terminal bell.
 (setq visible-bell t)
 
 ;; Set the default line length to 80.
@@ -96,13 +96,22 @@
 
 ;; Show the line number on the side, but only in programming buffers.
 (defun dan/set-relative-numbers-hook ()
-  "Hook to be runned after a initializating a programming mode, which will set the number line in a extra colummn."
+  "Set the number line in a extra colummn."
   (setq display-line-numbers 'relative))
 
 (add-hook 'prog-mode-hook #'dan/set-relative-numbers-hook)
 
 ;; focus moves to help window
 (setq help-window-select t)
+
+;; FIXME Put other customizations from `frame' here.
+;; Frame customizations
+(use-package frame
+  :straight
+  (:type built-in)
+  :config
+  ;; That blink is turning me crazy...
+  (blink-cursor-mode -1))
 
 ;; Dashboard splash screen
 (use-package dashboard
@@ -124,12 +133,10 @@
 
 ;; Unlock the power of the norse gods.
 (use-package nord-theme
-  :init
-  (defun dan/set-background-when-in-terminal ()
-    "Set the background color when in terminal Emacs, so it's consistent."
-    (unless (display-graphic-p (selected-frame))
-      (set-face-background 'default "black" (selected-frame))))
-  (add-hook 'window-setup-hook #'dan/set-background-when-in-terminal)
+  ;; FIXME https://www.gnu.org/software/emacs/manual/html_mono/efaq.html#Colors-on-a-TTY
+  ;; Precludes system path searching:
+  ;; $ export TERMINFO="$XDG_DATA_HOME"/terminfo
+  ;; $ export TERMINFO_DIRS="$XDG_DATA_HOME"/terminfo:/usr/share/terminfo.
   :custom
   (nord-comment-brightness 20)
   (nord-region-highlight "snowstorm")
@@ -164,6 +171,7 @@
 
 ;; Describe what each key does while typing
 (use-package which-key
+  :defer 1
   :custom
   (which-key-idle-delay 0.1)
   (which-key-idle-secondary-delay 0.05)
@@ -177,22 +185,46 @@
   (dan/local-leader
     :states  '(normal visual motion)
     :keymaps 'override
+    "h k t"  #'which-key-show-top-level
+    "h k k"  #'which-key-show-full-keymap
     "h k M"  #'which-key-show-full-major-mode
     "h k m"  #'which-key-show-minor-mode-keymap)
-  :hook
-  '(after-init . which-key-mode))
+  :config
+  (which-key-mode))
 
 ;; Highlight indentation
 ;; FIXME Customize!
 ;; (use-package highlight-indent-guides
 ;;   :defer t)
 
-;; FIXME Customize!
-;; Highlight TODO, FIXME words in comments FIXME Change to hl-mode
+;; Highlight "TODO", "FIXME" words in comments.
 (use-package hl-todo
   :commands hl-todo-mode
+  :custom
+  (hl-todo-keyword-faces  '(("HOLD" . "#d0bf8f")
+                            ("TODO" . "#d0bf8f")
+                            ("NEXT" . "#dca3a3")
+                            ("THEM" . "#dc8cc3")
+                            ("PROG" . "#7cb8bb")
+                            ("OKAY" . "#7cb8bb")
+                            ("DONT" . "#5f7f5f")
+                            ("FAIL" . "#8c5353")
+                            ("DONE" . "#afd8af")
+                            ("NOTE" . "#d8dee9")
+                            ("KLUDGE" . "#d0bf8f")
+                            ("HACK" . "#d0bf8f")
+                            ("TEMP" . "#d0bf8f")
+                            ("FIXME" . "#cc9393")
+                            ("XXX+" . "#cc9393")))
   :hook
   '(prog-mode . hl-todo-mode))
+
+;; Highlight current line.
+(use-package hl-line
+  :straight
+  (:type built-in)
+  :config
+  (global-hl-line-mode))
 
 ;; Never loose the cursor again!
 (use-package beacon

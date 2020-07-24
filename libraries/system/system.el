@@ -40,6 +40,8 @@
                                     "FZF_DEFAULT_COMMAND"))
   (exec-path-from-shell-check-startup-files nil)
   :config
+  ;; TODO Maybe more efficient to advice `counsel-fzf' with
+  ;; `exec-path-from-shell-copy-env'
   (exec-path-from-shell-initialize))
 
 ;; Evil-like keybinds for magit
@@ -52,9 +54,11 @@
 ;; Git porcelain
 (use-package magit
   :commands magit-status
-  :init
-  (dan/init-evil-magit)
   :config
+  (dan/init-evil-magit)
+  ;; NOTE Please, don't ask me if it's safe!
+  (add-to-list 'safe-local-variable-values
+               '(magit-todos-rg-extra-args . ("--hidden")))
   (magit-auto-revert-mode +1)
   :general
   (:states '(normal motion) :keymaps  'magit-blame-mode-map
@@ -78,20 +82,26 @@
   (:keymaps '(magit-todos-section-map magit-todos-item-section-map)
             "jT" nil
             "jl" nil
-            "j" nil)
+            "j"  nil)
   (dan/leader
     :states '(normal motion)
     :keymaps 'override
     "i t"   #'ivy-magit-todos))
 
-;; TODO Customize further, change background. Look into git-gutter-fringe.
 ;; vim-gitgutter port
 (use-package git-gutter
-  :commands global-git-gutter-mode
+  :defer 2
   :custom
+  (git-gutter:ask-p  nil)
   (git-gutter:update-interval 1)
-  :hook
-  '(prog-mode . global-git-gutter-mode)
+  :custom-face
+  (git-gutter:modified  ((t (:background "inherit"))))
+  (git-gutter:unchanged ((t (:background "inherit"))))
+  (git-gutter:deleted   ((t (:background "inherit"))))
+  (git-gutter:added     ((t (:background "inherit"))))
+  (git-gutter:separator ((t (:background "inherit"))))
+  :config
+  (global-git-gutter-mode)
   ;; g-based hunk previews
   :general
   (:states 'normal

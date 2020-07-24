@@ -4,8 +4,6 @@
 ;;; COMPLETION ;;;
 ;;;;;;;;;;;;;;;;;;
 
-;; TODO https://github.com/oantolin/orderless
-
 ;; Hydra powered ivy!
 (use-package ivy-hydra
   :defer 1

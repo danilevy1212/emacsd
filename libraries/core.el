@@ -91,35 +91,38 @@ This is particularly useful for read-only modes. Inspired by `evil-collection-in
 ;;; AUTOLOAD LIBRARIES ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; FIXME Optionally wrap this in a timer function, for profiling.
 ;;;###autoload
-(defun dan/load-library (library)
+(defun dan/load-library (library &optional timeit)
   "Load a LIBRARY from the `dan/library-list'.
 
-First, the library is resolved into a directory. Then, a list of files with a '.el' file extension contained in that directory is created. Finally, each of the files in the list are loaded into Emacs, in no particular order, checking if byte-compiled versions exist and loading them instead in the case they do."
+If TIMEIT is declared and given a value different than nil, then report
+how long each package took to load."
   (let* ((dir (concat dan/libraries-directory (symbol-name library) "/"))
          (files (directory-files dir t "\\.el$")))
     (mapc #'dan/load-elisp-file files)))
 
-;;;###autoload
-(defun dan/load-elisp-file (file)
-  "Helper function that recieves a FILE with '.el' extension and will load it into Emacs, checking if a bytecompiled version exist, which it will load instead."
-  (load (string-remove-suffix ".el" file)) nil 'nomessage)
-
 ;; FIXME Optionally wrap this in a timer function, for profiling.
 ;;;###autoload
-(defun dan/load-config (filename)
-  "Load FILENAME inside the config directory."
-  (load (concat user-emacs-directory filename) nil 'nomessage))
+(defun dan/load-elisp-file (file &optional timeit)
+  "Load a FILE with '.el' extension into Emacs.
+
+If TIMEIT is declared and given a value different than nil, then return how long
+it took for the file to load in miliseconds."
+  (load (string-remove-suffix ".el" file)) nil 'nomessage)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; CORE PACKAGE SYSTEM ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; straight.el used by default
+;; Straight.el used by default
 (setq straight-use-package-by-default t)
 
-;; use ssh for downloading packages
+;; Use ssh for downloading packages
 (setq straight-vc-git-default-protocol 'https)
+
+;; Repair flycheck integration with straight.el
+(setq straight-fix-flycheck t)
 
 ;; bootstrap straight.el
 (defvar bootstrap-version)
@@ -216,8 +219,6 @@ First, the library is resolved into a directory. Then, a list of files with a '.
     "h"      '(:ignore t :wk "[h]elp")
     "h k"    '(:ignore t :wk "[k]eybinds")
     "h k a"  #'general-describe-keybindings
-    "h k t"  #'which-key-show-top-level
-    "h k k"  #'which-key-show-full-keymap
     "m"      (general-simulate-key "," :which-key "[m]ajor-mode"))
 
   ;; Definer for local leader keybindings
@@ -278,6 +279,7 @@ First, the library is resolved into a directory. Then, a list of files with a '.
   :custom
   (ivy-use-virtual-buffers t)
   (ivy-wrap t)
+  (ivy-re-builders-alist '((t . ivy--regex-ignore-order)))
   ;; Define the optimal height of the ivy buffer.
   (ivy-height-alist
    '(((t lambda (_caller) (/ (window-height) 4)))))
@@ -334,28 +336,22 @@ First, the library is resolved into a directory. Then, a list of files with a '.
                       [remap evil-ex-search-word-forward]  #'swiper-thing-at-point
                       [remap evil-ex-search-word-backward] #'swiper-all-thing-at-point))
 
-;; All the icons for ivy helper.
-(use-package all-the-icons-ivy-rich
-  :after counsel
-  :init
-  ;; FIXME: Re-examine this, this does not look right
-  (all-the-icons-ivy-rich-mode +1)
-  :custom
-  (all-the-icons-ivy-rich-icon-size 1.0)
-  ;; Definitions for ivy-rich transformers.
-  ;; See `ivy-rich-display-transformers-list' for details."
-  ;; FIXME: Mega slow down when searching for a single dot, maybe auto-translate it to \.?
-  ;; FIXME: the culprit for the slowdown is `ivy--resize-minibuffer-to-fit', elp
-  )
-
-;; ivy-rich (Fancy ivy)
+;; Fancy ivy!
 (use-package ivy-rich
   :after counsel
+  :hook
+  '(all-the-icons-ivy-rich-mode . ivy-rich-mode)
   :config
-  (setcdr (assq t ivy-format-functions-alist) #'ivy-format-function-line)
-  ;; FIXME Can;t we lazy load this?
-  (ivy-rich-mode +1))
+  (setcdr (assq t ivy-format-functions-alist) #'ivy-format-function-line))
 
+;; All the icons for ivy.
+(use-package all-the-icons-ivy-rich
+  :after counsel
+  :defer 1
+  :config
+  (all-the-icons-ivy-rich-mode +1)
+  :custom
+  (all-the-icons-ivy-rich-icon-size 1.0))
 
 ;; Auto complete
 ;; (use-package company
@@ -413,8 +409,7 @@ First, the library is resolved into a directory. Then, a list of files with a '.
 (defconst dan/libraries-directory (concat user-emacs-directory "libraries/")
   "Directory name containing all the libraries of Dan's configuration.")
 
-(defvar dan/library-list '(
-                           utils
+(defvar dan/library-list '(utils
                            completion   ;; FIXME Slow
                            system       ;; FIXME Slow
                            evil-plugins
