@@ -76,15 +76,12 @@
 (setq inhibit-compacting-font-caches t)
 
 ;; ;; Visually indicate matching pairs of parentheses."
-;; (show-paren-mode t)
-;; (setq show-paren-delay 0.05)
 (use-package paren
   :straight
   (:type built-in)
   :custom
   (show-paren-delay 0.05)
   :config
-  ;; TODO show paren mode cover expression for lisp modes
   (show-paren-mode t))
 
 ;; When you perform a problematic operation, flash the screen instead of ringing
@@ -161,13 +158,16 @@
   :straight
   (:type built-in)
   :config
-  (column-number-mode))
+  ;; Show column number in modeline.
+  (column-number-mode)
+
+  ;; Wrap those lines!
+  (global-visual-line-mode t))
 
 (use-package battery
+  :defer 1
   :hook
-  ;; FIXME Make it laptop specific
-  ;; FIXME Further customize?
-  '(after-init . display-battery-mode))
+  (display-battery-mode))
 
 ;; Describe what each key does while typing
 (use-package which-key
@@ -223,8 +223,8 @@
 (use-package hl-line
   :straight
   (:type built-in)
-  :config
-  (global-hl-line-mode))
+  :hook
+  '((prog-mode text-mode special-mode) . hl-line-mode))
 
 ;; Never loose the cursor again!
 (use-package beacon
@@ -240,12 +240,5 @@
 
 ;; Have you seen here dressed in blue?
 (use-package rainbow-delimiters
-  :commands rainbow-delimiters-mode-enable
   :hook
   '(prog-mode . rainbow-delimiters-mode-enable))
-
-;; Use another frame to show linting errors
-(use-package flycheck-posframe
-  :if (display-graphic-p)
-  :hook
-  '(flycheck-mode . flycheck-posframe-mode))

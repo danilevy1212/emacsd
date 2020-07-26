@@ -210,7 +210,7 @@ it took for the file to load in miliseconds."
     :states  '(normal motion visual)
     :keymaps 'override
     "f"      '(:ignore t :wk "[f]ile")
-    "f y"    #'yank-buffer-filename
+    "f y"    #'dan/yank-buffer-filename
     "f p"    `((lambda () (interactive)
                  (find-file ,user-emacs-directory)) :wk "[p]rivate config")
     "b"      '(:ignore t :wk "[b]uffer")
@@ -302,7 +302,7 @@ it took for the file to load in miliseconds."
   :demand t
   :after ivy
   :ensure-system-package
-  ;; FIXME: Throws error on Ubuntu 18.04
+  ;; NOTE: Throws error on Ubuntu 18.04
   ((rg . ripgrep))
   :commands (counsel-switch-buffer
              counsel-rg

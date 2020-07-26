@@ -23,9 +23,6 @@
 ;; If some text is selected, and you type some text, delete the selected text and start inserting your typed text.
 (delete-selection-mode t)
 
-;; Wrap those lines!
-(global-visual-line-mode t)
-
 ;; Show only the right visual indicator.
 (setq visual-line-fringe-indicators '(nil right-curly-arrow))
 
@@ -38,3 +35,8 @@
   (:type built-in)
   :config
   (electric-pair-mode))
+
+;; TODO Customize
+;; Code folding
+(use-package origami
+  :defer t)

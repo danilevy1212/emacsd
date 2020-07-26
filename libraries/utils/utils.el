@@ -14,6 +14,10 @@
   :custom
   ;; Setup a special file for the customize interface.
   (custom-file (concat dan/cache-dir "custom.el"))
+  ;; Show the names of entries as they are.
+  (custom-unlispify-menu-entries nil)
+  (custom-unlispify-tag-names nil)
+  (custom-unlispify-remove-prefixes nil)
   :hook
   '(Custom-mode . dan/load-custom-file-hook)
   :config
@@ -64,7 +68,6 @@
   :custom
   (bookmark-default-file (concat dan/cache-dir "bookmarks")))
 
-
 ;; Create directories of the buffer filename.
 (add-hook 'before-save-hook
           'dan/create-directories-recursively)
@@ -109,8 +112,19 @@
   (flycheck-emacs-lisp-load-path 'inherit)
   (flycheck-display-errors-delay .3)
   ;; FIXME Customize this
+  ;; FIXME flycheck seems to wait until editing starts to check for errors, Can I change that?
   ;; (flycheck-global-modes t)
   )
+
+;; Use another frame to show linting errors
+(use-package flycheck-posframe
+  :if (display-graphic-p)
+  :after flycheck
+  :commands flycheck-posframe-mode
+  :config
+  (flycheck-posframe-configure-pretty-defaults)
+  :hook
+  '(flycheck-mode . flycheck-posframe-mode))
 
 
 ;; https://blog.binchen.org/posts/how-to-use-expand-region-efficiently.html

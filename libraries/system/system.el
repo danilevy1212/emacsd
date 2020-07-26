@@ -12,24 +12,26 @@
   (wgrep-auto-save-buffer t)
   (wgrep-change-readonly-file t))
 
-;; FIXME Use emacs application framework terminal?
+;; TODO Use emacs application framework terminal instead?
 ;; better terminal emulation ~ special install akermu/emacs-libvterm
 (use-package vterm
-  :config
-  ;; FIXME Work on this.
+  :commands (vterm vterm-other-window)
+  ;; :config
+  ;; FIXME Work on this. Also, `evil-collection' bindings
   ;; (setq display-buffer-alist
   ;;       '(("vterm"
   ;;          (display-buffer-in-side-window)
   ;;          (window-height . 0.25)
   ;;          (side . bottom)
   ;;          (slot . -1))))
+  :general
   (dan/leader
     :states '(normal motion)
     :keymaps 'override
     "t"      '(:ignore t :wk "[t]erminal")
     "t t"    #'vterm-other-window
     "t T"    #'vterm)
-  ;;FIXME change `vterm-exit-functions' to use `kill-buffer-and-window' if more than one window with `count-windows'
+  ;; FIXME change `vterm-exit-functions' to use `kill-buffer-and-window' if more than one window with `count-windows'
   )
 
 ;; Get me those delicious ENV variables.
@@ -307,6 +309,12 @@
              "*"  'dired-filter-mark-map
              "g/" 'dired-filter-map))
 
+;;narrow dired to match filter
+(use-package dired-narrow
+  :commands dired-narrow
+  :general
+  (:keymaps 'dired-mode-map :states 'normal
+              "/"  'dired-narrow))
 
 ;;;;;;;;;;;;;;;;;;;;;;
 ;;; Keyboard Input ;;;
@@ -315,11 +323,23 @@
 ;; MOZC integration in emacs. すごいですね！
 (use-package mozc
   :commands mozc-mode
+  :init
+  (defun dan/toggle-mozc-mode ()
+    "Toggle activation/deactivation of `mozc-mode'."
+    (interactive)
+    (let* ((active (mozc-mode))
+           (msg (if active "Activated" "Deactivated")))
+      (message "Mozc Mode %s" msg)))
   :general
-  ;; FIXME A bit hacky and unrefined, needs more work. Also requires
-  ;; emacs_mozc_helper and mozc
+  ;; NOTE Requires emacs_mozc_helper
   (:states '(normal insert)
-           "C-x j" (lambda ()
-                       (interactive)
-                       (progn
-                         (message "mozc-mode %s" (mozc-mode))))))
+           "C-x j" #'dan/toggle-mozc-mode)
+  ;; Keychord to get out of insert mode, but for mozc
+  (general-define-key :state 'insert :keymaps 'mozc-mode-map
+                      "j" (general-key-dispatch 'self-insert-command
+                            :timeout 0.25
+                            "k" 'evil-normal-state))
+  (general-define-key :state 'insert  :keymaps 'mozc-mode-map
+                      "k" (general-key-dispatch 'self-insert-command
+                            :timeout 0.25
+                            "j" 'evil-normal-state)))

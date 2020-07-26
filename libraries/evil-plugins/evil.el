@@ -6,6 +6,7 @@
 
 ;; FIXME This mode is way too much bloat, keep it for reference, and only pick
 ;; and choose what I like from it
+;; NOTE I don't load this but keep it around for reference.
 (use-package evil-collection
   :defer 1
   :custom
@@ -13,7 +14,6 @@
                                info
                                occur
                                doc-view
-                               (pdf pdf-view)
                                helpful
                                minibuffer
                                dashboard
