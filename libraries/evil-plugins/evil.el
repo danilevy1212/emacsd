@@ -21,7 +21,6 @@
                                popup
                                help
                                helpful
-                               vterm
                                wgrep))
   (evil-collection-outline-bind-tab-p           t)
   (evil-collection-company-use-tng              t)

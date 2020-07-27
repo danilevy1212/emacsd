@@ -422,6 +422,7 @@ it took for the file to load in miliseconds."
                            haskell
                            elisp
                            yaml
+                           rust
                            vim)
   "List of files which make the core of my config. They will be loaded in sequential order.")
 

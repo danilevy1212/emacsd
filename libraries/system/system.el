@@ -39,7 +39,9 @@
   :defer 1
   :custom
   (exec-path-from-shell-variables '("PATH"
-                                    "FZF_DEFAULT_COMMAND"))
+                                    "FZF_DEFAULT_COMMAND"
+                                    "XDG_DATA_HOME"
+                                    "CARGO_HOME"))
   (exec-path-from-shell-check-startup-files nil)
   :config
   ;; TODO Maybe more efficient to advice `counsel-fzf' with

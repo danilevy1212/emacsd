@@ -63,6 +63,7 @@
     17. latex (UNTESTED)
     18. c/c++ (UNTESTED)
     19. haskell (UNTESTED)
+    20. rust (UNTESTED)
 
 ** TODO Tips and Tricks
 
