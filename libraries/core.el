@@ -1,5 +1,7 @@
 ;;; -*- lexical-binding:t -*-
 
+;; TODO core takes almost .5s to load, see if I can make it faster.
+
 ;;;;;;;;;;;;;;;;;;;;;;
 ;;; AUTOLOAD UTILS ;;;
 ;;;;;;;;;;;;;;;;;;;;;;
@@ -72,14 +74,6 @@ This is particularly useful for read-only modes. Inspired by `evil-collection-in
                  (yes-or-no-p (format "Directory %s does not exist. Create it?" dir)))
         (make-directory dir t)))))
 
-;;;###autoload
-(defun dan/garbage-collecting-strategy-after-init-hook ()
-  "Adopt a sneaky garbage collection strategy of waiting until idle time to collect staving off the collector while the user is working."
-  (setq gcmh-idle-delay 5
-        gcmh-high-cons-threshold 16777216
-        gcmh-verbose nil
-        gc-cons-percentage 0.1
-        file-name-handler-alist dan/last-file-name-handler-alist))
 
 ;;;###autoload
 (defun dan/throw-error-after-startup (error-message)
@@ -141,6 +135,32 @@ it took for the file to load in miliseconds."
 ;; install use-package
 (straight-use-package 'use-package)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; GARBAGE COLLECTION ;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; TODO Study and understand what this is doing.
+(defun dan/garbage-collecting-strategy ()
+  "Adopt a sneaky garbage collection strategy of waiting until idle time to collect starving off the collector while the user is working."
+  (setq gcmh-idle-delay 5
+        gcmh-high-cons-threshold 16777216
+        gcmh-verbose nil
+        gc-cons-percentage 0.1
+        ;; FIXME Why this?!?!
+        file-name-handler-alist dan/last-file-name-handler-alist))
+
+;; Garbage collection optimization.
+(defvar dan/last-file-name-handler-alist file-name-handler-alist)
+
+(use-package gcmh
+  :custom
+  (gc-cons-percentage 0.9)
+  (file-name-handler-alist nil)
+  :config
+  (fset 'after-focus-change-function #'gcmh-idle-garbage-collect)
+  (run-with-timer 2 nil #'dan/garbage-collecting-strategy)
+  (gcmh-mode))
+
 ;;;;;;;;;;;;;;;;;;;;;;
 ;;; CORE VARIABLES ;;;
 ;;;;;;;;;;;;;;;;;;;;;;
@@ -157,7 +177,8 @@ it took for the file to load in miliseconds."
 (when (not (file-accessible-directory-p dan/backup-dir))
   (make-directory dan/backup-dir))
 
-
+;; TODO For optimization, wrap all of this in a function that is called in the
+;; necessary parts of the config (getenv is slow yo)
 ;; Create a centralized backup directory
 (defconst dan/cloud-dir (concat (getenv "HOME") "/Cloud/")
   "Directory where the cloud service stores files.")
@@ -170,17 +191,6 @@ it took for the file to load in miliseconds."
 ;;; CORE UTILS ;;;
 ;;;;;;;;;;;;;;;;;;
 
-;; Garbage collection optimization.
-(defvar dan/last-file-name-handler-alist file-name-handler-alist)
-
-(use-package gcmh
-  :custom
-  (gc-cons-percentage 0.6)
-  (file-name-handler-alist nil)
-  :config
-  (fset 'after-focus-change-function #'gcmh-idle-garbage-collect)
-  (add-hook 'after-init-hook #'dan/garbage-collecting-strategy-after-init-hook)
-  (gcmh-mode))
 
 ;; Don't load irrelevant bytecode
 (setq load-prefer-newer t)
@@ -237,6 +247,7 @@ it took for the file to load in miliseconds."
 
 ;; Can'live without vim-keys man!
 (use-package evil
+  :demand t
   :init
   (setq evil-want-keybinding                  nil
         evil-vsplit-window-right              t
@@ -252,10 +263,6 @@ it took for the file to load in miliseconds."
            "C-l" #'evil-ex-nohighlight
            ;; Universal argument mapped to M-u globally
            "M-u" #'universal-argument)
-  (dan/leader
-    :states  '(normal motion)
-    :keymaps 'override
-    "w q"    '#'evil-quit)
 
   ;; Keychord to get out of insert mode
   (general-define-key :state 'insert
@@ -301,9 +308,6 @@ it took for the file to load in miliseconds."
 (use-package counsel
   :demand t
   :after ivy
-  :ensure-system-package
-  ;; NOTE: Throws error on Ubuntu 18.04
-  ((rg . ripgrep))
   :commands (counsel-switch-buffer
              counsel-rg
              counsel-fzf
