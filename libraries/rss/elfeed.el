@@ -74,3 +74,6 @@
     :states  '(normal motion)
     "r"      '(:ignore t :wk "[r]ss")
     "r e"    #'elfeed))
+
+
+;; TODO https://github.com/HKey/feed-discovery/

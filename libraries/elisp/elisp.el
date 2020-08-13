@@ -1,7 +1,8 @@
 ;;; -*- lexical-binding:t -*-
 
 ;; Customize scratch buffer message
-(setq initial-scratch-message (concat initial-scratch-message ";; Happy hacking ^_^\n\n"))
+(setq initial-scratch-message (concat initial-scratch-message ";; Happy hacking ^_^\n\n")
+      initial-major-mode #'emacs-lisp-mode)
 
 ;; FIXME Use this as inpiration https://www.reddit.com/r/emacs/comments/6un4xo/developing_elisp/
 
@@ -18,13 +19,13 @@
 ;; highlight quoted symbol
 (use-package highlight-quoted
   :hook
-  '((emacs-lisp-mode lisp-mode lisp-interaction-mode) . highlight-quoted-mode)
+  '(emacs-lisp-mode . highlight-quoted-mode)
   :defer t)
 
 ;; Highlight sexp (Useful when evaluating from source)
 (use-package highlight-sexp
   :hook
-  '((emacs-lisp-mode lisp-mode lisp-interaction-mode) . highlight-sexp-mode)
+  '(emacs-lisp-mode . highlight-sexp-mode)
   :defer t)
 
 ;; Jump to definitions
@@ -47,7 +48,7 @@
 
 (defun dan/emacs-lisp-hook ()
   "Function to be run dureing the `emacs-lisp-mode-hook'. Mainly configures keybindings for `emacs-lisp-mode'."
-  (let ((emacs-modes-maps '(emacs-lisp-mode-map lisp-mode-map lisp-interaction-mode-map)))
+  (let ((emacs-modes-maps '(emacs-lisp-mode-map)))
     (dan/local-leader
       :keymaps emacs-modes-maps
       :states 'normal
@@ -109,7 +110,7 @@
 ;;                  (default-value 'flycheck-emacs-lisp-check-form)
 ;;                  ")"))))
 
-(dolist (hook '(emacs-lisp-mode-hook lisp-mode-hook lisp-interaction-mode-hook))
-  (add-hook hook #'dan/emacs-lisp-hook))
+(add-hook 'emacs-lisp-mode-hook #'dan/emacs-lisp-hook)
+(add-hook 'emacs-lisp-mode-hook #'flycheck-mode)
 
 ;;; elisp.el ends here

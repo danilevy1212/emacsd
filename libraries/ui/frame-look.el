@@ -242,3 +242,20 @@
 (use-package rainbow-delimiters
   :hook
   '(prog-mode . rainbow-delimiters-mode-enable))
+
+;; Fancy ivy!
+(use-package ivy-rich
+  :after counsel
+  :hook
+  '(all-the-icons-ivy-rich-mode . ivy-rich-mode)
+  :config
+  (setcdr (assq t ivy-format-functions-alist) #'ivy-format-function-line))
+
+;; All the icons for ivy.
+(use-package all-the-icons-ivy-rich
+  :after counsel
+  :defer 1
+  :config
+  (all-the-icons-ivy-rich-mode +1)
+  :custom
+  (all-the-icons-ivy-rich-icon-size 1.0))

@@ -74,6 +74,7 @@
 
 ;; More Helpful help screens
 (use-package helpful
+  :defer 1
   :custom
   (counsel-describe-function-function #'helpful-callable)
   (counsel-describe-variable-function #'helpful-variable)
@@ -85,6 +86,12 @@
             "C-h k"   #'helpful-key
             "C-h F"   #'helpful-function
             "C-h C"   #'helpful-command))
+
+;; Example next to the help!
+(use-package elisp-demos
+  :after helpful
+  :config
+  (advice-add 'helpful-update :after #'elisp-demos-advice-helpful-update))
 
 ;; Project management
 (use-package projectile
@@ -106,8 +113,8 @@
 
 ;; Linting
 (use-package flycheck
-  :hook
-  '(prog-mode . flycheck-mode)
+  ;; NOTE We active the mode on each major mode on demand.
+  :commands flycheck-mode
   :custom
   (flycheck-emacs-lisp-load-path 'inherit)
   (flycheck-display-errors-delay .3)
@@ -119,12 +126,13 @@
 ;; Use another frame to show linting errors
 (use-package flycheck-posframe
   :if (display-graphic-p)
-  :after flycheck
   :commands flycheck-posframe-mode
   :config
   (flycheck-posframe-configure-pretty-defaults)
   :hook
   '(flycheck-mode . flycheck-posframe-mode))
+
+;; TODO https://github.com/ieure/scratch-el Scratch buffers on demand!
 
 
 ;; https://blog.binchen.org/posts/how-to-use-expand-region-efficiently.html

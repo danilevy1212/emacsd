@@ -1,4 +1,5 @@
 ;; TODO This lib was setup in a bit of a hurry and I don't know if its the
+;; TODO https://github.com/hlissner/doom-emacs/blob/develop/modules/lang/rust/config.el INSPIRATION!
 ;; most correct setup, check and make sure.
 
 ;; Syntax highlighting and other goodies.

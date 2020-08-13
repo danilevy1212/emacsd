@@ -91,3 +91,5 @@
 ;;   :bind
 ;;   (("C-c +" . 'evil-numbers/inc-at-pt)
 ;;    ("C-c -" . 'evil-numbers/dec-at-pt)))
+
+;; TODO https://github.com/PythonNut/evil-easymotion

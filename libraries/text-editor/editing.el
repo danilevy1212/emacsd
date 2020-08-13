@@ -36,7 +36,19 @@
   :config
   (electric-pair-mode))
 
-;; TODO Customize
-;; Code folding
-(use-package origami
-  :defer t)
+;; Improve the default searching text functionality.
+(use-package swiper
+  :after ivy
+  :defer 1
+  :general
+  (:keymaps 'evil-motion-state-map
+                      [remap evil-ex-search-forward]       #'swiper
+                      [remap evil-ex-search-backward]      #'swiper-all
+                      [remap evil-ex-search-word-forward]  #'swiper-thing-at-point
+                      [remap evil-ex-search-word-backward] #'swiper-all-thing-at-point))
+
+;; TODO
+;; (use-package iedit)
+
+;; TODO
+;; (use-package evil-iedit-state)

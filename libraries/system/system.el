@@ -335,13 +335,4 @@
   :general
   ;; NOTE Requires emacs_mozc_helper
   (:states '(normal insert)
-           "C-x j" #'dan/toggle-mozc-mode)
-  ;; Keychord to get out of insert mode, but for mozc
-  (general-define-key :state 'insert :keymaps 'mozc-mode-map
-                      "j" (general-key-dispatch 'self-insert-command
-                            :timeout 0.25
-                            "k" 'evil-normal-state))
-  (general-define-key :state 'insert  :keymaps 'mozc-mode-map
-                      "k" (general-key-dispatch 'self-insert-command
-                            :timeout 0.25
-                            "j" 'evil-normal-state)))
+           "C-x j" #'dan/toggle-mozc-mode))
