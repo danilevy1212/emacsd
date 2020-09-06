@@ -135,27 +135,42 @@ it took for the file to load in miliseconds."
 ;; install use-package
 (straight-use-package 'use-package)
 
+;;;;;;;;;;;;;;;;;
+;;; DEBUGGING ;;;
+;;;;;;;;;;;;;;;;;
+
+;; TODO  Maybe use this for benchmark.
+;; (use-package benchmark-init
+;;   :config
+;;   ;; To disable collection of benchmark data after init is done.
+;;   (add-hook 'after-init-hook 'benchmark-init/deactivate))
+;; (add-hook 'after-init-hook
+;;           (lambda () (message "loaded in %s" (emacs-init-time))))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; GARBAGE COLLECTION ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; TODO Study and understand what this is doing.
+;; Garbage collection optimization.
+(defconst dan/initial-file-name-handler-alist file-name-handler-alist
+  "Default filename handler before we turn it to nil.")
+
 (defun dan/garbage-collecting-strategy ()
   "Adopt a sneaky garbage collection strategy of waiting until idle time to collect starving off the collector while the user is working."
   (setq gcmh-idle-delay 5
-        gcmh-high-cons-threshold 16777216
-        gcmh-verbose nil
+        gcmh-high-cons-threshold (* 64 1024 1024) ;; NOTE 64 MB
         gc-cons-percentage 0.1
-        ;; FIXME Why this?!?!
-        file-name-handler-alist dan/last-file-name-handler-alist))
-
-;; Garbage collection optimization.
-(defvar dan/last-file-name-handler-alist file-name-handler-alist)
+        file-name-handler-alist (append file-name-handler-alist
+                                        dan/initial-file-name-handler-alist)))
 
 (use-package gcmh
   :custom
   (gc-cons-percentage 0.9)
-  (file-name-handler-alist nil)
+  (gc-cons-threshold (* 1024 1024 1024))
+  (file-name-handler-alist nil) ;; NOTE Weird hack I don't quite undestand, saves up about 100ms though.
+  (read-process-output-max (* 3 1024 1024))
+  ;; NOTE Debugging
+  (gcmh-verbose t)
   :config
   (fset 'after-focus-change-function #'gcmh-idle-garbage-collect)
   (run-with-timer 2 nil #'dan/garbage-collecting-strategy)
@@ -166,7 +181,7 @@ it took for the file to load in miliseconds."
 ;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Create the cache dir
-(defconst dan/cache-dir (concat user-emacs-directory "cache/")
+(defconst dan/cache-dir (concat user-emacs-directory ".cache/")
   "Directory where cache files will be stored.")
 (when (not (file-accessible-directory-p dan/cache-dir))
   (make-directory dan/cache-dir))
@@ -319,11 +334,14 @@ it took for the file to load in miliseconds."
                            rss
                            org-lib      ;; FIXME Slow
                            pdf
-                           lsp
                            haskell
+                           python
                            elisp
                            yaml
                            rust
+                           ts-js
+                           npm-node
+                           web
                            vim)
   "List of files which make the core of my config. They will be loaded in sequential order.")
 

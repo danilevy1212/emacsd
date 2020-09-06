@@ -120,20 +120,80 @@
   (flycheck-display-errors-delay .3)
   ;; FIXME Customize this
   ;; FIXME flycheck seems to wait until editing starts to check for errors, Can I change that?
-  ;; (flycheck-global-modes t)
   )
 
 ;; Use another frame to show linting errors
 (use-package flycheck-posframe
   :if (display-graphic-p)
   :commands flycheck-posframe-mode
+  :custom
+  (flycheck-posframe-position 'window-top-right-corner)
   :config
-  (flycheck-posframe-configure-pretty-defaults)
-  :hook
-  '(flycheck-mode . flycheck-posframe-mode))
+  (flycheck-posframe-configure-pretty-defaults))
+
+;;;###autoload
+(defun dan/flycheck-maybe-in-posframe ()
+    "Start flycheck in with flycheck-posframe frontend if available."
+    (flycheck-mode)
+    (when (fboundp #'flycheck-posframe-mode)
+      (flycheck-posframe-mode)))
+
+;; TODO https://github.com/nbfalcon/flycheck-projectile/tree/7d4ffda734785f87d6a74b6f34b2a4db234be114
 
 ;; TODO https://github.com/ieure/scratch-el Scratch buffers on demand!
 
-
+;; TODO
 ;; https://blog.binchen.org/posts/how-to-use-expand-region-efficiently.html
 ;; (use-package expand-region)
+
+;;; Language Server Protocol support
+(use-package lsp-mode
+  :commands (lsp lsp-deferred)
+  :general
+  (dan/leader :states '(normal visual) :keymaps 'lsp-mode-map
+    "l"   '(:wk "lsp" :keymap lsp-command-map)
+    "l s" '(:ignore t :wk "sessions")
+    "l F" '(:ignore t :wk "folders")
+    "l =" '(:ignore t :wk "formatting")
+    "l T" '(:ignore t :wk "Toggle")
+    "l g" '(:ignore t :wk "goto")
+    "l r" '(:ignore t :wk "refactor")
+    "l a" '(:ignore t :wk "refactor")
+    "l h" '(:ignore t :wk "help")
+    "l G" '(:ignore t :wk "peek"))
+  :custom
+  ;; NOTE Debugging
+  ;; (lsp-server-trace t)
+  ;; (lsp-log-io t)
+  ;; (lsp-print-performance t)
+
+  (lsp-enable-snippet t)
+  (lsp-eldoc-render-all nil)
+  (lsp-enable-xref t)
+  (lsp-diagnostics-provider 'flycheck)
+  (lsp-session-file  (concat dan/cache-dir ".lsp-session-v1"))
+  (lsp-enable-indentation t)
+  (lsp-enable-on-type-formatting t)
+  (lsp-imenu-show-container-name t)
+  (lsp-imenu-sort-methods '(kind position))
+  (lsp-enable-file-watchers t)
+  (lsp-keep-workspace-alive nil)
+  (lsp-before-save-edits nil)
+  (lsp-semantic-highlighting t)
+  (lsp-enable-imenu t)
+  (lsp-signature-auto-activate nil)
+  (lsp-signature-render-documentation nil)
+  (lsp-enable-text-document-color t)
+  (lsp-keymap-prefix  "SPC l"))
+
+
+;; TODO
+;; UI tweaks for lsp mode.
+(use-package lsp-ui
+  :commands lsp-ui-mode
+  :custom
+  (lsp-ui-doc-header t))
+
+;; Ivy fueled symbol lookup.
+(use-package lsp-ivy
+  :commands lsp-ivy-workspace-symbol)

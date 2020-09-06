@@ -55,4 +55,4 @@ straight/
 backup/
 
 # Cache
-cache/
+.cache/

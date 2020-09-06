@@ -20,6 +20,7 @@
                                company
                                popup
                                help
+                               xwidget
                                helpful
                                wgrep))
   (evil-collection-outline-bind-tab-p           t)

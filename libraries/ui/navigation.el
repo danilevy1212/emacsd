@@ -12,7 +12,7 @@
   :config
   (winner-mode)
   :general
-  (:states 'motion :keymaps 'winner-mode-map
+  (:states '(motion normal) :keymaps 'winner-mode-map
            "<s-left>"  #'winner-undo
            "<s-right>" #'winner-redo))
 

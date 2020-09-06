@@ -3,9 +3,25 @@
 ;; most correct setup, check and make sure.
 
 ;; Syntax highlighting and other goodies.
-(use-package rust-mode
-  :mode
-  (("\\.rs\\'" . rust-mode)))
+;; (use-package rust-mode
+;;   :if (not (featurep 'lsp-mode))
+;;   :mode
+;;   (("\\.rs\\'" . rust-mode)))
+
+
+;; TODO Customize!
+;; Syntax highlighting and other goodies.
+(use-package rustic
+  :config
+  (defun dan/rustic-use-stable-channel-clippy ()
+    (when (derived-mode-p 'rustic-mode)
+      ;; FIXME rustic mode customization may make this unnecesary
+      (progn
+        (when (not (memq 'rustic-clippy flycheck-checkers))
+          (push 'rustic-clippy flycheck-checkers))
+        (setq rustic-flycheck-clippy-params "--message-format=json"))))
+  (add-hook 'flycheck-mode-hook #'dan/rustic-use-stable-channel-clippy)
+  (evil-set-initial-state #'rustic-popup-mode #'insert))
 
 ;; Make sense of those configs!
 (use-package toml-mode

@@ -1,53 +1,40 @@
-;;; package --- summary:
-;;; Commentary:
 ;;; -*- lexical-binding:t -*-
 
-;;; Code:
 
-; (use-package elpy
-;   :defer t
-;   :init
-;   (advice-add 'python-mode :before 'elpy-enable)
-;   :custom
-;   (python-shell-interpreter "ipython")
-;   (python-shell-interpreter-args "-i --simple-prompt")
-;   :config
-;   ;; remove flymake
-;   (setq elpy-modules (delq 'elpy-module-flymake elpy-modules)))
+;; Type correctness goodness
+(use-package lsp-pyright
+  :if (progn (fboundp #'lsp-deferred))
+  :after pyvenv
+  :init
+  (defun dan/setup-python-lsp-pyright ()
+    (interactive)
+    (progn
+      (require 'lsp-pyright)
+      (lsp-deferred)))
+  :hook
+  '(pyvenv-mode . dan/setup-python-lsp-pyright))
 
-; ;; (use-package python-mode
-; ;;   :after ipython-shell-send
-; ;;   :ensure nil
-; ;;   :custom
-; ;;   (python-shell-interpreter "ipython")
-; ;;   (python-shell-interpreter-args "-i --simple-prompt")
-; ;;   :bind
-; ;;   ("C-c C-s" . ipython-shell-send-string)
-; ;;   ("C-c C-c" . ipython-shell-send-buffer)
-; ;;   ("C-c C-l" . ipython-shell-send-defun)
-; ;;   ("C-M-x"   . ipython-shell-send-region))
+;; Findme that virtual env!
+(use-package pyvenv
+  :config
+  (defun dan/pyvenv-post-activation ()
+      "Set correct Python interpreter after activation of venv."
+    (setq python-shell-interpreter (concat pyvenv-virtual-env "bin/python3")))
+  (defun dan/pyvenv-post-deactivation ()
+      "Set correct Python interpreter after deactivation of venv."
+    (setq python-shell-interpreter "python3"))
 
-; ;; (use-package ipython-shell-send)
+  (add-hook 'pyvenv-post-activate-hooks #'dan/pyvenv-post-activation)
+  (add-hook 'pyvenv-post-deactivate-hooks #'dan/pyvenv-post-deactivation)
+  :commands pyvenv-mode
+  :custom
+  (pyvenv-tracking-ask-before-change t)
+  :hook
+  '(python-mode . pyvenv-mode))
 
-; ;; (use-package lsp-python-ms
-; ;;   :hook
-; ;;   (python-mode . (lambda ()
-; ;;                    (require 'lsp-python-ms)
-; ;;                    (lsp-deferred)
-; ;;                    (set (make-local-variable 'company-backends)
-; ;;                         '(company-lsp company-capf company-dabbrev-code))))
-; ;;   :config
-; ;;   (unless (file-exists-p lsp-python-ms-executable)
-; ;;     ;; for executable of language server, if it's not symlinked on your PATH
-; ;;     (setq lsp-python-ms-executable
-; ;; 	  "~/python-language-server/output/bin/Release/linux-x64/publish/Microsoft.Python.LanguageServer")))
-
-
-; (use-package pyvenv
-;   :hook
-;   (python-mode . pyvenv-mode))
-
-
-
-; (provide 'python)
-; ;;; python.el ends here
+;; Slow and easy.
+(use-package python
+  :mode
+  (( "\\.py$" . python-mode))
+  :straight
+  (:type built-in))

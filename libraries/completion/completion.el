@@ -36,7 +36,7 @@
     :keymaps  'override
     "b B"     #'counsel-switch-buffer
     "f a"     #'counsel-rg
-    "f f"     #'counsel-fzf
+    "f f"     #'counsel-fzf ;; TODO https://github.com/muffinmad/emacs-find-file-rg/tree/ed556e092a92e325f335554ab193cef2d8fec009
     "f o"     #'counsel-find-file
     "f r"     #'counsel-recentf
     "f l"     #'counsel-find-library
@@ -70,9 +70,13 @@
 ;;    '(company-pseudo-tooltip-frontend
 ;;      company-echo-metadata-frontend)))
 
-;; FIXME Customize.
+;; FIXME Customize. https://www.youtube.com/watch?v=zSPraaX2524
 (use-package company
   :defer 1
+  :custom
+  ;; FIXME Por Prog modes, prefix-length 1, for text mode 3
+  (company-minimum-prefix-length 1)
+  (company-idle-delay 0.1)
   :config
   (global-company-mode)
   ;; :hook
@@ -93,3 +97,8 @@
   ;;   "TAB"   'company-select-next
   ;;   "S-TAB" 'company-select-previous)
   )
+
+;; TODO Customize!
+;; DRY in snippet form!
+(use-package yasnippet
+  :commands yas-minor-mode-on)
