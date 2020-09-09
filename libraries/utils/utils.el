@@ -149,28 +149,29 @@
 ;;; Language Server Protocol support
 (use-package lsp-mode
   :commands (lsp lsp-deferred)
-  :general
-  (dan/leader :states '(normal visual) :keymaps 'lsp-mode-map
-    "l"   '(:wk "lsp" :keymap lsp-command-map)
-    "l s" '(:ignore t :wk "sessions")
-    "l F" '(:ignore t :wk "folders")
-    "l =" '(:ignore t :wk "formatting")
-    "l T" '(:ignore t :wk "Toggle")
-    "l g" '(:ignore t :wk "goto")
-    "l r" '(:ignore t :wk "refactor")
-    "l a" '(:ignore t :wk "refactor")
-    "l h" '(:ignore t :wk "help")
-    "l G" '(:ignore t :wk "peek"))
+  :config
+  (with-eval-after-load 'which-key
+    ;; FIXME Weird bug here, gotta go into visual mode so the keybind shows in both visual an normal mode! Reproduce consistently and make issue?
+    (dan/leader :states 'normal :keymaps 'lsp-mode-map
+      "l"   '(:wk "[l]sp" :keymap lsp-command-map)
+      "l s" '(:ignore t :wk "sessions")
+      "l F" '(:ignore t :wk "folders")
+      "l =" '(:ignore t :wk "formatting")
+      "l T" '(:ignore t :wk "Toggle")
+      "l g" '(:ignore t :wk "goto")
+      "l r" '(:ignore t :wk "refactor")
+      "l a" '(:ignore t :wk "action")
+      "l h" '(:ignore t :wk "help")
+      "l G" '(:ignore t :wk "peek")))
   :custom
   ;; NOTE Debugging
   ;; (lsp-server-trace t)
   ;; (lsp-log-io t)
   ;; (lsp-print-performance t)
-
   (lsp-enable-snippet t)
   (lsp-eldoc-render-all nil)
   (lsp-enable-xref t)
-  (lsp-diagnostics-provider 'flycheck)
+  (lsp-diagnostics-provider ':flycheck)
   (lsp-session-file  (concat dan/cache-dir ".lsp-session-v1"))
   (lsp-enable-indentation t)
   (lsp-enable-on-type-formatting t)
@@ -179,12 +180,12 @@
   (lsp-enable-file-watchers t)
   (lsp-keep-workspace-alive nil)
   (lsp-before-save-edits nil)
-  (lsp-semantic-highlighting t)
+  (lsp-semantic-highlighting t )
   (lsp-enable-imenu t)
   (lsp-signature-auto-activate nil)
   (lsp-signature-render-documentation nil)
   (lsp-enable-text-document-color t)
-  (lsp-keymap-prefix  "SPC l"))
+  (lsp-keymap-prefix  "C-c C-l"))
 
 
 ;; TODO

@@ -7,7 +7,7 @@
   :custom
   (pdf-view-display-size 'fit-page)
   (pdf-annot-activate-created-annotations t)
-  (pdf-view-use-imagemagick t)
+  (pdf-view-use-imagemagick nil)
   (pdf-view-use-scaling t)
   (pdf-view-resize-factor  1.125)
   :config

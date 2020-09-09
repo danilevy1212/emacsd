@@ -73,6 +73,7 @@
 ;;                  ")"))))
 
 
+
 ;; FIXME Autoloading fails!!!!
 (use-package elisp-mode
   :straight
@@ -80,6 +81,13 @@
   :config
   (when (fboundp #'dan/flycheck-maybe-in-posframe)
     (add-hook 'emacs-lisp-mode-hook #'dan/flycheck-maybe-in-posframe))
+  (when (fboundp #'dan/company-activate-for-coding)
+    (defun dan/company-backend-add-company-elisp ()
+      "Adds `company-elisp' to the car of company-backends."
+      (set (make-local-variable 'company-backends)
+           (add-to-list 'company-backends 'company-elisp)))
+    (add-hook 'emacs-lisp-mode-hook #'dan/company-backend-add-company-elisp)
+    (add-hook 'emacs-lisp-mode-hook #'dan/company-activate-for-coding))
   :general
   (dan/leader :keymaps 'emacs-lisp-mode-map :states 'normal
     ;; FIXME Make some of these part of global too.

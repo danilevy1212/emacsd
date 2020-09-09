@@ -336,3 +336,6 @@
   ;; NOTE Requires emacs_mozc_helper
   (:states '(normal insert)
            "C-x j" #'dan/toggle-mozc-mode))
+
+;; TODO Japanese
+;; https://github.com/lorniu/go-translate/tree/4052b535f504e747c45f05f0b771e1507b5cedaf

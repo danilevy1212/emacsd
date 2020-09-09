@@ -15,6 +15,8 @@
         (lsp-deferred))
       (when (fboundp #'prettier-js-mode)
         (prettier-js-mode +1))
+      (when (fboundp #'dan/company-activate-for-coding)
+        (dan/company-activate-for-coding))
       (web-mode)))
   :custom
   (web-mode-enable-engine-detection           t)
@@ -26,7 +28,11 @@
   (web-mode-enable-current-element-highlight  t)
   (web-mode-markup-indent-offset              2)
   (web-mode-style-padding                     0)
-  (web-mode-script-padding                    0))
+  (web-mode-script-padding                    0)
+  ;; NOTE LSP settings.
+  (lsp-vetur-use-workspace-dependencies       t)
+  (lsp-vetur-experimental-template-interpolation-service t)
+  (lsp-typescript-references-code-lens-enabled t))
 
 ;; Reformat those files!
 (use-package prettier-js

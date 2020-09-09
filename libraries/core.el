@@ -139,7 +139,7 @@ it took for the file to load in miliseconds."
 ;;; DEBUGGING ;;;
 ;;;;;;;;;;;;;;;;;
 
-;; TODO  Maybe use this for benchmark.
+;; TODO  Maybe use this for benchmark. Needs to be put at the very beggining!  https://github.com/dholm/benchmark-init-el
 ;; (use-package benchmark-init
 ;;   :config
 ;;   ;; To disable collection of benchmark data after init is done.
@@ -155,6 +155,7 @@ it took for the file to load in miliseconds."
 (defconst dan/initial-file-name-handler-alist file-name-handler-alist
   "Default filename handler before we turn it to nil.")
 
+;;;###autoload
 (defun dan/garbage-collecting-strategy ()
   "Adopt a sneaky garbage collection strategy of waiting until idle time to collect starving off the collector while the user is working."
   (setq gcmh-idle-delay 5
@@ -166,7 +167,7 @@ it took for the file to load in miliseconds."
 (use-package gcmh
   :custom
   (gc-cons-percentage 0.9)
-  (gc-cons-threshold (* 1024 1024 1024))
+  (gc-cons-threshold (* 1024 1024 1024)) ;; NOTE !GB
   (file-name-handler-alist nil) ;; NOTE Weird hack I don't quite undestand, saves up about 100ms though.
   (read-process-output-max (* 3 1024 1024))
   ;; NOTE Debugging
@@ -206,14 +207,8 @@ it took for the file to load in miliseconds."
 ;;; CORE UTILS ;;;
 ;;;;;;;;;;;;;;;;;;
 
-
 ;; Don't load irrelevant bytecode
 (setq load-prefer-newer t)
-
-;; Manage those dependencies!
-(use-package use-package-ensure-system-package
-  :straight
-  (:flavor melpa))
 
 ;; Leader key
 (defconst dan/leader-key "SPC" "Keymap for \"leader key\" shortcuts.")

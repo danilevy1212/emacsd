@@ -44,61 +44,30 @@
   (:keymaps
    'global-map [remap execute-extended-command] #'counsel-M-x))
 
-;; FIXME
-;; Auto complete
-;; (use-package company
-;;   :hook
-;;   '(after-init . global-company-mode)
-;;   :commands company-complete-common company-manual-begin company-grab-line
-;;   ;; :bind  (:map company-active-map
-;;         ;;       ("C-n" . #'company-select-next)
-;;         ;;       ("C-p" . #'company-select-previous)
-;;         ;;       ("<tab>" . #'company-complete-common-or-cycle)
-;;         ;;  :map company-search-map
-;;         ;;       ("C-p" . #'company-select-previous)
-;;         ;;       ("C-n" . #'company-select-next))
-;;   :custom
-;;   (company-begin-commands '(self-insert-command))
-;;   (company-minimum-prefix-length 1)
-;;   (company-idle-delay 0.1)
-;;   (company-show-numbers t)
-;;   (company-tooltip-align-annotations 't)
-;;   (company-global-modes
-;;    '(not erc-mode message-mode help-mode gud-mode eshell-mode))
-;;   (company-backends '(company-capf company-dabbrev company-dabbrev-code))
-;;   (company-frontends
-;;    '(company-pseudo-tooltip-frontend
-;;      company-echo-metadata-frontend)))
-
-;; FIXME Customize. https://www.youtube.com/watch?v=zSPraaX2524
+;; Look mom! It's like an IDE!
 (use-package company
-  :defer 1
+  :commands (company-mode dan/company-activate-for-coding)
+  :init
+  (progn
+    (defconst dan/default-company-backends-coding
+      '(company-capf company-files company-dabbrev-code)
+      "Default backends to be used when coding with company.")
+    (defun dan/company-activate-for-coding ()
+      "Set up company for programming modes."
+      (company-mode)
+      (setq company-backends dan/default-company-backends-coding)))
   :custom
-  ;; FIXME Por Prog modes, prefix-length 1, for text mode 3
   (company-minimum-prefix-length 1)
-  (company-idle-delay 0.1)
-  :config
-  (global-company-mode)
-  ;; :hook
-  ;; '(after-init . global-company-mode)
-  ;; :config
-  ;; (setq company-clang-insert-arguments nil
-  ;;       company-semantic-insert-arguments nil
-  ;;       company-rtags-insert-arguments nil
-  ;;       lsp-enable-snippet nil)
-  ;; (advice-add #'eglot--snippet-expansion-fn :override #'ignore)
-  ;; :custom
-  ;; (company-require-match nil)
-  ;; (company-frontends '(company-tng-frontend
-  ;;                      company-pseudo-tooltip-frontend
-  ;;                      company-echo-metadata-frontend))
-  ;; :general
-  ;; (:keymaps 'company-active-map
-  ;;   "TAB"   'company-select-next
-  ;;   "S-TAB" 'company-select-previous)
-  )
+  (company-idle-delay 0)
+  (company-show-numbers t)
+  (company-selection-wrap-around t)
+  (company-tooltip-align-annotations t)
+  (company-tooltip-flip-when-above t)
+  (company-tooltip-width-grow-only t))
 
-;; TODO Customize!
-;; DRY in snippet form!
+;; When you can't help but repeat yourself!
 (use-package yasnippet
   :commands yas-minor-mode-on)
+
+
+;; TODO company-yasnippet
